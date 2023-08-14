@@ -1,5 +1,10 @@
 package com.goodee.yeyebooks.vo;
 
-public class Dayoff {
+import lombok.Data;
 
+@Data
+public class Dayoff {
+	private String aprvNo;
+	private String dayoffYmd;
+	private String dayoffTypeCd; 
 }
