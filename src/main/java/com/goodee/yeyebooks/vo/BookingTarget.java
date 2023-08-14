@@ -12,5 +12,5 @@ public class BookingTarget {
 	private String filetype;
 	private String path;
 	private String cDate;
-	private String udate;
+	private String uDate;
 }

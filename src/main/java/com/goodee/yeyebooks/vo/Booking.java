@@ -12,6 +12,6 @@ public class Booking {
 	private String bkgEndTime;
 	private String bkgStatCd;
 	private String bkgPurpose;
-	private String cdate;
-	private String udate;
+	private String cDate;
+	private String uDate;
 }
