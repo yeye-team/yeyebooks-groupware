@@ -7,7 +7,8 @@ public class Booking {
 	private int bkgNo;
 	private String userId;
 	private int trgtNo;
-	private String bkgYmd;
+	private String bkgStartYmd;
+	private String bkgEndYmd;
 	private String bkgStartTime;
 	private String bkgEndTime;
 	private String bkgStatCd;
