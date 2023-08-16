@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goodee.yeyebooks.mapper.BoardFileMapper">
+	<select id="selectNoticeFile" 
+			parameterType="com.goodee.yeyebooks.vo.BoardFile" 
+			resultType="com.goodee.yeyebooks.vo.BoardFile">
+		SELECT 
+			board_no boardNo,
+			file_cat_cd fileCatCd,
+			origin_filename originFilename,
+			save_filename saveFilename,
+			filetype,
+			path
+		FROM board_file
+		WHERE board_no = #{boardNo}
+	</select>
 </mapper>

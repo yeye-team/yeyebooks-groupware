@@ -1,3 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goodee.yeyebooks.mapper.BoardMapper"></mapper>
+<mapper namespace="com.goodee.yeyebooks.mapper.BoardMapper">
+	<!-- 공지사항 -->
+	<!-- 공지사항리스트 -->
+	<select id="selectNotice" 
+			parameterType="java.util.Map" 
+			resultType="com.goodee.yeyebooks.vo.Board">
+		SELECT 
+			board_no boardNo,
+			board_title boardTitle,
+			user_id userId,
+			c_date cDate,
+			board_view boardView
+		FROM board
+		WHERE
+			board_cat_cd = 00
+		ORDER BY c_date DESC
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	<!-- 공지사항상세 -->
+	<select id="selectNoticeOne" parameterType="com.goodee.yeyebooks.vo.Board" resultType="com.goodee.yeyebooks.vo.Board">
+		SELECT 
+			b.board_no boardNo,
+			b.board_title boardTitle,
+			b.board_contents boardContents,
+			b.user_id userId,
+			b.c_date cDate,
+			b.board_view boardView,
+			bf.origin_filename,
+			bf.path
+		FROM board b left JOIN board_file bf 
+		ON b.board_no = bf.board_no
+		WHERE 
+			b.board_no = #{boardNo};
+	</select>
+	<!-- 공지사항 게시물 개수 -->
+	<select id="selectNoticeCount" resultType="int">
+			SELECT
+				COUNT(*)
+			FROM board
+			WHERE
+				board_cat_cd = 00;
+	</select>
+</mapper>
