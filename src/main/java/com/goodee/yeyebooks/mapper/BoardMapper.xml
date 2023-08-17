@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goodee.yeyebooks.mapper.BoardMapper">
-	<!-- 공지사항 -->
-	<!-- 공지사항리스트 -->
-	<select id="selectNotice" 
+	<!-- 게시판 별 게시물 리스트 -->
+	<select id="selectBoard" 
 			parameterType="java.util.Map" 
 			resultType="com.goodee.yeyebooks.vo.Board">
-		SELECT 
-			board_no boardNo,
-			board_title boardTitle,
-			user_id userId,
-			c_date cDate,
-			board_view boardView
-		FROM board
-		WHERE
-			board_cat_cd = 00
-		ORDER BY c_date DESC
-		LIMIT #{beginRow}, #{rowPerPage}
+			SELECT 
+				board_no boardNo,
+				board_title boardTitle,
+				board_cat_cd boardCatCd,
+				user_id userId,
+				c_date cDate,
+				board_view boardView
+			FROM board
+			WHERE board_cat_cd = #{boardCatCd}
+			ORDER BY c_date DESC
+			LIMIT #{beginRow}, #{rowPerPage}
 	</select>
+	
+	<!-- 게시판 별 게시물 개수 -->
+	<select id="selectBoardCount" 
+			parameterType="com.goodee.yeyebooks.vo.Board"
+			resultType="int">
+			SELECT
+				COUNT(*)
+			FROM board
+			WHERE board_cat_cd = #{boardCatCd}
+	</select>
+	
+	<!-- 사용자 부서 코드 가져오기 -->
+	<select id="selectUserDept" 
+			resultType="java.lang.String">
+			SELECT
+				dept_cd deptCd
+			FROM user
+			WHERE user_id = #{userId}
+	</select>
+	
 	<!-- 공지사항상세 -->
 	<select id="selectNoticeOne" parameterType="com.goodee.yeyebooks.vo.Board" resultType="com.goodee.yeyebooks.vo.Board">
 		SELECT 
@@ -32,14 +51,6 @@
 		FROM board b left JOIN board_file bf 
 		ON b.board_no = bf.board_no
 		WHERE 
-			b.board_no = #{boardNo};
-	</select>
-	<!-- 공지사항 게시물 개수 -->
-	<select id="selectNoticeCount" resultType="int">
-			SELECT
-				COUNT(*)
-			FROM board
-			WHERE
-				board_cat_cd = 00;
+			b.board_no = #{boardNo}
 	</select>
 </mapper>
