@@ -63,10 +63,45 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
-  	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   	<script>
   		$(document).ready(function(){
-  			alert("안녕하세요");
+  			$('#formAuthentication').submit(function(event){
+  				event.preventDefault();
+  				
+  				const userId = $('input[name=userId]').val();
+  				const userPw = $('input[name=userPw]').val();
+  				
+  				$.ajax({
+  					type: "POST",
+  					url: "/yeyebooks/login",
+  					data:{
+  						userId: userId,
+  						userPw: userPw
+  					},
+  					success: function(response){
+  						if(response.success){
+  							// 로그인 성공
+  							Swal.fire({
+  				                icon: 'success',
+  				                title: '로그인 성공',
+  				                text: 'OK버튼을 누르시면 접속합니다.',
+  				            }).then(function(){
+  				            	location.href = "/yeyebooks/";
+  				            })
+  						}else{
+  							// 로그인 실패
+  							Swal.fire({
+  				                icon: 'error',
+  				                title: '로그인 실패',
+  				                text: '아이디가 없거나 비밀번호가 일치하지 않습니다.',
+  				            })
+  						}
+  					},
+  					dataType: "json"
+  				})
+  			})
   		});
   	</script>
   </head>
@@ -85,7 +120,7 @@
                 <img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png">
               </div>
 
-              <form id="formAuthentication" class="mb-3" action="/login" method="POST">
+              <form id="formAuthentication" class="mb-3">
                 <div class="mb-3">
                   <label for="email" class="form-label">아이디</label>
                   <input
