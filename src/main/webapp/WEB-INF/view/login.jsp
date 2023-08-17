@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -72,13 +73,15 @@
   				
   				const userId = $('input[name=userId]').val();
   				const userPw = $('input[name=userPw]').val();
-  				
+  				const isRemember = $('input[name=isRemember]').prop('checked');
+
   				$.ajax({
   					type: "POST",
   					url: "/yeyebooks/login",
   					data:{
   						userId: userId,
-  						userPw: userPw
+  						userPw: userPw,
+  						isRemember: isRemember
   					},
   					success: function(response){
   						if(response.success){
@@ -131,6 +134,7 @@
                     placeholder="아이디(사원번호)를 입력하세요."
                     autofocus
                     required
+                    value="${rememberId}"
                   />
                 </div>
                 <div class="mb-3 form-password-toggle">
@@ -152,7 +156,12 @@
                 </div>
                 <div class="mb-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="isRemember" />
+                  	<c:if test="${isRemember == true}">
+                  		<input class="form-check-input" type="checkbox" name="isRemember" checked/>
+                  	</c:if>
+                    <c:if test="${isRemember == false }">
+                    	<input class="form-check-input" type="checkbox" name="isRemember"/>
+                    </c:if>
                     <label class="form-check-label" for="remember-me"> 아이디 저장 </label>
                   </div>
                 </div>
