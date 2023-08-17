@@ -8,5 +8,5 @@ import com.goodee.yeyebooks.vo.BoardFile;
 
 @Mapper
 public interface BoardFileMapper {
-	/* List<BoardFile> selectNoticeFile(int boardNo); */
+	List<BoardFile> selectNoticeFile(int boardNo);
 }

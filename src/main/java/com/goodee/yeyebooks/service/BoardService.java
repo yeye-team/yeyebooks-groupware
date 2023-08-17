@@ -81,12 +81,12 @@ public class BoardService {
 		return resultMap;
 	}
 	
-	// 공지사항 상세조회
-	public Map<String, Object> getBoardOne(int boardNo) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("board", boardMapper.selectnNoticeOne(boardNo));
-		map.put("boardFiles", boardfileMapper.selectBoardFile(boardNo));
-		
-		return map;
-	}
+	/*
+	 * // 공지사항 상세조회 public Map<String, Object> getBoardOne(int boardNo) {
+	 * Map<String, Object> map = new HashMap<>(); map.put("board",
+	 * boardMapper.selectnNoticeOne(boardNo)); map.put("boardFiles",
+	 * boardfileMapper.selectNoticeFile(boardNo));
+	 * 
+	 * return map; }
+	 */
 }

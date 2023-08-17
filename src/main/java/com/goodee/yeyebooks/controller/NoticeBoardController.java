@@ -39,18 +39,20 @@ public class NoticeBoardController {
 		return "/board/noticeBoard";
 	}
 	
-	// 공지사항 상세조회
-	@GetMapping("/board/noticeOne")
-	public String getBoardOne(Model model, 
-							@RequestParam(name = "boardNo") int boardNo) {
-		Map<String, Object> map = boardService.getBoardOne(boardNo);
-		
-		Board board = (Board)map.get("board");
-		List<BoardFile> boardFiles = (List<BoardFile>) map.get("boardFiles");
-		
-		model.addAttribute("board", board);
-		model.addAttribute("boardFile", boardFiles);
-		
-		return "/board/noticeOne";
-	}
+	/*
+	 * // 공지사항 상세조회
+	 * 
+	 * @GetMapping("/board/noticeOne") public String getBoardOne(Model model,
+	 * 
+	 * @RequestParam(name = "boardNo") int boardNo) { Map<String, Object> map =
+	 * boardService.getBoardOne(boardNo);
+	 * 
+	 * Board board = (Board)map.get("board"); List<BoardFile> boardFiles =
+	 * (List<BoardFile>) map.get("boardFiles");
+	 * 
+	 * model.addAttribute("board", board); model.addAttribute("boardFile",
+	 * boardFiles);
+	 * 
+	 * return "/board/noticeOne"; }
+	 */
 }	
