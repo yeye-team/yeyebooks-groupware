@@ -65,7 +65,7 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   	<script>
   		$(document).ready(function(){
   			$('#formAuthentication').submit(function(event){

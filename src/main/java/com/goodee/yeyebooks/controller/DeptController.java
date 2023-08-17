@@ -21,6 +21,6 @@ public class DeptController {
 		List<Map<String, Object>> list = deptService.getDeptList();
 		
 		model.addAttribute("list",list);
-		return "deptList";
+		return "emp/deptList";
 	}
 }

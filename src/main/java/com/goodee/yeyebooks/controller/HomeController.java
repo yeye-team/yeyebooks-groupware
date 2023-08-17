@@ -8,7 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class HomeController {
 	@GetMapping("/")
 	public String home(HttpSession session,
@@ -35,7 +38,7 @@ public class HomeController {
 			return "login";
 		}
 		String loginId = (String)session.getAttribute("userId");
-		System.out.println("현재 접속한 아이디 : " + loginId);
+		log.debug("\u001B[42m" + "현재 접속한 아이디 : " + loginId + "\u001B[0m");
 		if(loginId.equals("admin")) {
 			return "adminHome";
 		}
