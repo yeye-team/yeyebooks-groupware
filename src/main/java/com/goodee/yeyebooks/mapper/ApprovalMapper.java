@@ -1,5 +1,31 @@
 package com.goodee.yeyebooks.mapper;
 
-public interface ApprovalMapper {
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
+import com.goodee.yeyebooks.vo.Approval;
+import com.goodee.yeyebooks.vo.ApprovalFile;
+import com.goodee.yeyebooks.vo.ApprovalLine;
+
+@Mapper
+public interface ApprovalMapper {
+	
+	public int insertApproval(Approval approval);
+	
+	public int insertApprovalFile(ApprovalFile approvalFile);
+	
+	public int insertApprovalLine(ApprovalLine approvalLine);
+	
+	List<Approval> selectApprovalByStatus(String loginId, String status);
+	
+	String selectApprovalCode(String approvalStatus);
+
+	public Approval selectApprovalOne(int aprvNo);
+	
+	public int updateApprovalProcessed(Approval approval);
+	
+	public int updateApprovalWithDrawn(Approval approval);
+	
+	
 }

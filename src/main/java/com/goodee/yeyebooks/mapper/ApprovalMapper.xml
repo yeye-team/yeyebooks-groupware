@@ -1,3 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goodee.yeyebooks.mapper.ApprovalMapper"></mapper>
+<mapper namespace="com.goodee.yeyebooks.mapper.ApprovalMapper">
+	
+	<!-- 결제 문서 추가 --> 
+	<insert id="insertApproval" parameterType="com.goodee.yeyebooks.vo.Approval">
+		INSERT INTO
+			approval(
+				user_id, doc_cat_cd, 
+				aprv_title, aprv_contents,
+				aprv_ymd, rjct_reason, 
+				reference, c_date, u_date
+				)
+		VALUES (
+			#{user_id},
+			#{doc_cat_cd},
+			#{aprc_title},
+			#{aprv_contents},
+			#{aprv_ymd},
+			#{rjct_reason},
+			#{reference},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<!-- 결재첨부파일 -->
+	<insert id="insertApprovalFile" parameterType="com.goodee.yeyebooks.vo.ApprovalFile">
+		INSERT INTO
+			approval_file(
+				aprv_no, orgin_filename,
+				save_filename, filetype,
+				path
+			)
+		VALUES(
+			#{orgin_filename},
+			#{save_filename},
+			#{filetype},
+			#{path}
+		)
+			
+	</insert>
+	
+	<!-- 결재선 -->
+	<insert id="insertApprovalLine" parameterType="com.goodee.yeyebooks.vo.ApprovalLine">
+		INSERT INTO
+			approbal_line(
+				aprv_no, user_id,
+				aprv_yn, aprv_sequence
+				aprv_ymd
+			)
+		VALUES(
+			#{user_id},
+			#{aprv_yn},
+			#{aprv_sequence},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 내 문서함 -->
+	<select id="selectApprovalByStatus" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
+		SELECT 
+	        a.aprv_no, a.user_id,
+	        a.doc_cat_cd, a.aprv_title,
+	        a.aprv_contents, a.aprv_ymd,
+	        a.rjct_reason, a.aprv_stat_cd,
+	        a.reference, a.c_date,
+	        af.orgin_filename, af.save_filename,
+	        al.aprv_yn, al.aprv_ymd as aprv_line_ymd
+	    FROM approval a
+	    LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
+	    LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+	    WHERE a.user_id = #{loginId}
+	    AND a.aprv_stat_cd = #{status}
+	    ORDER BY a.aprv_ymd DESC;
+	</select>
+	
+	<!-- 공통코드 상태값 불러오기 -->
+	<select id="selectApprovalCode">
+		select code
+		from common_code
+		where group_code = 'A001'
+		and code_nm = #{approvalStatus}
+	</select>
+	
+	
+	<!-- 
+	<select id="selectApprovalByStatus" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
+	    
+	    SELECT 
+			a.aprv_no, a.user_id,
+			a.doc_cat_cd, a.aprv_title,
+			a.aprv_contents, a.aprv_ymd,
+			a.rjct_reason, a.aprv_stat_cd,
+			a.reference, a.c_date,
+			af.orgin_filename, af.save_filename,
+			al.aprv_yn, al.aprv_ymd as aprv_line_ymd
+		FROM approval a
+		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
+		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+	</select> 
+	-->
+
+	
+	
+	
+	<!-- 반려/회수된 문서 -->
+	<select id="selectRejectedDocuments" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
+		SELECT 
+			a.aprv_no, a.user_id,
+			a.doc_cat_cd, a.aprv_title,
+			a.aprv_contents, a.aprv_ymd,
+			a.rjct_reason, a.aprv_stat_cd,
+			a.reference, a.c_date,
+			af.orgin_filename, af.save_filename,
+			al.aprv_yn, al.aprv_ymd as aprv_line_ymd
+		FROM approval a
+		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
+		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+		WHERE a.user_id = #{loginId}
+		AND (a.aprv_stat_cd = #{rejectedStatus} OR a.aprv_stat_cd = #{withdrawnStatus})
+		ORDER BY a.aprv_ymd DESC;
+	</select>
+	
+	<!-- 문서 상세보기 -->
+	<select id="selectApprovalOne" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
+		 SELECT 
+	        a.aprv_no, a.user_id,
+	        a.doc_cat_cd, a.aprv_title,
+	        a.aprv_contents, a.aprv_ymd,
+	        a.rjct_reason, a.aprv_stat_cd,
+	        a.reference, a.c_date,
+	        af.orgin_filename, af.save_filename,
+	        al.aprv_yn, al.aprv_ymd as aprv_line_ymd
+	    FROM approval a
+	    LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
+	    LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+	    WHERE a.aprv_no = #{aprvNo}
+	    ORDER BY al.aprv_sequence;
+	</select> 
+	
+	<!-- 문서처리 -->
+	<update id="updateApprovalProcessed" parameterType="com.goodee.yeyebooks.vo.Approval">
+		UPDATE approval
+		SET aprv_yn = '1', 
+			aprv_ymd = NOW(), 
+			signature = #{signature} 
+		WHERE aprv_no = #{aprv_no} 
+		AND user_id = #{user_id};
+	</update>
+	
+	<!-- 문서회수 -->
+	<update id="updateApprovalWithDrawn" parameterType="com.goodee.yeyebooks.vo.Approval">
+		UPDATE approval
+		SET aprv_stat_cd = #{withdrawnStatus},
+			aprv_ymd = NOW(),
+			rjct_reason = #{withdrawReason}
+		WHERE aprv_no = #{aprv_no} 
+		AND user_id = #{loginId};
+	</update>
+	
+</mapper>
