@@ -138,8 +138,7 @@
 								<h2 class="fw-bold py-3 mb-4">부서 게시판</h2>
 							</c:otherwise>
 						</c:choose>
-	
-						<!-- Basic Bootstrap Table -->
+						<!-- 게시물 리스트 -->
 				        <div class="card">
 				          <div class="table-responsive text-nowrap">
 				            <table class="table">
@@ -155,11 +154,14 @@
 				              <tbody class="table-border-bottom-0">
 								<!-- 게시판 변경 시 내용변경 -->
 								<c:forEach var="n" items="${selectBoard}">
-									<tr style="cursor:pointer;" onclick="location.href=''">
+									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/board/boardOne?boardNo=${n.boardNo}&userId=${n.userId}'">
 										<td>${n.boardNo}</td>
 										<td>${n.boardTitle}</td>
-										<td>${n.userId}</td>
-										<td>${fn:substring(n.CDate,0,11)}</td>
+										<td>
+											<input type="hidden" name="userId" value="${n.userId}" readonly="readonly">
+											${n.userNm}
+										</td>
+										<td>${fn:substring(n.cDate,0,11)}</td>
 										<td>${n.boardView}</td>
 									</tr>
 								</c:forEach>
@@ -167,13 +169,12 @@
 							</table>
 						  </div>
 						</div>
-	             		<!--/ Basic Bootstrap Table -->
+	             		<!--/ 게시물 리스트 -->
 	             		<!-- 페이징 -->
 		                <div class="card-body">
 							<div class="row">
 			                    <div class="col">
 									<div class="demo-inline-spacing">
-				                        <!-- Basic Pagination -->
 				                        <nav aria-label="Page navigation">
 											<ul class="pagination">
 					                          	<!-- 페이징 -->
@@ -227,7 +228,6 @@
 												</c:if>
 											</ul>
 				                        </nav>
-				                        <!--/ Basic Pagination -->
 									</div>
 			                    </div>
 							</div>
