@@ -733,9 +733,7 @@ a:hover {
 .bg-menu-theme .menu-header:before {
   background-color: #a1acb8 !important;
 }
-.bg-menu-theme.menu-vertical {
-  box-shadow: 0 0.125rem 0.375rem 0 rgba(161, 172, 184, 0.12);
-}
+
 html:not(.layout-menu-collapsed) .bg-menu-theme .menu-inner .menu-item.open > .menu-link, .layout-menu-hover.layout-menu-collapsed .bg-menu-theme .menu-inner .menu-item.open > .menu-link,
 html:not(.layout-menu-collapsed) .bg-menu-theme .menu-inner .menu-item .menu-link:not(.active):hover,
 .layout-menu-hover.layout-menu-collapsed .bg-menu-theme .menu-inner .menu-item .menu-link:not(.active):hover {
