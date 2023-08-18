@@ -7,4 +7,19 @@
 		where user_id = #{userId}
 		and user_pw = password(#{userPw})
 	</select>
+	<select id="selectUserInfo">
+		SELECT
+		    user_nm AS userNm,
+		    (SELECT code_nm FROM common_code WHERE group_code = 'R001' AND CODE = rank_cd) AS rank,
+		    (SELECT code_nm FROM common_code WHERE group_code = 'D001' AND CODE = dept_cd) AS dept,
+		    (SELECT code_nm FROM common_code WHERE group_code = 'U001' AND CODE = user_stat_cd) AS userStatus,
+		    CASE gender WHEN 1 THEN '남자' ELSE '여자' END AS gender,
+		    phone_no AS phoneNo,
+		    mail,
+		    join_ymd AS joinYmd,
+		    leave_ymd AS leaveYmd,
+		    dayoff_cnt AS dayoffCnt
+		FROM USER
+		WHERE user_id = 'user';
+	</select>
 </mapper>
