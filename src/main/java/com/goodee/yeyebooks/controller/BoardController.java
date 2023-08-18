@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.goodee.yeyebooks.vo.Board;
 import com.goodee.yeyebooks.vo.BoardFile;
+import com.goodee.yeyebooks.vo.User;
 import com.goodee.yeyebooks.service.BoardService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +33,20 @@ public class BoardController {
 		Map<String,Object> resultMap = boardService.selectBoardList(currentPage, rowPerPage, boardCatCd);
 		log.debug("\u001B[41m"+ resultMap + "< BoardController Get resultMap" + "\u001B[0m");	
 		
-		model.addAttribute("selectBoard", resultMap.get("selectBoard"));
-		model.addAttribute("currentPage", resultMap.get("currentPage"));
-		model.addAttribute("lastPage", resultMap.get("lastPage"));
-		model.addAttribute("endRow", resultMap.get("endRow"));
-		model.addAttribute("pagePerPage", resultMap.get("pagePerPage"));
-		model.addAttribute("minPage", resultMap.get("minPage"));
-		model.addAttribute("maxPage", resultMap.get("maxPage"));
+		// 맵에 있는거 한번에 넘기기
 		model.addAttribute("boardCatCd",boardCatCd);
+		model.addAllAttributes(resultMap);
+		
+		// 맵에 있는거 각각 넘기기
+		/*
+		 * model.addAttribute("selectBoard", resultMap.get("selectBoard"));
+		 * model.addAttribute("currentPage", resultMap.get("currentPage"));
+		 * model.addAttribute("lastPage", resultMap.get("lastPage"));
+		 * model.addAttribute("endRow", resultMap.get("endRow"));
+		 * model.addAttribute("pagePerPage", resultMap.get("pagePerPage"));
+		 * model.addAttribute("minPage", resultMap.get("minPage"));
+		 * model.addAttribute("maxPage", resultMap.get("maxPage"));
+		 */
 		
 		return "/board/boardList";
 	}
@@ -55,20 +62,31 @@ public class BoardController {
 		
 		return "redirect:/board/boardList?boardCatCd="+boardCatCd;
 	}
+	
+	// 게시물 상세조회
+	
+	@GetMapping("/board/boardOne") 
+	public String getBoardOne(Model model,
+							@RequestParam(name = "boardNo") int boardNo,
+							@RequestParam(name = "userId") String userId) { 
+	Map<String, Object> map = boardService.getBoardOne(boardNo, userId);
+	
+	Board board = (Board)map.get("board"); 
+	log.debug("\u001B[41m"+ board + "< BoardController getBoardOne board" + "\u001B[0m");
+	
+	BoardFile boardFile = (BoardFile) map.get("boardFile");
+	log.debug("\u001B[41m"+ boardFile + "< BoardController getBoardOne boardFile" + "\u001B[0m");
+	
+	Map<String, Object> user = (Map<String, Object>)map.get("user");
+	log.debug("\u001B[41m"+ user + "< BoardController getBoardOne user" + "\u001B[0m");
+	
+	model.addAllAttributes(map); 
 	/*
-	 * // 공지사항 상세조회
-	 * 
-	 * @GetMapping("/board/noticeOne") public String getBoardOne(Model model,
-	 * 
-	 * @RequestParam(name = "boardNo") int boardNo) { Map<String, Object> map =
-	 * boardService.getBoardOne(boardNo);
-	 * 
-	 * Board board = (Board)map.get("board"); List<BoardFile> boardFiles =
-	 * (List<BoardFile>) map.get("boardFiles");
-	 * 
-	 * model.addAttribute("board", board); model.addAttribute("boardFile",
-	 * boardFiles);
-	 * 
-	 * return "/board/noticeOne"; }
+	 * model.addAttribute("board",map.get("board"));
+	 * model.addAttribute("boardFile",map.get("boardFile"));
+	 * model.addAttribute("user",map.get("user"));
 	 */
+	
+	return "/board/boardOne"; }
+	 
 }	
