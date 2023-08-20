@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserFile {
 	private int userFileNo;
 	private String userId;
-	private String fileCatCd;
+	private String fileCategory;
 	private String saveFilename;
 	private String filetype;
 	private String path;

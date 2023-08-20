@@ -1,5 +1,7 @@
 package com.goodee.yeyebooks.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,10 @@ public class MypageController {
 	public String mypage(HttpSession session,
 						Model model) {
 		String userId = (String)session.getAttribute("userId");
-		User user = userService.mypage(userId);
-		model.addAttribute("user", user);
+		Map<String, Object> userInfo = userService.mypage(userId);
+		model.addAttribute("user", userInfo.get("user"));
+		model.addAttribute("photoFile", userInfo.get("photoFile"));
+		model.addAttribute("signFile", userInfo.get("signFile"));
 		return "mypage";
 	}
 }
