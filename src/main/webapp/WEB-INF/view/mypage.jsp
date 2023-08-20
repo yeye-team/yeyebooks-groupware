@@ -50,11 +50,76 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
   	<style>
   		.app-brand img{
   			width: 100%;
   		}
+  		#goal{
+  			position: relative;
+  			width: 100%;
+  			height: 100%;
+  			border-radius: 4px;
+  			border: 1px solid lightgray;
+  		}
   	</style>
+  	<script>
+  		$(document).ready(function(){
+  			let goal = $('#goal')[0];
+  			let sign = new SignaturePad(goal, {minWidth: 2, maxWidth: 2, penColor:'#333333', velocityFilterWeight: 0.7});
+  		    
+  			goal.addEventListener('mousedown', function(event) {
+  			    var canvasRect = goal.getBoundingClientRect();
+  			    var mouseX = event.clientX - canvasRect.left;
+  			    var mouseY = event.clientY - canvasRect.top;
+  			    
+  			    // 변환된 마우스 좌표를 사용하여 캔버스에 서명 그리기
+  			    sign.penDown(mouseX, mouseY);
+  			});
+
+  			goal.addEventListener('mousemove', function(event) {
+  			    var canvasRect = goal.getBoundingClientRect();
+  			    var mouseX = event.clientX - canvasRect.left;
+  			    var mouseY = event.clientY - canvasRect.top;
+  			    
+  			    // 변환된 마우스 좌표를 사용하여 캔버스에 서명 그리기
+  			    sign.penMoveTo(mouseX, mouseY);
+  			});
+
+  			goal.addEventListener('mouseup', function(event) {
+  			    // 마우스 버튼이 떼어질 때 서명 그리기 종료
+  			    sign.penUp();
+  			});
+  			
+  			$("#clear").click(function(){
+  				sign.clear();
+  			});
+  			$("#save").click(function(){
+  				if(sign.isEmpty()){
+  					alert("내용이 없습니다");
+  				}else{
+  					let data = sign.toDataURL("image/png");
+  					$("#target").attr('src', data);
+  				}
+  			});
+  			$('#send').click(function(){
+  				$.ajax({
+  					url: '/addSign',
+  					data: {
+  						sign: sign.toDataURL("image/png"),
+  						id: 2
+  					},
+  					type: 'post',
+  					success: function(jsonData){
+  						alert("이미지 전송 성공");
+  						$("#target").attr('src', jsonData);
+  					}
+  				});
+  			});
+  		})
+	</script>
   </head>
 
   <body>
@@ -203,6 +268,7 @@
                   <div class="card mb-4">
                     <h5 class="card-header">사원정보</h5>
                     <!-- Account -->
+                    <form id="formAccountSettings" method="POST" onsubmit="return false">
                     <div class="card-body">
                       <div class="d-flex align-items-start align-items-sm-center gap-4">
                       	<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
@@ -231,16 +297,16 @@
                           </label>
                           <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
                             <i class="bx bx-reset d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">취소</span>
+                            <span class="d-none d-sm-block">되돌리기</span>
                           </button>
 
-                          <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+                          <p class="text-muted mb-0">JPG, PNG형식을 지원합니다.</p>
                         </div>
                       </div>
                     </div>
                     <hr class="my-0" />
                     <div class="card-body">
-                      <form id="formAccountSettings" method="POST" onsubmit="return false">
+                      
                         <div class="row">
                           <div class="mb-3 col-md-6">
                             <label for="userNm" class="form-label">이름</label>
@@ -351,13 +417,62 @@
                             />
                           </div>
                         </div>
-                        <div class="mt-2">
-                          <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                          <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                         <!-- Vertically Centered Modal -->
+                    <div class="col-lg-4 col-md-6">
+                      <label for="target" class="form-label">사인</label>
+                      <div class="mt-3">
+                      	
+						<img id="target" src="">
+                        <!-- Button trigger modal -->
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalCenter"
+                        >새사인등록
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">사인등록</h5>
+                                <button
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="row">
+                                  <div class="col mb-3">
+                                    <canvas	id="goal">
+                                    </canvas>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" id="clear">
+                                 지우기
+                                </button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </form>
+                      </div>
                     </div>
+                        <div class="mt-2">
+                          <button type="submit" class="btn btn-primary me-2">저장</button>
+                          <button type="reset" class="btn btn-outline-secondary">취소</button>
+                        </div>
+                      
+                    </div>
+                    </form>
                     <!-- /Account -->
+                    
                   </div>
                   
 
