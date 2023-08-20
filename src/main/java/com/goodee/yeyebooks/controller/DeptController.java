@@ -18,9 +18,11 @@ public class DeptController {
 	
 	@GetMapping("/dept")
 	public String getDeptList(Model model) {
-		List<Map<String, Object>> list = deptService.getDeptList();
+		List<Map<String, Object>> deptList = deptService.getDeptList();
+		List<Map<String, Object>> userList = deptService.getUserListByDept();
 		
-		model.addAttribute("list",list);
+		model.addAttribute("deptList",deptList);
+		model.addAttribute("userList",userList);
 		return "emp/deptList";
 	}
 }

@@ -28,7 +28,7 @@
 			<ul class="menu-inner py-1">
 	            <!-- 조직관리 -->
 	            <li class="menu-item">
-	              <a href="index.html" class="menu-link">
+	              <a href="${pageContext.request.contextPath}/dept" class="menu-link">
 	                <i class="menu-icon tf-icons bx bx-group"></i>
 	                <div data-i18n="Analytics">조직관리</div>
 	              </a>
@@ -168,7 +168,7 @@
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
 				<div class="card mb-4">
-]					<h5 class="card-header">조직관리</h5>
+					<h5 class="card-header">조직관리</h5>
 				  	<hr class="m-0" />
 				  	<div class="card-body">
 						<small class="text-light fw-semibold">YeYeBooks</small>
@@ -176,19 +176,37 @@
                         	<div class="row">
                           		<div class="col-md-3 col-12 mb-3 mb-md-0">
                             		<div class="list-group">
-			                           	<a
+			                           	<div
 			                               class="list-group-item list-group-item-action active"
 			                               id="list-home-list"
 			                               data-bs-toggle="list"
 			                               href="#list-home"
-			                               >전체</a
+			                               >YeYeBooks
+			                               <span class="dropdown" style="float: right">
+			                              <a
+			                                class="p-0"
+			                                type="button"
+			                                id="cardOpt3"
+			                                data-bs-toggle="dropdown"
+			                                aria-haspopup="true"
+			                                aria-expanded="false"
+			                              >
+			                                &nbsp;<i class="bx bx-dots-vertical-rounded"></i>&nbsp;
+			                              </a>
+			                              <span class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
+			                                <a class="dropdown-item" href="javascript:void(0);">수정</a>
+			                                <a class="dropdown-item" href="javascript:void(0);">삭제</a>
+			                              </span>
+				                        </span>
+			                               </div
 			                             >
-			                            <c:forEach var="d" items="${list}">
+			                             
+			                            <c:forEach var="d" items="${deptList}">
 				                           	<a
 				                               class="list-group-item list-group-item-action"
-				                               id="list-home-list"
+				                               id="list-${d.code}-list"
 				                               data-bs-toggle="list"
-				                               href="#list-home"
+				                               href="#list-${d.code}"
 				                               >${d.codeNm}</a
 				                             >
 			                            </c:forEach>
@@ -200,182 +218,36 @@
 					                    		<div class="tab-content p-0">
 						                        	<div class="tab-pane fade show active" id="list-home">
 						                            	<div class="row">
-							                            	<div class="col-md-6 mb-5 row">
+						                            	  <c:forEach var="u" items="${userList}">
+							                            	  <div class="col-md-6 mb-5 row">
 							                              		<div class="col-md-3">
 							                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
 							                              		</div>
 							                              		<div class="col-md-9">
-							                              			<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
+							                              			<h5 class="mb-0">${u.userNm} <br><small class="text-muted">${u.rankNm}</small></h5>
 							                              		</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                             
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                             <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-							                              <div class="col-md-6 mb-5 row">
-							                              	<div class="col-md-3">
-							                              		<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              	</div>
-							                              	<div class="col-md-9">
-							                              		<h5 class="mb-0">정석현 <br><small class="text-muted">사원</small></h5>
-							                              	</div>
-							                              </div>
-						                              </div>         
+								                              </div>
+						                            	  </c:forEach>
+						                              	</div>         
 						                              </div>
-						                              <div class="tab-pane fade" id="list-profile">
-						                                Muffin lemon drops chocolate chupa chups jelly beans dessert jelly-o. Soufflé gummies
-						                                gummies. Ice cream powder marshmallow cotton candy oat cake wafer. Marshmallow
-						                                gingerbread tootsie roll. Chocolate cake bonbon jelly beans lollipop jelly beans halvah
-						                                marzipan danish pie. Oat cake chocolate cake pudding bear claw liquorice gingerbread
-						                                icing sugar plum brownie. Toffee cookie apple pie cheesecake bear claw sugar plum wafer
-						                                gummi bears fruitcake.
-						                              </div>
-						                              <div class="tab-pane fade" id="list-messages">
-						                                Ice cream dessert candy sugar plum croissant cupcake tart pie apple pie. Pastry
-						                                chocolate chupa chups tiramisu. Tiramisu cookie oat cake. Pudding brownie bonbon. Pie
-						                                carrot cake chocolate macaroon. Halvah jelly jelly beans cake macaroon jelly-o. Danish
-						                                pastry dessert gingerbread powder halvah. Muffin bonbon fruitcake dragée sweet sesame
-						                                snaps oat cake marshmallow cheesecake. Cupcake donut sweet bonbon cheesecake soufflé
-						                                chocolate bar.
-						                              </div>
-						                              <div class="tab-pane fade" id="list-settings">
-						                                Marzipan cake oat cake. Marshmallow pie chocolate. Liquorice oat cake donut halvah
-						                                jelly-o. Jelly-o muffin macaroon cake gingerbread candy cupcake. Cake lollipop lollipop
-						                                jelly brownie cake topping chocolate. Pie oat cake jelly. Lemon drops halvah jelly
-						                                cookie bonbon cake cupcake ice cream. Donut tart bonbon sweet roll soufflé gummies
-						                                biscuit. Wafer toffee topping jelly beans icing pie apple pie toffee pudding. Tiramisu
-						                                powder macaroon tiramisu cake halvah.
-						                              </div>
+						                              <c:forEach var="d" items="${deptList}">
+						                              	<div class="tab-pane fade" id="list-${d.code}">
+						                               		<div class="row">
+							                            	  <c:forEach var="u" items="${userList}">
+							                            	  	<c:if test="${d.code == u.deptCd}">
+							                            	  		<div class="col-md-6 mb-5 row">
+									                              		<div class="col-md-3">
+									                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+									                              		</div>
+									                              		<div class="col-md-9">
+									                              			<h5 class="mb-0">${u.userNm} <br><small class="text-muted">${u.rankNm}</small></h5>
+									                              		</div>
+										                            </div>
+							                            	  	</c:if> 
+							                            	  </c:forEach>
+							                              	</div>
+						                                </div>
+						                              </c:forEach>
 						                            </div>
                     							</div>
                   							</div>

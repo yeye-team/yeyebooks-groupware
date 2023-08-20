@@ -18,4 +18,9 @@ public class DeptService {
 		return list;
 	}
 	
+	public List<Map<String, Object>> getUserListByDept(){
+		List<Map<String, Object>> list = deptMapper.selectUserListByDept();
+		return list;
+	}
+	
 }
