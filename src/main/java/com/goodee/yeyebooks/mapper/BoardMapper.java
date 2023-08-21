@@ -13,6 +13,12 @@ public interface BoardMapper {
 	// 게시판 별 게시물 리스트 조회
 	List<Map<String, Object>> selectBoard(Map<String, Object> map);
 	
+	// 관리자 일때 모든 부서 게시판 리스트 조회
+	Board selectAllCatBoard();
+	
+	// 관리자일 때 모든 부서 코드 조회
+	List<Map<String, Object>> selectAllCatCode();
+	
 	// 게시판 별 게시물 전체 개수
 	int selectBoardCount(String boardCatCd);
 	
@@ -25,4 +31,6 @@ public interface BoardMapper {
 	// 사용자 정보 조회
 	Map<String, Object> selectUser(String userId);
 	
+	// 조회수 증가
+	int updateView(int boardNo);
 }

@@ -40,10 +40,36 @@
 			WHERE user_id = #{userId}
 	</select>
 	
+	<!-- 모든 부서 게시판 코드 가져오기 -->
+	<select id="selectAllCatCode"
+			resultType="java.util.Map">
+		SELECT 
+			code,
+			code_nm codeNm
+		FROM common_code 
+		WHERE group_code = 'D001'
+	</select>
+	
+	<!-- 관리자일때 모든 부서의 게시물을 조회 -->
+	<select id="selectAllCatBoard" 
+			resultType="com.goodee.yeyebooks.vo.Board">
+			SELECT 
+				board_no boardNo,
+				user_id userId,
+				board_title boardTitle,
+				board_view boardView,
+				c_date cDate
+		 	FROM board 
+		 	WHERE 
+		 		board_cat_cd != '00' AND board_cat_cd != '99'
+	</select>
+	
 	<!-- 게시물상세 -->
-	<select id="selectBoardOne" resultType="com.goodee.yeyebooks.vo.Board">
+	<select id="selectBoardOne" 
+			resultType="com.goodee.yeyebooks.vo.Board">
 		SELECT 
 			b.board_no boardNo,
+			b.board_cat_cd boardCatCd,
 			b.board_title boardTitle,
 			b.board_contents boardContents,
 			b.user_id userId,
@@ -58,7 +84,9 @@
 	</select>
 	<!-- 게시물 상세 조회 시 게시자 정보를 가져오기 -->
 	<!-- 아이디 / 이름 / 직급 / 부서 -->
-	<select id="selectUser" parameterType="String" resultType="java.util.Map">
+	<select id="selectUser" 
+			parameterType="String" 
+			resultType="java.util.Map">
 		SELECT 
 			u.user_id userId, 
 			u.user_nm userNm, 
@@ -66,6 +94,18 @@
 		FROM user u
 			INNER JOIN 
 				common_code c ON u.rank_cd = c.code AND c.group_code = 'R001'
-		WHERE u.user_id = #{userId};
+		WHERE 
+			u.user_id = #{userId};
 	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="updateView">
+		UPDATE 
+			board 
+		SET 
+			board_view = board_view + 1 
+		WHERE 
+			board_no = #{boardNo}
+	</update>
+	
 </mapper>

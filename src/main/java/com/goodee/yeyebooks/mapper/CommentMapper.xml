@@ -1,3 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goodee.yeyebooks.mapper.CommentMapper"></mapper>
+<mapper namespace="com.goodee.yeyebooks.mapper.CommentMapper">
+	<!-- 댓글 입력 -->
+	<insert id="addComment" parameterType="com.goodee.yeyebooks.vo.Comment">
+		INSERT INTO comment(
+			board_no,
+			user_id,
+			cmnt_contents,
+			c_date,
+			u_date
+		) VALUES (
+			#{boardNo},
+			#{userId},
+			#{cmntContents},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	<!-- 게시물 별 댓글 조회 -->
+	<select id="selectComment" resultType="java.util.Map">
+		SELECT
+			c.board_no boardNo,
+			c.user_id userId,
+			u.user_nm userNm,
+			c.cmnt_contents cmntContents,
+			c.c_date cDate,
+			c.u_date uDate
+		FROM
+			comment c LEFT OUTER JOIN user u ON c.user_id = u.user_id
+		WHERE
+			board_no = #{boardNo}
+	</select>
+</mapper>
