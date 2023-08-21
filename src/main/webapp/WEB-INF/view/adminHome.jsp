@@ -9,5 +9,6 @@
 <body>
 	<h1>안녕하세요 관리자 홈입니둥</h1>
 	<a href="/yeyebooks/logout">로그아웃</a>
+	<a href="/yeyebooks/board/boardList">게시판으로</a>
 </body>
 </html>
