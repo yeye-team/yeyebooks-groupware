@@ -1,6 +1,7 @@
 package com.goodee.yeyebooks.service;
 
 import java.util.List;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,11 @@ public class CommentService {
 	
 	// 게시물별 댓글 입력
 	public int addComment(Comment comment) {
-		
-		int row = commentMapper.addComment(comment);
-		return row;
+		return commentMapper.addComment(comment);
+	}
+	
+	// 댓글 수정
+	public int modify(Comment comment) {
+		return commentMapper.modifyComment(comment);
 	}
 }
