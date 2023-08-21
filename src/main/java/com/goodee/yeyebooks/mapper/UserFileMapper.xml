@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goodee.yeyebooks.mapper.UserFileMapper">
-	<select id="selectUserFile">
-		SELECT user_file_no userFileNo, (select code_nm from common_code where group_code = 'U001' and CODE = file_cat_cd) fileCategory, save_filename saveFilename, path
+	<select id="selectUserFile" parameterType="String" resultType="com.goodee.yeyebooks.vo.UserFile">
+		SELECT user_file_no userFileNo, (select code_nm from common_code where group_code = 'U002' and CODE = file_cat_cd) fileCategory, save_filename saveFilename, path
 		FROM user_file
 		WHERE user_id = #{userId}
+	</select>
+	<insert id="insertUserFile">
+		INSERT INTO user_file(user_id, file_cat_cd, save_filename, filetype, path, c_date, u_date)
+		VALUES(#{userId}, 
+		(SELECT code
+			FROM common_code
+			WHERE group_code = 'U002' 
+			AND code_nm = #{fileCategory}), 
+			#{saveFilename}, #{filetype}, #{path}, NOW(), NOW())
+	</insert>
+	<delete id="deleteUserFile">
+		DELETE
+		FROM user_file
+		WHERE user_file_no = #{userFileNo}
+	</delete>
+	<select id="selectUserFileOne" resultType="com.goodee.yeyebooks.vo.UserFile">
+		SELECT user_file_no userFileNo, save_filename saveFilename, path
+		FROM user_file
+		WHERE user_file_no = #{userFileNo}
 	</select>
 </mapper>

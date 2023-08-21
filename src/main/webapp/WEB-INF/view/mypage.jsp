@@ -52,72 +52,93 @@
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   	<style>
   		.app-brand img{
   			width: 100%;
   		}
   		#goal{
-  			position: relative;
-  			width: 100%;
-  			height: 100%;
   			border-radius: 4px;
   			border: 1px solid lightgray;
+  		}
+  		#uploadedAvatar{
+  			object-fit: cover;
+  		}
+  		#target{
+  			border-radius: 4px;
+  			border: 1px solid lightgray;
+  			margin-bottom: 10px;
+  		}
+  		.changePwBtn{
+  			margin: auto 0;
   		}
   	</style>
   	<script>
   		$(document).ready(function(){
+  			
+  			if(${signFile == null}){
+  				$('#modalCenter').modal('show');
+  			}
   			let goal = $('#goal')[0];
-  			let sign = new SignaturePad(goal, {minWidth: 2, maxWidth: 2, penColor:'#333333', velocityFilterWeight: 0.7});
-  		    
-  			goal.addEventListener('mousedown', function(event) {
-  			    var canvasRect = goal.getBoundingClientRect();
-  			    var mouseX = event.clientX - canvasRect.left;
-  			    var mouseY = event.clientY - canvasRect.top;
-  			    
-  			    // 변환된 마우스 좌표를 사용하여 캔버스에 서명 그리기
-  			    sign.penDown(mouseX, mouseY);
-  			});
-
-  			goal.addEventListener('mousemove', function(event) {
-  			    var canvasRect = goal.getBoundingClientRect();
-  			    var mouseX = event.clientX - canvasRect.left;
-  			    var mouseY = event.clientY - canvasRect.top;
-  			    
-  			    // 변환된 마우스 좌표를 사용하여 캔버스에 서명 그리기
-  			    sign.penMoveTo(mouseX, mouseY);
-  			});
-
-  			goal.addEventListener('mouseup', function(event) {
-  			    // 마우스 버튼이 떼어질 때 서명 그리기 종료
-  			    sign.penUp();
-  			});
+  			let sign = new SignaturePad(goal, {minWidth:2, maxWidth:2});
   			
   			$("#clear").click(function(){
   				sign.clear();
   			});
-  			$("#save").click(function(){
-  				if(sign.isEmpty()){
-  					alert("내용이 없습니다");
-  				}else{
-  					let data = sign.toDataURL("image/png");
-  					$("#target").attr('src', data);
-  				}
-  			});
   			$('#send').click(function(){
   				$.ajax({
-  					url: '/addSign',
+  					url: '/yeyebooks/addSign',
   					data: {
   						sign: sign.toDataURL("image/png"),
-  						id: 2
+  						userId: "${user.userId}",
+  						userFileNo: ${signFile != null ? signFile.userFileNo : 0}
   					},
   					type: 'post',
   					success: function(jsonData){
-  						alert("이미지 전송 성공");
+						// 사인 등록 성공
+						$('#modalCenter').modal('hide');
+						Swal.fire({
+			                icon: 'success',
+			                title: '사인등록 성공',
+			            })
   						$("#target").attr('src', jsonData);
   					}
   				});
   			});
+  			
+  			let photoDataURL = null;
+  			
+  			$('#upload').change(function(){
+  				const selectedFile = this.files[0];
+  				
+  				if(selectedFile){
+  					const reader = new FileReader();
+  					reader.onload = function(event){
+  						photoDataURL = event.target.result;
+  					}
+  					reader.readAsDataURL(selectedFile);
+  				}
+  			});
+  			
+  			$('#saveUserInfo').click(function(){
+  				$.ajax({
+  					type: "POST",
+  					url: "/yeyebooks/mypage",
+  					data: {
+  						photo: photoDataURL != null ? photoDataURL : "",
+  						userId: "${user.userId}",
+  						userFileNo: ${photoFile != null ? photoFile.userFileNo : 0},
+  						userNm: $('input[name=userNm]').val(),
+  						phoneNo: $('input[name=phoneNo]').val()
+  					},
+  					success: function(response){
+						Swal.fire({
+							icon: 'success',
+							title: '수정 성공'
+						})
+  					}
+  				})
+  			})
   		})
 	</script>
   </head>
@@ -152,109 +173,7 @@
         <!-- Layout container -->
         <div class="layout-page">
           <!-- Navbar -->
-
-          <nav
-            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-            id="layout-navbar"
-          >
-            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                <i class="bx bx-menu bx-sm"></i>
-              </a>
-            </div>
-
-            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <!-- Search -->
-              <div class="navbar-nav align-items-center">
-                <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
-                  <input
-                    type="text"
-                    class="form-control border-0 shadow-none"
-                    placeholder="Search..."
-                    aria-label="Search..."
-                  />
-                </div>
-              </div>
-              <!-- /Search -->
-
-              <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- Place this tag where you want the button to render. -->
-                <li class="nav-item lh-1 me-3">
-                  <a
-                    class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                    >Star</a
-                  >
-                </li>
-
-                <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                      <img src="${pageContext.request.contextPath}/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                    </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <div class="avatar avatar-online">
-                              <img src="${pageContext.request.contextPath}/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                            </div>
-                          </div>
-                          <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-user me-2"></i>
-                        <span class="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-cog me-2"></i>
-                        <span class="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <span class="d-flex align-items-center align-middle">
-                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                          <span class="flex-grow-1 align-middle">Billing</span>
-                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <!--/ User -->
-              </ul>
-            </div>
-          </nav>
-
+          <jsp:include page="./inc/navbar.jsp"></jsp:include>
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
@@ -308,6 +227,20 @@
                     <div class="card-body">
                       
                         <div class="row">
+                        <div class="mb-3 col-md-6">
+                            <label for="userId" class="form-label">사원번호</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              id="userId"
+                              name="userId"
+                              value="${user.userId }"
+                              readonly
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6 changePwBtn">
+                            <button type="button" class="btn btn-primary" id="changePw">비밀번호변경</button>
+                          </div>
                           <div class="mb-3 col-md-6">
                             <label for="userNm" class="form-label">이름</label>
                             <input
@@ -420,13 +353,17 @@
                          <!-- Vertically Centered Modal -->
                     <div class="col-lg-4 col-md-6">
                       <label for="target" class="form-label">사인</label>
-                      <div class="mt-3">
-                      	
-						<img id="target" src="">
+                      <div>
+                      	<c:set var="signUrl" value=""></c:set>
+                      	<c:if test="${signFile != null }">
+                      		<c:set var="signUrl" value="${pageContext.request.contextPath }/${signFile.path }/${signFile.saveFilename }"></c:set>
+                      	</c:if>
+						<img id="target" src="${signUrl }">
                         <!-- Button trigger modal -->
                         <button
                           type="button"
                           class="btn btn-primary"
+                          id="signModalOpen"
                           data-bs-toggle="modal"
                           data-bs-target="#modalCenter"
                         >새사인등록
@@ -448,7 +385,7 @@
                               <div class="modal-body">
                                 <div class="row">
                                   <div class="col mb-3">
-                                    <canvas	id="goal">
+                                    <canvas	id="goal" width="512" height="200">
                                     </canvas>
                                   </div>
                                 </div>
@@ -457,7 +394,7 @@
                                 <button type="button" class="btn btn-outline-secondary" id="clear">
                                  지우기
                                 </button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-primary" id="send">저장</button>
                               </div>
                             </div>
                           </div>
@@ -465,8 +402,8 @@
                       </div>
                     </div>
                         <div class="mt-2">
-                          <button type="submit" class="btn btn-primary me-2">저장</button>
-                          <button type="reset" class="btn btn-outline-secondary">취소</button>
+                          <button type="button" class="btn btn-primary me-2" id="saveUserInfo">저장</button>
+                          <button type="reset" class="btn btn-outline-secondary" id="resetBtn">취소</button>
                         </div>
                       
                     </div>

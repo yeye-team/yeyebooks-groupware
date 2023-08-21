@@ -9,6 +9,7 @@
 	</select>
 	<select id="selectUserInfo">
 		SELECT
+			user_id AS userId,
 		    user_nm AS userNm,
 		    (SELECT code_nm FROM common_code WHERE group_code = 'R001' AND CODE = rank_cd) AS rank,
 		    (SELECT code_nm FROM common_code WHERE group_code = 'D001' AND CODE = dept_cd) AS dept,
@@ -22,4 +23,8 @@
 		FROM USER
 		WHERE user_id = 'user';
 	</select>
+	<update id="updateUserInfoByUser">
+		UPDATE USER SET user_nm = #{userNm}, phone_no = #{phoneNo}
+		WHERE user_id = #{userId}
+	</update>
 </mapper>

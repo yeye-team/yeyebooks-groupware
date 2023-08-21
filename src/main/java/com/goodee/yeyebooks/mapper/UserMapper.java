@@ -8,4 +8,5 @@ import com.goodee.yeyebooks.vo.User;
 public interface UserMapper {
 	int selectLoginInfo(String userId, String userPw);
 	User selectUserInfo(String userId);
+	int updateUserInfoByUser(User user);
 }
