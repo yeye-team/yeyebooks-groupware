@@ -63,13 +63,29 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
+    <script>
+	    /* // url파라미터값 삭제
+		history.replaceState({}, null, location.pathname);  */
+    </script>
     <style>
     	.menu-link{
+    		background-color: white;
 	    	border: none;
-	    	width: 100%;
+	    	width: 88%;
+    	}
+    	.catScroll{
+    		overflow-y: scroll;
+    		overflow-x: hidden;
+    		width: 100%;
+    		height: 235px;
     	}
     	h2{
     		text-align: center;
+    	}
+    	
+    	.addBtn{
+    		display: flex;
+ 		   justify-content: flex-end;
     	}
     </style>
   </head>
@@ -93,28 +109,45 @@
 				         <!-- Dashboard -->
 						<li class="menu-item">
 							<button type="submit" name="boardCatCd" value="00" class="menu-link">
-							<i>
-								<img class="menu-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKdJREFUSEvt1TEKQjEMxvHfO4cgiIPexsu4OIiIi17Ig7i4iYL3UDrUoY++YuU5NVtpkv+XkJDOyNaNnF8JsMeWrN8LB+xyQlPACkcsKyu7Yo1zjE8BT0wqk8ewG+Y5QCg5WATHd4mZ+n+EpxX8HVBSnv6nAnvT0XP4ktAAxYa1FrUW0RatuAcPTIuzMuxwxyx3D8JFO2FRCblgM3TRKvPmw0pH/2fgG6QELRnidRGUAAAAAElFTkSuQmCC"/>
-							</i>
+								<i class='bx bx-clipboard'></i>
 								<div data-i18n="Analytics">공지사항</div>
 							</button>
 						</li>
 						<li class="menu-item">
 							<button type="submit" name="boardCatCd" value="99" class="menu-link">
-								<i>
-									<img class="menu-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKdJREFUSEvt1TEKQjEMxvHfO4cgiIPexsu4OIiIi17Ig7i4iYL3UDrUoY++YuU5NVtpkv+XkJDOyNaNnF8JsMeWrN8LB+xyQlPACkcsKyu7Yo1zjE8BT0wqk8ewG+Y5QCg5WATHd4mZ+n+EpxX8HVBSnv6nAnvT0XP4ktAAxYa1FrUW0RatuAcPTIuzMuxwxyx3D8JFO2FRCblgM3TRKvPmw0pH/2fgG6QELRnidRGUAAAAAElFTkSuQmCC"/>
-								</i>
+								<i class='bx bx-clipboard'></i>
 								<div data-i18n="Analytics">전체 게시판</div>
 							</button>
 						</li>
-						<li class="menu-item">
-							<button type="submit" name="boardCatCd" value="dept" class="menu-link">
-								<i>
-									<img class="menu-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKdJREFUSEvt1TEKQjEMxvHfO4cgiIPexsu4OIiIi17Ig7i4iYL3UDrUoY++YuU5NVtpkv+XkJDOyNaNnF8JsMeWrN8LB+xyQlPACkcsKyu7Yo1zjE8BT0wqk8ewG+Y5QCg5WATHd4mZ+n+EpxX8HVBSnv6nAnvT0XP4ktAAxYa1FrUW0RatuAcPTIuzMuxwxyx3D8JFO2FRCblgM3TRKvPmw0pH/2fgG6QELRnidRGUAAAAAElFTkSuQmCC"/>
-								</i>
-								<div data-i18n="Analytics">부서 게시판</div>
-							</button>
-						</li>
+						<!-- 관리자 사용자 메뉴 구분 -->
+						<c:choose>
+							<c:when test="${userId != 'admin'}">
+								<li class="menu-item">
+									<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+										<i class='bx bx-clipboard'></i>
+										<div data-i18n="Analytics">부서 게시판</div>
+									</button>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="menu-item">
+									<a class="menu-link">
+										<i class='bx bx-clipboard'></i>
+										<div data-i18n="Analytics">부서 게시판</div>
+									</a>
+									<div class="card">
+						        		<div class="catScroll text-nowrap">
+											<c:forEach var="s" items="${selectAllCatCode}">
+												<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
+													<i class='bx bx-clipboard'></i>
+													<div data-i18n="Analytics">${s.codeNm} 게시판</div>
+												</button>
+											</c:forEach>
+										</div>
+									</div>
+								</li>
+							</c:otherwise>
+						</c:choose>
 					</ul>
 				</form>
 			</aside>
@@ -138,6 +171,20 @@
 								<h2 class="fw-bold py-3 mb-4">부서 게시판</h2>
 							</c:otherwise>
 						</c:choose>
+						
+						<!-- 작성버튼 구분 -->
+						<div class="addBtn">
+							<c:choose>
+								<c:when test="${userId == 'admin' && boardCatCd == '00'}">
+									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">공지 작성</button>
+								</c:when>
+								<c:when test="${userId != 'admin' && boardCatCd != '00'}">
+									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">게시물 작성</button>
+								</c:when>
+							</c:choose>
+						</div>
+						<br>
+						
 						<!-- 게시물 리스트 -->
 				        <div class="card">
 				          <div class="table-responsive text-nowrap">
