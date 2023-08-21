@@ -27,7 +27,7 @@
 			
 			<ul class="menu-inner py-1">
 	            <!-- 조직관리 -->
-	            <li class="menu-item">
+	            <li class="menu-item active">
 	              <a href="${pageContext.request.contextPath}/dept" class="menu-link">
 	                <i class="menu-icon tf-icons bx bx-group"></i>
 	                <div data-i18n="Analytics">조직관리</div>
@@ -75,103 +75,61 @@
 
         <!-- Layout container -->
         <div class="layout-page">
-			<!-- Navbar -->
-			<nav class="navbar navbar-expand-lg navbar-light bg-menu-theme">
-				<div class="container-fluid">
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-						  <li class="nav-item">
-						    <a class="nav-link" href="javascript:void(0)">조직</a>
-						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" href="javascript:void(0)">구성원</a>
-						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" href="javascript:void(0)">예약</a>
-						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" href="javascript:void(0)">게시판</a>
-						  </li>
-						  <li class="nav-item">
-						    <a class="nav-link" href="javascript:void(0)">일정</a>
-						  </li>
-						</ul>
-						<ul class="navbar-nav flex-row align-items-center ms-auto">
-				
-						<!-- User -->
-						<li class="nav-item navbar-dropdown dropdown-user dropdown">
-						  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-						    <div class="avatar avatar-online">
-						      <img src="${pageContext.request.contextPath}/assets/img/avatars/1.png" class="w-px-40 h-auto rounded-circle" />
-						   </div>
-						 </a>
-						 <ul class="dropdown-menu dropdown-menu-end">
-						   <li>
-						     <a class="dropdown-item" href="#">
-						       <div class="d-flex">
-						         <div class="flex-shrink-0 me-3">
-						           <div class="avatar avatar-online">
-						             <img src="${pageContext.request.contextPath}/assets/img/avatars/1.png" class="w-px-40 h-auto rounded-circle" />
-						            </div>
-						          </div>
-						          <div class="flex-grow-1">
-						            <span class="fw-semibold d-block">John Doe</span>
-						            <small class="text-muted">Admin</small>
-						          </div>
-						        </div>
-						      </a>
-						    </li>
-						    <li>
-						      <div class="dropdown-divider"></div>
-						    </li>
-						    <li>
-						      <a class="dropdown-item" href="#">
-						        <i class="bx bx-user me-2"></i>
-						        <span class="align-middle">My Profile</span>
-						      </a>
-						    </li>
-						    <li>
-						      <a class="dropdown-item" href="#">
-						        <i class="bx bx-cog me-2"></i>
-						        <span class="align-middle">Settings</span>
-						      </a>
-						    </li>
-						    <li>
-						      <a class="dropdown-item" href="#">
-						        <span class="d-flex align-items-center align-middle">
-						          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-						          <span class="flex-grow-1 align-middle">Billing</span>
-						          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-						        </span>
-						      </a>
-						    </li>
-						    <li>
-						      <div class="dropdown-divider"></div>
-						    </li>
-						    <li>
-						      <a class="dropdown-item" href="auth-login-basic.html">
-						        <i class="bx bx-power-off me-2"></i>
-						        <span class="align-middle">Log Out</span>
-						      </a>
-						    </li>
-						  </ul>
-						</li>
-						<!--/ User -->
-						</ul>
-					</div>
-				</div>
-          	</nav>
-			<!-- / Navbar -->
+		<jsp:include page="../inc/navbar.jsp"></jsp:include>
 
 			<!-- Content wrapper -->
 			<div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
 				<div class="card mb-4">
-					<h5 class="card-header">조직관리</h5>
+					<div class="row">
+						<div class="col-md-8">
+							<h4 class="card-header"><strong>조직관리</strong></h4>
+						</div>
+						<div class="col-md-4" style="align-items: center">
+							<button type="button" class="btn btn-secondary m-3" data-bs-toggle="modal" data-bs-target="#modalAddDept" style="float: right">조직생성</button>
+							<!-- Modal -->
+	                        <div class="modal fade" id="modalAddDept" tabindex="-1" aria-hidden="true">
+	                          <div class="modal-dialog modal-dialog-centered" role="document">
+	                            <div class="modal-content">
+	                              <div class="modal-header">
+	                                <h5 class="modal-title" id="modalAddDeptTitle">조직생성</h5>
+	                                <button
+	                                  type="button"
+	                                  class="btn-close"
+	                                  data-bs-dismiss="modal"
+	                                  aria-label="Close"
+	                                ></button>
+	                              </div>
+	                              <form action="${pageContext.request.contextPath}/addDept" method="post">
+		                              <div class="modal-body pb-0">
+		                                <div class="row">
+		                                  <div class="col mb-3">
+		                                    <label for="addDeptNm" class="form-label">조직명</label>
+		                                    <input
+		                                      type="text"
+		                                      id="addDeptNm"
+		                                      name="deptNm"
+		                                      class="form-control"
+		                                      placeholder="조직명을 입력하세요"
+		                                    />
+		                                  </div>
+		                                </div>
+		                              </div>
+		                              <div class="modal-footer">
+		                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+		                                  취소
+		                                </button>
+		                                <button type="submit" class="btn btn-secondary">생성</button>
+		                              </div>
+	                              </form>
+	                            </div>
+	                          </div>
+	                        </div>
+						</div>
+					</div>
 				  	<hr class="m-0" />
 				  	<div class="card-body">
-						<small class="text-light fw-semibold">YeYeBooks</small>
                       	<div class="mt-3">
                         	<div class="row">
                           		<div class="col-md-3 col-12 mb-3 mb-md-0">
@@ -182,35 +140,78 @@
 			                               data-bs-toggle="list"
 			                               href="#list-home"
 			                               >YeYeBooks
-			                               <span class="dropdown" style="float: right">
-			                              <a
-			                                class="p-0"
-			                                type="button"
-			                                id="cardOpt3"
-			                                data-bs-toggle="dropdown"
-			                                aria-haspopup="true"
-			                                aria-expanded="false"
-			                              >
-			                                &nbsp;<i class="bx bx-dots-vertical-rounded"></i>&nbsp;
-			                              </a>
-			                              <span class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-			                                <a class="dropdown-item" href="javascript:void(0);">수정</a>
-			                                <a class="dropdown-item" href="javascript:void(0);">삭제</a>
-			                              </span>
-				                        </span>
-			                               </div
-			                             >
-			                             
+		                                 </div
+		                                > 
 			                            <c:forEach var="d" items="${deptList}">
-				                           	<a
+				                           	<div
 				                               class="list-group-item list-group-item-action"
-				                               id="list-${d.code}-list"
+				                               id="list-${d.deptCd}-list"
 				                               data-bs-toggle="list"
-				                               href="#list-${d.code}"
-				                               >${d.codeNm}</a
-				                             >
+				                               href="#list-${d.deptCd}"
+				                               >${d.deptNm}
+				                               <span class="dropdown" style="float: right">
+					                              <a
+					                                class="p-0"
+					                                type="button"
+					                                id="cardOpt3"
+					                                data-bs-toggle="dropdown"
+					                                aria-haspopup="true"
+					                                aria-expanded="false"
+					                              >
+					                                &nbsp;<i class="bx bx-dots-vertical-rounded"></i>&nbsp;
+					                              </a>
+					                              <span class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
+					                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalModify${d.deptCd}">수정</button>
+					                                <c:if test="${d.cnt == 0}">
+					                                	<a class="dropdown-item" href="${pageContext.request.contextPath}/removeDept?deptCd=${d.deptCd}">삭제</a>
+					                                </c:if>
+					                              </span>
+						                        </span> 
+				                               </div>
 			                            </c:forEach>
                             		</div>
+                            		<c:forEach var="d" items="${deptList}">
+	                         		<!-- Modal -->
+			                        <div class="modal fade" id="modalModify${d.deptCd}" tabindex="-1" aria-hidden="true">
+			                          <div class="modal-dialog modal-dialog-centered" role="document">
+			                            <div class="modal-content">
+			                              <div class="modal-header">
+			                                <h5 class="modal-title" id="modalmodifyDeptTitle">조직변경</h5>
+			                                <button
+			                                  type="button"
+			                                  class="btn-close"
+			                                  data-bs-dismiss="modal"
+			                                  aria-label="Close"
+			                                ></button>
+			                              </div>
+			                              <form action="${pageContext.request.contextPath}/modifyDept" method="post">
+				                              <div class="modal-body pb-0">
+				                                <div class="row">
+				                                  <div class="col mb-3">
+				                                    <label for="modifyDeptNm" class="form-label">조직명</label>
+				                                    <input type="hidden" name="deptCd" value="${d.deptCd}">
+				                                    <input
+				                                      type="text"
+				                                      id="modifyDeptNm"
+				                                      name="deptNm"
+				                                      class="form-control"
+				                                      placeholder="조직명을 입력하세요"
+				                                      value="${d.deptNm}"
+				                                    />
+				                                  </div>
+				                                </div>
+				                              </div>
+				                              <div class="modal-footer">
+				                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+				                                  취소
+				                                </button>
+				                                <button type="submit" class="btn btn-secondary">변경</button>
+				                              </div>
+			                              </form>
+			                            </div>
+			                          </div>
+			                        </div>
+			                        </c:forEach>
                           		</div>
                           		<div class="col-md-9 col-12">
                             		<div class="card overflow-hidden" style="height: 500px; box-shadow: none">
@@ -218,23 +219,34 @@
 					                    		<div class="tab-content p-0">
 						                        	<div class="tab-pane fade show active" id="list-home">
 						                            	<div class="row">
-						                            	  <c:forEach var="u" items="${userList}">
-							                            	  <div class="col-md-6 mb-5 row">
-							                              		<div class="col-md-3">
-							                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-							                              		</div>
-							                              		<div class="col-md-9">
-							                              			<h5 class="mb-0">${u.userNm} <br><small class="text-muted">${u.rankNm}</small></h5>
-							                              		</div>
-								                              </div>
-						                            	  </c:forEach>
+						                            	 <c:forEach var="uc" items="${userCnt}">
+							                              	<c:if test="${uc.deptNm == null}">
+							                              		<h6>YeYeBooks (${uc.cnt})</h6>
+							                              	</c:if>
+							                              	<c:if test="${uc.deptNm != null}">
+							                              		<h6>${uc.deptNm} (${uc.cnt})</h6>
+							                              	</c:if>  
+								                            	  <c:forEach var="u" items="${userList}">
+								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
+								                            	  		<div class="col-md-6 mb-5 row">
+										                              		<div class="col-md-3">
+										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+										                              		</div>
+										                              		<div class="col-md-9">
+										                              			<h5 class="mb-0">${u.userNm} <br><small class="text-muted">${u.rankNm}</small></h5>
+										                              		</div>
+											                            </div>
+								                            	  	</c:if> 
+								                            	  </c:forEach>
+							                              </c:forEach>
 						                              	</div>         
 						                              </div>
-						                              <c:forEach var="d" items="${deptList}">
-						                              	<div class="tab-pane fade" id="list-${d.code}">
+						                              <c:forEach var="uc" items="${userCnt}">
+						                              	<div class="tab-pane fade" id="list-${uc.deptCd}">
+						                              		<h6>${uc.deptNm}(${uc.cnt})</h6>
 						                               		<div class="row">
 							                            	  <c:forEach var="u" items="${userList}">
-							                            	  	<c:if test="${d.code == u.deptCd}">
+							                            	  	<c:if test="${uc.deptCd == u.deptCd}">
 							                            	  		<div class="col-md-6 mb-5 row">
 									                              		<div class="col-md-3">
 									                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />

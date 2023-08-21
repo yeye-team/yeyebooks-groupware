@@ -23,4 +23,23 @@ public class DeptService {
 		return list;
 	}
 	
+	public List<Map<String, Object>> getUserCntByDept(){
+		List<Map<String, Object>> list = deptMapper.selectUserCntByDept();
+		return list;
+	}
+	
+	public int addDept(Map<String, Object> map) {
+		int row = deptMapper.insertDept(map);
+		return row;
+	}
+	
+	public int modifyDept(Map<String, Object> map) {
+		int row = deptMapper.updateDept(map);
+		return row;
+	}
+	
+	public int removeDept(Map<String, Object> map) {
+		int row = deptMapper.deleteDept(map);
+		return row;
+	}
 }

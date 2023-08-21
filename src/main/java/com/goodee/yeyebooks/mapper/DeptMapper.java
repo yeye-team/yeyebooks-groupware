@@ -17,4 +17,6 @@ public interface DeptMapper {
 	int updateDept(Map<String, Object> map);
 	
 	List<Map<String, Object>> selectUserListByDept();
+	
+	List<Map<String, Object>> selectUserCntByDept();
 }
