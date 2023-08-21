@@ -57,7 +57,7 @@
 		)
 	</insert>
 	
-	<!-- 내 문서함 -->
+	<!-- 각 상태 별 문서 -->
 	<select id="selectApprovalByStatus" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
 		SELECT 
 	        a.aprv_no, a.user_id,
@@ -75,14 +75,42 @@
 	    ORDER BY a.aprv_ymd DESC;
 	</select>
 	
-	<!-- 공통코드 상태값 불러오기 -->
-	<select id="selectApprovalCode">
-		select code
-		from common_code
-		where group_code = 'A001'
-		and code_nm = #{approvalStatus}
+	<!-- 내 문서함 -->
+	<select id="selectMyApproval">
+		SELECT 
+			a.aprv_no, a.user_id,
+			a.doc_cat_cd, a.aprv_title,
+			a.aprv_contents, a.aprv_ymd,
+			a.rjct_reason, a.aprv_stat_cd,
+			a.reference, a.c_date,
+			af.orgin_filename, af.save_filename,
+			al.aprv_yn, al.aprv_ymd as aprv_line_ymd
+		FROM approval a
+	    LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
+	    LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+	    WHERE a.user_id = #{loginId}
+	    AND a.aprv_stat_cd IN
+	    	<foreach collection="statusList" item="status" open="(" separator="," close=")">
+	    		#{status}
+	    	</foreach>
+	    ORDER BY a.aprv_ymd DESC;
+	       
 	</select>
 	
+	<!-- 공통코드 상태값 불러오기 -->
+	<select id="selectApprovalCode">
+		SELECT code_nm
+		FROM common_code
+		WHERE group_code = 'A001'
+		AND code = #{approvalStatus} 
+	</select>
+	
+	<!-- 게시물 개수 조회 -->
+	<select id="selectApprovalCount">
+		SELECT COUNT(*)
+		FROM approval 
+		WHER doc_cat_cd = #{doc_cat_cd}
+	</select>
 	
 	<!-- 
 	<select id="selectApprovalByStatus" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">

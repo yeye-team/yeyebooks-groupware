@@ -14,20 +14,23 @@
         <!-- 카테고리 바 -->
         <div>
             <a href="#" onclick="changeStatus('A001','내 문서함')">내 문서함</a>
-            <a href="#" onclick="changeStatus('A002','진행중인 문서')">진행중인 문서</a>
-            <a href="#" onclick="changeStatus('A003','승인대기 문서')">승인대기 문서</a>
-            <a href="#" onclick="changeStatus('A004','결재대기 문서')">결재대기 문서</a>
-            <a href="#" onclick="changeStatus('A005','처리 완료된 문서')">처리 완료된 문서</a>
-            <a href="#" onclick="changeStatus('A006','반려/회수된 문서')">반려/회수된 문서</a>
+            <a href="#" onclick="changeStatus('01','진행중인 문서')">진행중인 문서</a>
+            <a href="#" onclick="changeStatus('A001','승인대기 문서')">승인대기 문서</a>
+            <a href="#" onclick="changeStatus('A001','결재완료')">결재대기 문서</a>
+            <a href="#" onclick="changeStatus('A001','처리 완료된 문서')">처리 완료된 문서</a>
+            <a href="#" onclick="changeStatus('A001','반려')">반려된 문서</a>
+            <a href="#" onclick="changeStatus('A001','회수')">회수된 문서</a>
         </div>
 
         <!-- JavaScript 함수 -->
         <script>
-            function changeStatus(newStatus) {
+            function changeStatus(newStatus, newTitle) {
+            	
                 document.getElementById("statusInput").value = newStatus;
                 document.getElementById("pageTitle").textContent = newTitle;
                 document.getElementById("filterForm").submit();
             }
+            
         </script>
 
         <!-- 검색 폼 -->
@@ -42,15 +45,17 @@
 			<th>User ID</th>
 			<th>Document Category</th>
 			<th>Approval Title</th>
-			
+			<th>Approval Contents</th>
+			<th>Reference</th>
 		</tr>
 		<c:forEach var="m" items="${documents}">
 			<tr>
-			<td>${m.aprv_no}</td>
-			<td>${m.user_id}</td>
-			<td>${m.doc_cat_cd}</td>
-			<td>${m.aprv_title}</td>
-			
+				<td>${m.aprv_no}</td>
+				<td>${m.user_id}</td>
+				<td>${m.doc_cat_cd}</td>
+				<td>${m.aprv_title}</td>
+				<td>${m.approval_contents}</td>
+				<td>${m.reference}</td>
 			</tr>
 		</c:forEach>
 	</table>

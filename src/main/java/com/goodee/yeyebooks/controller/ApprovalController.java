@@ -1,6 +1,7 @@
 package com.goodee.yeyebooks.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,23 +27,19 @@ public class ApprovalController {
 	
 	@Autowired
 	
-	
 	public ApprovalController(ApprovalService approvalService) {
 		this.approvalService = approvalService;
 	}
 	
 	// 내문서함 불러오기
-	@GetMapping("approval/approvalList")
-	public String getMyDocuments(@RequestParam String userId, Model model) {
+	@GetMapping("/approval/approvalList")
+	public String getMyDocuments(Model model) {
 		String approvalStatus = "A001";
-		List<Approval> myDocuments = approvalService.selectApprovalByStatus(userId, userId);
+		String loginId = "admin";
+		
+		Map<String, Object> myDocuments = approvalService.selectApprovalByStatus(loginId, approvalStatus);
 		model.addAttribute("documents" , myDocuments);
-		return "approvalList";
-	}
-	
-	@PostMapping("approval/approvalList")
-	public String getMyDocuments1(@ModelAttribute("userId")String userId, Model model) {
-		return "apprivalList";
+		return "approval/approvalList";
 	}
 	
 	// 문서작성
