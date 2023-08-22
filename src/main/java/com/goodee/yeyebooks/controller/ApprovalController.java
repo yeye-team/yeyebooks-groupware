@@ -7,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
@@ -26,19 +23,27 @@ public class ApprovalController {
 	private final ApprovalService approvalService;
 	
 	@Autowired
-	
 	public ApprovalController(ApprovalService approvalService) {
 		this.approvalService = approvalService;
 	}
 	
+	@GetMapping("/myApproval")
+	public String myApproval(Model model, @RequestParam("loginId") String loginId) {
+		List<Approval> approvalList = approvalService.selectMyApproval(loginId);
+		model.addAttribute("approvalList",approvalList);
+		return "approval/approvalList";
+	}
+	
 	// 내문서함 불러오기
 	@GetMapping("/approval/approvalList")
-	public String getMyDocuments(Model model) {
+	public String getMyDocuments(@RequestParam(name = "statusHidden", required = false) String statusHidden, Model model) {
 		String approvalStatus = "A001";
 		String loginId = "admin";
+		String userId = loginId;
 		
-		Map<String, Object> myDocuments = approvalService.selectApprovalByStatus(loginId, approvalStatus);
-		model.addAttribute("documents" , myDocuments);
+		Map<String, Object> myDocuments = approvalService.selectApprovalByStatus(userId, approvalStatus);
+		model.addAttribute("approvalList" , myDocuments);
+		model.addAttribute("statusHidden" , statusHidden);
 		return "approval/approvalList";
 	}
 	

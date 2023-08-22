@@ -18,7 +18,9 @@ public interface ApprovalMapper {
 	
 	public int insertApprovalLine(ApprovalLine approvalLine);
 	
-	Map<String, Object> selectApprovalByStatus(String loginId, String status);
+	List<Approval> selectApprovalByStatus(String loginId, String status);
+	
+	List<Approval> selectMyApproval(String loginId);
 	
 	String selectApprovalCode(String approvalStatus);
 

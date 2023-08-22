@@ -1,6 +1,5 @@
 package com.goodee.yeyebooks.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goodee.yeyebooks.mapper.ApprovalLineMapper;
 import com.goodee.yeyebooks.mapper.ApprovalMapper;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
@@ -30,13 +28,30 @@ public class ApprovalService {
 	  
 	 */
 	
+	
 	@Autowired 
 	public ApprovalService(ApprovalMapper approvalMapper) {
 		this.approvalMapper = approvalMapper;
 	}
+	
+	public List<Approval> selectMyApproval(String loginId){
+		return approvalMapper.selectMyApproval(loginId);
+	}
+	
 	// 내 문서함 리스트
 	public Map<String, Object> selectApprovalByStatus(String loginId, String approvalStatus){
 		Map<String, Object> resultMap = new HashMap<>();
+		
+		String approvalCode = getApprovalStatusCode(approvalStatus);
+		
+		List<Approval> allApprovalList = approvalMapper.selectApprovalByStatus(loginId, approvalStatus);
+		
+		List<Approval> approvalList = approvalMapper.selectApprovalByStatus(loginId, approvalStatus);
+		
+		resultMap.put("approvalCode", approvalCode);
+		resultMap.put("approvalList", approvalList);
+		resultMap.put("status", approvalStatus);
+		
 		return resultMap;
 	}
 	
