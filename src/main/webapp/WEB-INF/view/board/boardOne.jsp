@@ -8,51 +8,71 @@
   class="light-style layout-menu-fixed"
   dir="ltr"
   data-theme="theme-default"
-  data-assets-path="../assets/"
+  data-assets-path="${pageContext.request.contextPath}/assets/"	
   data-template="vertical-menu-template-free"
 >
 <head>
-	<meta charset="utf-8" />
-	<meta
-	  name="viewport"
-	  content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-	/>
 	<title>YEYEBOOKS</title>
-	<meta name="description" content="" />
-	<!-- Favicon -->
-	<link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_mini.png" />
-	
-	<!-- Fonts -->
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-	  href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-	  rel="stylesheet"
-	/>
-	
-	<!-- Icons. Uncomment required icon fonts -->
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css" />
-	
-	<!-- Core CSS -->
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css" class="template-customizer-core-css" />
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css" />
-	
-	<!-- Vendors CSS -->
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-	
-	<!-- Page CSS -->
-	
-	<!-- Helpers -->
-	<script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
-	
-	<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-	<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-	<script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
-	
+	<jsp:include page="../inc/head.jsp"></jsp:include>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 	<script>
+		$(document).ready(function() {
 		// url파라미터값 삭제
 		/* history.replaceState({}, null, location.pathname);  */
+		
+			// 댓글 수정
+		    $(".modifyCommentBtn").click(function() {
+		        // 해당 댓글 행에서 수정 버튼이 클릭된 댓글 찾기
+		        var commentRow = $(this).closest("tr");
+
+		        // 기존 댓글과 드롭다운 숨기기
+		        commentRow.find(".oriComment").hide();
+		        commentRow.find(".dropDown").hide();
+		        
+		        // 댓글 수정 폼 표시
+	        	commentRow.find(".modifyBox").show();
+		    });
+
+		    // 댓글 수정 취소 버튼 클릭 시
+		    $(".modifyCancel").click(function() {
+		        var commentRow = $(this).closest("tr");
+		        
+		        // 댓글 수정 폼 숨기기
+		        commentRow.find(".modifyBox").hide();
+
+		        // 기존 댓글과 드롭다운 메뉴 표시
+		        commentRow.find(".oriComment").show();
+		        commentRow.find(".dropDown").show();
+		    });
+		    
+		    // 댓글 삭제
+	$(".deleteCommentBtn").click(function() {
+		// 삭제 alert
+		var deleteCk = confirm("댓글을 삭제하시겠습니까?");
+		if (deleteCk) {
+			var deleteRow = $(this).closest("tr");
+			var boardNo = deleteRow.find("[name='boardNo']").val();
+			var userId = deleteRow.find("[name='userId']").val();
+			var cmntNo = deleteRow.find("[name='cmntNo']").val();
+			
+			$.ajax({
+				type: "POST",
+				url: "${pageContext.request.contextPath}/board/deleteComment",
+				data: {
+					boardNo: boardNo,
+					userId: userId,
+					cmntNo: cmntNo
+				},
+				success: function(response) {
+					window.location.href = "${pageContext.request.contextPath}/board/boardOne?boardNo=" + boardNo + "&userId=" + userId;
+				},
+				error: function() {
+					alert("댓글 삭제 실패");
+				}
+			});
+		}
+	});
+		});
 	</script>
 </head>
 <body>
@@ -62,7 +82,7 @@
 	<table border="1">
 		<c:if test="${u.codeNm != null}">
 			<tr>
-				<th>부서</th>
+				<th>직급</th>
 				<td>${u.codeNm}</td>
 			</tr>
 		</c:if>
@@ -106,45 +126,6 @@
 			<td>${b.boardView}</td>
 		</tr>
 	</table>
-	<!-- 공지사항은 댓글이 없음. 제외 -->
-	<c:if test="${b.boardCatCd != '00'}">
-		<form action="${pageContext.request.contextPath}/board/addComment" method="post">
-			<a>댓글</a>
-			<input type="hidden" name="boardNo" value="${b.boardNo}">
-			<input type="hidden" name="loginId" value="${loginId}">
-			<input type="hidden" name="userId" value="${u.userId}">
-			<input type="text" name="comment" placeholder="댓글을 입력하세요" required="required">
-			<button type="submit">등록</button>
-		</form>
-		<table>
-			<tr>
-				<th>작성자</th>
-				<th>내용</th>
-				<th>작성일자</th>
-				<th>&nbsp;</th>
-				<th>&nbsp;</th>
-			</tr>
-			<c:forEach var="c" items="${commentList}">
-				<tr>
-					<td>${c.userNm}</td>
-					<td>${c.cmntContents}</td>
-					<td>${fn:substring(c.cDate,0,11)}</td>
-					<c:if test="${c.userId == loginId}">
-						<td>
-							<a>수정</a>
-						</td>
-						<td>
-							<a>삭제</a>
-						</td>
-					</c:if>
-				</tr>
-			</c:forEach>
-		</table>
-	</c:if>
-	<!-- 목록으로 -->
-	<div>
-		<a href="${pageContext.request.contextPath}/board/boardList?boardCatCd=${b.boardCatCd}">목록으로</a>
-	</div>
 	<c:choose>
 		<c:when test="${loginId == b.userId}">
 			<a href="${pageContext.request.contextPath}/board/modifyBoard">수정</a>
@@ -154,25 +135,73 @@
 			<a href="${pageContext.request.contextPath}/board/removeBoard">삭제</a>
 		</c:when>
 	</c:choose>
+	<br>
+	<br>
+	<!-- 공지사항은 댓글이 없음. 제외 -->
+	<c:if test="${b.boardCatCd != '00'}">
+		<table>
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+			</tr>
+			<c:forEach var="c" items="${commentList}">
+				<tr>
+					<td>${c.userNm}</td>
+					<td>
+						<!-- 기존 댓글 -->
+						<span class="oriComment">${c.cmntContents}</span>
+						
+						<!-- 댓글 수정 입력 폼 -->
+						<div class="modifyBox" style="display: none;">
+							<form action="${pageContext.request.contextPath}/board/modifyComment" method="post">
+								<input type="hidden" name="userId" value="${u.userId}" readonly="readonly">
+								<input type="hidden" name="boardNo" value="${c.boardNo}" readonly="readonly">
+								<input type="hidden" name="cmntNo" value="${c.cmntNo}" readonly="readonly">
+								<textarea name="modifyComment" rows="2" cols="50" required="required" placeholder="댓글을 남겨보세요"></textarea>
+								<button type="submit">등록</button>
+								<button class="modifyCancel">취소</button>
+							</form>
+						</div>
+					</td>
+					<td>${fn:substring(c.cDate,0,11)}</td>
+					<c:if test="${c.userId == loginId}">
+						<td>
+							<!-- 댓글 수정삭제 버튼 -->
+							<div class="dropDown col-lg-3 col-sm-6 col-12">
+								<button type="button" data-bs-toggle="dropdown">
+									<i class="bx bx-dots-vertical-rounded"></i>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-end">
+									<li>
+										<a class="dropdown-item modifyCommentBtn" href="javascript:void(0);">수정</a>
+									</li>
+									<li><a class="dropdown-item deleteCommentBtn" href="javascript:void(0);">삭제</a></li>
+								</ul>
+							</div>
+						</td>
+					</c:if>
+				</tr>
+			</c:forEach>
+		</table>
+		<br>
+		<form action="${pageContext.request.contextPath}/board/addComment" method="post">
+			<a>${u.userNm}</a><br>
+			<input type="hidden" name="boardNo" value="${b.boardNo}">
+			<input type="hidden" name="loginId" value="${loginId}">
+			<input type="hidden" name="userId" value="${u.userId}">
+			<textarea rows="2" cols="50" name="comment" required="required" placeholder="댓글을 남겨보세요"></textarea><br>
+			<button type="submit">등록</button>
+		</form>
+	</c:if>
+	<br>
+	<!-- 목록으로 -->
+	<div>
+		<a href="${pageContext.request.contextPath}/board/boardList?boardCatCd=${b.boardCatCd}">목록으로</a>
+	</div>
 	
-	<!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="${pageContext.request.contextPath}/assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/vendor/libs/popper/popper.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/bootstrap.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/menu.js"></script>
-    <!-- endbuild -->
-
-    <!-- Vendors JS -->
-
-    <!-- Main JS -->
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-
-    <!-- Page JS -->
-
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+	<jsp:include page="../inc/coreJs.jsp"></jsp:include>
 </body>
 </html>

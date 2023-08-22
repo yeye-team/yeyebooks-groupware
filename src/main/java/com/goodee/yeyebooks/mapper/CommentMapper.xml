@@ -4,6 +4,7 @@
 	<!-- 게시물 별 댓글 조회 -->
 	<select id="selectComment" resultType="java.util.Map">
 		SELECT
+			c.cmnt_no cmntNo,
 			c.board_no boardNo,
 			c.user_id userId,
 			u.user_nm userNm,
@@ -15,6 +16,7 @@
 		WHERE
 			board_no = #{boardNo}
 	</select>
+	
 	<!-- 댓글 입력 -->
 	<insert id="addComment" parameterType="com.goodee.yeyebooks.vo.Comment">
 		INSERT INTO comment(
@@ -31,6 +33,7 @@
 			NOW()
 		)
 	</insert>
+	
 	<!-- 댓글 수정 -->
 	<update id="modifyComment">
 		UPDATE 
@@ -40,6 +43,7 @@
 		WHERE 
 			cmnt_no = #{cmntNo}
 	</update>
+	
 	<!-- 댓글 삭제 -->
 	<update id="deleteComment">
 		DELETE FROM comment

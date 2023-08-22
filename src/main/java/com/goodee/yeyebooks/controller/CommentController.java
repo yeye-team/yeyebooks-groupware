@@ -20,8 +20,8 @@ public class CommentController {
 	@Autowired
 	private CommentService commentService;
 	
-	@PostMapping("board/addComment")
 	// 댓글입력
+	@PostMapping("board/addComment")
 	public String addComment(HttpServletRequest request,
 						@RequestParam(name="comment") String comment, int boardNo, String loginId, String userId) {
 		Comment c = new Comment();
@@ -31,6 +31,29 @@ public class CommentController {
 		
 		int row = commentService.addComment(c);
 		log.debug("\u001B[41m"+ "CommentController Post row : " + row + "\u001B[0m");
+		
+		return "redirect:/board/boardOne?boardNo="+boardNo+"&userId="+userId;
+	}
+	
+	// 댓글 수정
+	@PostMapping("board/modifyComment")
+	public String modifyComment(HttpServletRequest request,
+							@RequestParam(name="cmntNo") int cmntNo,
+							@RequestParam(name="modifyComment") String cmntContents, 
+							int boardNo, String userId) {
+		
+		commentService.modifyComment(cmntNo, cmntContents);
+		
+		return "redirect:/board/boardOne?boardNo="+boardNo+"&userId="+userId;
+	}
+	
+	// 댓글 삭제
+	@PostMapping("board/deleteComment")
+	public String deleteComment(HttpServletRequest request,
+								@RequestParam(name="cmntNo") int cmntNo,
+								int boardNo, String userId) {
+		
+		commentService.deleteComment(cmntNo);
 		
 		return "redirect:/board/boardOne?boardNo="+boardNo+"&userId="+userId;
 	}

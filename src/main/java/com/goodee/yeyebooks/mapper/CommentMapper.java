@@ -17,7 +17,7 @@ public interface CommentMapper {
 	int addComment(Comment comment);
 	
 	// 댓글 수정
-	int modifyComment(Comment comment);
+	int modifyComment(int cmntNo, String cmntContents);
 	
 	// 댓글 삭제
 	int deleteComment(int boardNo);

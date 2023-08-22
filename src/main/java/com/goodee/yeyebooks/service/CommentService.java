@@ -1,8 +1,11 @@
 package com.goodee.yeyebooks.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +38,12 @@ public class CommentService {
 	}
 	
 	// 댓글 수정
-	public int modify(Comment comment) {
-		return commentMapper.modifyComment(comment);
+	public int modifyComment(int cmntNo, String cmntContents) {
+		return commentMapper.modifyComment(cmntNo, cmntContents);
+	}
+	
+	// 댓글 삭제
+	public int deleteComment(int cmntNo) {
+		return commentMapper.deleteComment(cmntNo);
 	}
 }
