@@ -44,9 +44,10 @@ public class MypageController {
 		return "mypage";
 	}
 	
-	@PostMapping("/changePw")
+	@GetMapping("/changePw")
 	public String chagePw(Model model,
-						@RequestParam String userId) {
+						HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
 		model.addAttribute("userId", userId);
 		return "changePw";
 	}

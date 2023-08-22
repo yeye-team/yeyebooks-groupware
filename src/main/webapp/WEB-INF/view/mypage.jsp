@@ -172,7 +172,7 @@
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png">
+            <a href="/yeyebooks/"><img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"></a>
           </div>
 
           <div class="menu-inner-shadow"></div>
@@ -180,10 +180,10 @@
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
             <li class="menu-item active">
-              <a class="menu-link">
+              <div class="menu-link">
                 <i class="bx bx-user me-1"></i>
                 <div data-i18n="Analytics">마이페이지</div>
-              </a>
+              </div>
             </li>
             </ul>
 
@@ -259,8 +259,7 @@
                             />
                           </div>
                           <div class="mb-3 col-md-6 changePwBtn">
-                          	<form action="/yeyebooks/changePw" method="post">
-                          		<input type="hidden" name="userId" value="${user.userId }"> 
+                          	<form action="/yeyebooks/changePw" method="get">
                           		<button type="submit" class="btn btn-primary" id="changePw">비밀번호변경</button>
                           	</form>
                           </div>
@@ -445,7 +444,10 @@
       <!-- Overlay -->
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+    	</div>
+    </div>
     <!-- / Layout wrapper -->
+    </div>
 
 
     <!-- Core JS -->
