@@ -34,40 +34,12 @@
 	              </a>
 	            </li>
 
-	            <!--  -->
+	            <!-- 사용자관리 -->
 	            <li class="menu-item">
-					<a href="javascript:void(0);" class="menu-link menu-toggle">
+					<a href="javascript:void(0);" class="menu-link">
 					  <i class="menu-icon tf-icons bx bx-user"></i>
 					  <div data-i18n="Layouts">사용자관리</div>
 					</a>
-
-					<ul class="menu-sub">
-					  <li class="menu-item">
-					    <a href="layouts-without-menu.html" class="menu-link">
-					      <div data-i18n="Without menu">Without menu</div>
-					    </a>
-					  </li>
-					  <li class="menu-item">
-					    <a href="layouts-without-navbar.html" class="menu-link">
-					      <div data-i18n="Without navbar">Without navbar</div>
-					    </a>
-					  </li>
-					  <li class="menu-item">
-					    <a href="layouts-container.html" class="menu-link">
-					      <div data-i18n="Container">Container</div>
-					    </a>
-					  </li>
-					  <li class="menu-item">
-					    <a href="layouts-fluid.html" class="menu-link">
-					      <div data-i18n="Fluid">Fluid</div>
-					    </a>
-					  </li>
-					  <li class="menu-item">
-					    <a href="layouts-blank.html" class="menu-link">
-					      <div data-i18n="Blank">Blank</div>
-					    </a>
-					  </li>
-					</ul>
             	</li>
           	</ul>
         </aside>
@@ -112,6 +84,7 @@
 		                                      name="deptNm"
 		                                      class="form-control"
 		                                      placeholder="조직명을 입력하세요"
+		                                      required="required"
 		                                    />
 		                                  </div>
 		                                </div>
@@ -197,6 +170,7 @@
 				                                      class="form-control"
 				                                      placeholder="조직명을 입력하세요"
 				                                      value="${d.deptNm}"
+				                                      required="required"
 				                                    />
 				                                  </div>
 				                                </div>
@@ -214,12 +188,74 @@
 			                        </c:forEach>
                           		</div>
                           		<div class="col-md-9 col-12">
-                            		<div class="card overflow-hidden" style="height: 500px; box-shadow: none">
+                            		<div class="card overflow-hidden" style="height: 500px; box-shadow: none;">
 						                    <div class="card-body" id="vertical-example">
 					                    		<div class="tab-content p-0">
 						                        	<div class="tab-pane fade show active" id="list-home">
 						                            	<div class="row">
 						                            	 <c:forEach var="uc" items="${userCnt}">
+							                              	<c:if test="${uc.deptNm == null}">
+							                              		<h6>YeYeBooks (${uc.cnt}) <i class='bx bx-user-minus' data-bs-toggle="modal" data-bs-target="#addUserToDept"></i></h6>
+							                              	</c:if>
+							                              	<c:if test="${uc.deptNm != null}">
+							                              		<h6>${uc.deptNm} (${uc.cnt}) <i class='bx bx-user-plus' data-bs-toggle="modal" data-bs-target="#addUserToDept${uc.deptCd}"></i></h6>
+							                              	</c:if>  
+								                            	  <c:forEach var="u" items="${userList}">
+								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
+								                            	  		<div class="col-md-6 mb-5 row">
+										                              		<div class="col-md-3">
+										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+										                              		</div>
+										                              		<div class="col-md-9">
+										                              			<h5 class="mb-0">${u.userNm}</h5>
+										                              			<h6><small class="text-muted">${u.rankNm}</small></h6>
+										                              		</div>
+											                            </div>
+								                            	  	</c:if> 
+								                            	  </c:forEach>
+							                              </c:forEach>
+						                              	</div>         
+						                              </div>
+						                              <c:forEach var="uc" items="${userCnt}">
+						                              	<div class="tab-pane fade" id="list-${uc.deptCd}">
+						                              		<h6>${uc.deptNm}(${uc.cnt}) <i class='bx bx-user-plus' data-bs-toggle="modal" data-bs-target="#addUserToDept${uc.deptCd}"></i></h6>
+						                               		<div class="row">
+							                            	  <c:forEach var="u" items="${userList}">
+							                            	  	<c:if test="${uc.deptCd == u.deptCd}">
+							                            	  		<div class="col-md-6 mb-5 row">
+									                              		<div class="col-md-3">
+									                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+									                              		</div>
+									                              		<div class="col-md-9">
+									                              			<h5 class="mb-0">${u.userNm}</h5>
+										                              		<h6><small class="text-muted">${u.rankNm}</small></h6>
+									                              		</div>
+										                            </div>
+							                            	  	</c:if> 
+							                            	  </c:forEach>
+							                              	</div>
+						                                </div>
+						                              </c:forEach>
+						                            </div>
+                    							</div>
+                  							</div>
+                  							<!-- Modal -->
+					                        <div class="modal fade" id="addUserToDept" tabindex="-1" aria-hidden="true">
+					                          <div class="modal-dialog modal-dialog-centered" role="document">
+					                            <div class="modal-content">
+					                              <div class="modal-header">
+					                              	<h5 class="modal-title">부서에서 사용자 제외</h5>
+					                                <button
+					                                  type="button"
+					                                  class="btn-close"
+					                                  data-bs-dismiss="modal"
+					                                  aria-label="Close"
+					                                ></button>
+					                              </div>
+					                              <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
+						                              <div class="modal-body pb-0 card overflow-hidden" style="height: 500px; box-shadow: none;">
+						                                <div class="row card-body vertical-scroll">
+						                                  <c:forEach var="uc" items="${userCnt}">
 							                              	<c:if test="${uc.deptNm == null}">
 							                              		<h6>YeYeBooks (${uc.cnt})</h6>
 							                              	</c:if>
@@ -233,36 +269,94 @@
 										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
 										                              		</div>
 										                              		<div class="col-md-9">
-										                              			<h5 class="mb-0">${u.userNm} <br><small class="text-muted">${u.rankNm}</small></h5>
+										                              			<div class="row">
+										                              				<div class="col">
+										                              					<h5 class="mb-0">${u.userNm}</h5>
+										                              					<h6><small class="text-muted">${u.rankNm}</small></h6>
+										                              				</div>
+										                              				<div class="col">
+										                              					<input class="form-check-input" type="checkbox" value="${u.userId}" name="userId"/>
+										                              				</div>
+										                              			</div>
 										                              		</div>
 											                            </div>
 								                            	  	</c:if> 
 								                            	  </c:forEach>
 							                              </c:forEach>
-						                              	</div>         
-						                              </div>
-						                              <c:forEach var="uc" items="${userCnt}">
-						                              	<div class="tab-pane fade" id="list-${uc.deptCd}">
-						                              		<h6>${uc.deptNm}(${uc.cnt})</h6>
-						                               		<div class="row">
-							                            	  <c:forEach var="u" items="${userList}">
-							                            	  	<c:if test="${uc.deptCd == u.deptCd}">
-							                            	  		<div class="col-md-6 mb-5 row">
-									                              		<div class="col-md-3">
-									                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-									                              		</div>
-									                              		<div class="col-md-9">
-									                              			<h5 class="mb-0">${u.userNm} <br><small class="text-muted">${u.rankNm}</small></h5>
-									                              		</div>
-										                            </div>
-							                            	  	</c:if> 
-							                            	  </c:forEach>
-							                              	</div>
 						                                </div>
-						                              </c:forEach>
-						                            </div>
-                    							</div>
-                  							</div>
+						                              </div>
+						                              <div class="modal-footer">
+						                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+						                                  취소
+						                                </button>
+						                                <button type="submit" class="btn btn-secondary">추가</button>
+						                              </div>
+					                              </form>
+					                            </div>
+					                          </div>
+					                        </div>
+					                        
+                  							<c:forEach var="d" items="${deptList}">
+			                         		<!-- Modal -->
+					                        <div class="modal fade" id="addUserToDept${d.deptCd}" tabindex="-1" aria-hidden="true">
+					                          <div class="modal-dialog modal-dialog-centered" role="document">
+					                            <div class="modal-content">
+					                              <div class="modal-header">
+					                              	<h5 class="modal-title">${d.deptNm}에 사용자 추가</h5>
+					                                <button
+					                                  type="button"
+					                                  class="btn-close"
+					                                  data-bs-dismiss="modal"
+					                                  aria-label="Close"
+					                                ></button>
+					                              </div>
+					                              <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
+						                              <div class="modal-body pb-0 card overflow-hidden" style="height: 500px; box-shadow: none;">
+						                                <div class="row card-body vertical-scroll">
+						                              	<c:if test="${d.deptNm != null}">
+						                              		<input type="hidden" value="${d.deptCd}" name="deptCd"/>
+						                              	</c:if>
+						                                  <c:forEach var="uc" items="${userCnt}">
+							                              	<c:if test="${uc.deptNm == null}">
+							                              		<h6>YeYeBooks (${uc.cnt})</h6>
+							                              	</c:if>
+							                              	<c:if test="${uc.deptNm != null}">
+							                              		<h6>${uc.deptNm} (${uc.cnt})</h6>
+							                              	</c:if>  
+								                            	  <c:forEach var="u" items="${userList}">
+								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
+								                            	  		<div class="col-md-6 mb-5 row">
+										                              		<div class="col-md-3">
+										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+										                              		</div>
+										                              		<div class="col-md-9">
+										                              			<div class="row">
+										                              				<div class="col">
+										                              					<h5 class="mb-0">${u.userNm}</h5>
+										                              					<h6><small class="text-muted">${u.rankNm}</small></h6>
+										                              				</div>
+										                              				<div class="col">
+										                              					<input class="form-check-input" type="checkbox" value="${u.userId}" name="userId"/>
+										                              				</div>
+										                              			</div>
+										                              		</div>
+											                            </div>
+								                            	  	</c:if> 
+								                            	  </c:forEach>
+							                              </c:forEach>
+						                                </div>
+						                              </div>
+						                              <div class="modal-footer">
+						                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+						                                  취소
+						                                </button>
+						                                <button type="submit" class="btn btn-secondary">추가</button>
+						                              </div>
+					                              </form>
+					                            </div>
+					                          </div>
+					                        </div>
+					                        </c:forEach>
                           				</div>
                         			</div>
                       			</div>
