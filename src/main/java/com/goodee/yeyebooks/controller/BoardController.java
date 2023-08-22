@@ -129,11 +129,6 @@ public class BoardController {
 	model.addAllAttributes(map); 
 	model.addAttribute("commentList", commentList);
 	model.addAttribute("loginId", loginId);
-	/*
-	 * model.addAttribute("board",map.get("board"));
-	 * model.addAttribute("boardFile",map.get("boardFile"));
-	 * model.addAttribute("user",map.get("user"));
-	 */
 	
 	return "/board/boardOne"; 
 	}
