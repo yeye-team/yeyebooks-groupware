@@ -12,11 +12,6 @@
   data-template="vertical-menu-template-free"
 >
   <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    />
 
     <!-- 게시판 변경 시 타이틀 변경 -->
 	<c:choose>
@@ -30,39 +25,9 @@
 			<title>부서 게시판</title>
 		</c:otherwise>
 	</c:choose>
-
-    <meta name="description" content="" />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_mini.png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-
-    <!-- Page CSS -->
-
-    <!-- Helpers -->
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
+	
+    <jsp:include page="../inc/head.jsp"></jsp:include>
+    
     <script>
 	    /* // url파라미터값 삭제
 		history.replaceState({}, null, location.pathname);  */
@@ -86,6 +51,10 @@
     	.addBtn{
     		display: flex;
  		   justify-content: flex-end;
+    	}
+    	
+    	.table{
+    		text-align: center;
     	}
     </style>
   </head>
@@ -135,8 +104,8 @@
 										<i class='bx bx-clipboard'></i>
 										<div data-i18n="Analytics">부서 게시판</div>
 									</a>
-									<div class="card">
-						        		<div class="catScroll text-nowrap">
+									<div class="card overflow-hidden" style="height: 250px;">
+						        		<div class="card-body" id="vertical-example">
 											<c:forEach var="s" items="${selectAllCatCode}">
 												<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
 													<i class='bx bx-clipboard'></i>
@@ -172,26 +141,12 @@
 							</c:otherwise>
 						</c:choose>
 						
-						<!-- 작성버튼 구분 -->
-						<div class="addBtn">
-							<c:choose>
-								<c:when test="${userId == 'admin' && boardCatCd == '00'}">
-									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">공지 작성</button>
-								</c:when>
-								<c:when test="${userId != 'admin' && boardCatCd != '00'}">
-									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">게시물 작성</button>
-								</c:when>
-							</c:choose>
-						</div>
-						<br>
-						
 						<!-- 게시물 리스트 -->
 				        <div class="card">
 				          <div class="table-responsive text-nowrap">
 				            <table class="table">
 				              <thead>
 				                <tr>
-				                 	<th>게시물 번호</th>
 									<th>제목</th>
 									<th>작성자</th>
 									<th>작성날짜</th>
@@ -202,7 +157,6 @@
 								<!-- 게시판 변경 시 내용변경 -->
 								<c:forEach var="n" items="${selectBoard}">
 									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/board/boardOne?boardNo=${n.boardNo}&userId=${n.userId}'">
-										<td>${n.boardNo}</td>
 										<td>${n.boardTitle}</td>
 										<td>
 											<input type="hidden" name="userId" value="${n.userId}" readonly="readonly">
@@ -215,8 +169,21 @@
 							  </tbody>
 							</table>
 						  </div>
-						</div>
+						</div><br>
 	             		<!--/ 게시물 리스트 -->
+	             		
+	             		<!-- 작성버튼 구분 -->
+						<div class="addBtn">
+							<c:choose>
+								<c:when test="${userId == 'admin' && boardCatCd == '00'}">
+									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">공지 작성</button>
+								</c:when>
+								<c:when test="${userId != 'admin' && boardCatCd != '00'}">
+									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">게시물 작성</button>
+								</c:when>
+							</c:choose>
+						</div>
+						
 	             		<!-- 페이징 -->
 		                <div class="card-body">
 							<div class="row">
@@ -287,24 +254,6 @@
   		</div>
 	<!-- / Layout wrapper -->
 	</div>
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="${pageContext.request.contextPath}/assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/vendor/libs/popper/popper.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/bootstrap.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/menu.js"></script>
-    <!-- endbuild -->
-
-    <!-- Vendors JS -->
-
-    <!-- Main JS -->
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-
-    <!-- Page JS -->
-
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <jsp:include page="../inc/coreJs.jsp"></jsp:include>
   </body>
 </html>
