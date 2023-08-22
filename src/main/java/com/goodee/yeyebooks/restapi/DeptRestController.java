@@ -12,11 +12,11 @@ import com.goodee.yeyebooks.service.DeptService;
 
 @CrossOrigin
 @RestController
-public class DeptRest {
+public class DeptRestController {
 	@Autowired
 	DeptService deptService;
 	
-	@GetMapping("/rest/deptNameList")
+	@GetMapping("/rest/deptNmList")
 	public List<Map<String, Object>> getLocalNmList(){
 		return deptService.getDeptNmList();	
 	}
