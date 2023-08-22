@@ -15,7 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
       new PerfectScrollbar(verticalExample, {
         wheelPropagation: false
       });
+       console.log(verticalExample)
     }
+    
+    $('.vertical-scroll').each(function(index, item){
+		if (item) {
+	      new PerfectScrollbar(item, {
+	        wheelPropagation: false
+	      });
+	    }
+      	console.log(item)
+	});
 
     // Horizontal Example
     // --------------------------------------------------------------------
