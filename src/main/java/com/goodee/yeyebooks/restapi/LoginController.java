@@ -1,4 +1,4 @@
-package com.goodee.yeyebooks.controller;
+package com.goodee.yeyebooks.restapi;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +23,9 @@ public class LoginController {
 	@PostMapping("/login")
 	public String login(HttpSession session,
 						HttpServletResponse response,
-						@RequestParam(name="userId") String userId,
-						@RequestParam(name="userPw") String userPw,
-						@RequestParam(name="isRemember") boolean isRemember) {
+						@RequestParam String userId,
+						@RequestParam String userPw,
+						@RequestParam boolean isRemember) {
 		
 		int result = userService.login(userId, userPw);
 		log.debug("\u001B[42m" + "로그인 정보 조회 결과 : " + result + "\u001B[0m");

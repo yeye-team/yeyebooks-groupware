@@ -1,4 +1,4 @@
-package com.goodee.yeyebooks.controller;
+package com.goodee.yeyebooks.restapi;
 
 import javax.servlet.http.HttpServletRequest;
 

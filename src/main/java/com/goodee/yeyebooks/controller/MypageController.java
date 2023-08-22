@@ -43,4 +43,11 @@ public class MypageController {
 		userService.updateUserInfoByUser(userNm, phoneNo, userId);
 		return "mypage";
 	}
+	
+	@PostMapping("/changePw")
+	public String chagePw(Model model,
+						@RequestParam String userId) {
+		model.addAttribute("userId", userId);
+		return "changePw";
+	}
 }

@@ -27,4 +27,8 @@
 		UPDATE USER SET user_nm = #{userNm}, phone_no = #{phoneNo}
 		WHERE user_id = #{userId}
 	</update>
+	<update id="updateUserPw">
+		UPDATE USER SET user_pw = PASSWORD(#{userPw})
+		WHERE user_id = #{userId}
+	</update>
 </mapper>

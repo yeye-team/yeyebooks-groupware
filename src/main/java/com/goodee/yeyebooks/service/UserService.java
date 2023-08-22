@@ -97,4 +97,7 @@ public class UserService {
 		}
 		
 	}
+	public int updateUserPw(String userId, String userPw) {
+		return userMapper.updateUserPw(userId, userPw);
+	}
 }

@@ -121,6 +121,27 @@
   			});
   			
   			$('#saveUserInfo').click(function(){
+  				const userNm = $('input[name=userNm]').val();
+  				const phoneNo = $('input[name=phoneNo]').val();
+  				const phonePattern = /^\d{2,3}-\d{4}-\d{4}$/;
+  				const namePattern = /^(?:[a-zA-Z]|[가-힣]| ){1,30}$/;
+  				
+  				if(!namePattern.test(userNm)){
+  					Swal.fire({
+						icon: 'error',
+						title: '저장실패',
+						text: '올바른 형식의 이름을 입력하세요.'
+					})
+					return;
+  				}
+  				if(!phonePattern.test(phoneNo)){
+  					Swal.fire({
+						icon: 'error',
+						title: '저장실패',
+						text: '올바른 형식의 전화번호를 입력하세요.'
+					})
+					return;
+  				}
   				$.ajax({
   					type: "POST",
   					url: "/yeyebooks/mypage",
@@ -128,8 +149,8 @@
   						photo: photoDataURL != null ? photoDataURL : "",
   						userId: "${user.userId}",
   						userFileNo: ${photoFile != null ? photoFile.userFileNo : 0},
-  						userNm: $('input[name=userNm]').val(),
-  						phoneNo: $('input[name=phoneNo]').val()
+  						userNm: userNm,
+  						phoneNo: phoneNo
   					},
   					success: function(response){
 						Swal.fire({
@@ -187,7 +208,6 @@
                   <div class="card mb-4">
                     <h5 class="card-header">사원정보</h5>
                     <!-- Account -->
-                    <form id="formAccountSettings" method="POST" onsubmit="return false">
                     <div class="card-body">
                       <div class="d-flex align-items-start align-items-sm-center gap-4">
                       	<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
@@ -239,10 +259,13 @@
                             />
                           </div>
                           <div class="mb-3 col-md-6 changePwBtn">
-                            <button type="button" class="btn btn-primary" id="changePw">비밀번호변경</button>
+                          	<form action="/yeyebooks/changePw" method="post">
+                          		<input type="hidden" name="userId" value="${user.userId }"> 
+                          		<button type="submit" class="btn btn-primary" id="changePw">비밀번호변경</button>
+                          	</form>
                           </div>
                           <div class="mb-3 col-md-6">
-                            <label for="userNm" class="form-label">이름</label>
+                            <label for="userNm" class="form-label">이름 (영문/한글 최대30자)</label>
                             <input
                               class="form-control"
                               type="text"
@@ -279,7 +302,7 @@
                             <input type="text" class="form-control" id="rank" name="rank" value="${user.rank }" readonly/>
                           </div>
                           <div class="mb-3 col-md-6">
-                            <label class="form-label" for="phoneNo">전화번호</label>
+                            <label class="form-label" for="phoneNo">전화번호 (010-????-???? 형식)</label>
                             <div class="input-group input-group-merge">
                               <input
                                 type="text"
@@ -407,7 +430,6 @@
                         </div>
                       
                     </div>
-                    </form>
                     <!-- /Account -->
                     
                   </div>

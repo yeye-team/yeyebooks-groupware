@@ -9,4 +9,5 @@ public interface UserMapper {
 	int selectLoginInfo(String userId, String userPw);
 	User selectUserInfo(String userId);
 	int updateUserInfoByUser(User user);
+	int updateUserPw(String userId, String userPw);
 }
