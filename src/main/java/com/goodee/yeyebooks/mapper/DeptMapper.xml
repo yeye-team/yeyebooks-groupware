@@ -8,7 +8,7 @@
 		(SELECT code, code_nm
 				FROM common_code 
 				WHERE group_code = 'D001') c2 ON u.dept_cd = c2.code
-		GROUP BY u.dept_cd
+		GROUP BY c2.code
 		ORDER BY deptCd ASC
 	</select>
 	
@@ -21,17 +21,17 @@
 	
 	<delete id="deleteDept" parameterType="java.util.Map">
 		DELETE FROM common_code
-		WHERE code = #{deptCd}
+		WHERE code = #{deptCd} AND group_code = 'D001'
 	</delete>
 	
 	<update id="updateDept" parameterType="java.util.Map">
 		UPDATE common_code
 		SET code_nm = #{deptNm}
-		WHERE code = #{deptCd}
+		WHERE code = #{deptCd} AND group_code = 'D001'
 	</update>
 	
 	<select id="selectUserListByDept" resultType="java.util.Map">
-		SELECT u.user_nm userNm, u.rank_cd rankCd, u.dept_cd deptCd, c1.code_nm rankNm, c2.code_nm deptNm 
+		SELECT u.user_id userId, u.user_nm userNm, u.rank_cd rankCd, u.dept_cd deptCd, c1.code_nm rankNm, c2.code_nm deptNm 
 		FROM user u 
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
 		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
@@ -48,7 +48,20 @@
 		(SELECT code, code_nm
 				FROM common_code 
 				WHERE group_code = 'D001') c2 ON u.dept_cd = c2.code
-		GROUP BY u.dept_cd
+		GROUP BY c2.code
 		ORDER BY deptCd ASC
 	</select>
+	
+	<update id="updateUserDept" parameterType="java.util.Map">
+		UPDATE user
+		SET dept_cd = #{deptCd}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<select id="selectDeptNmList" resultType="java.util.Map">
+		SELECT code_nm deptNm
+		FROM common_code
+		WHERE group_code = 'D001'
+	</select>
+	
 </mapper>

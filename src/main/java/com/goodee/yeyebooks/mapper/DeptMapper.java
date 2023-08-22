@@ -19,4 +19,8 @@ public interface DeptMapper {
 	List<Map<String, Object>> selectUserListByDept();
 	
 	List<Map<String, Object>> selectUserCntByDept();
+	
+	int updateUserDept(Map<String, Object> map);
+	
+	List<Map<String, Object>> selectDeptNmList();
 }
