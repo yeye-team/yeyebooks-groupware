@@ -16,7 +16,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>마이페이지</title>
+    <title>Home</title>
 
     <meta name="description" content="" />
 
@@ -53,6 +53,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  	<style>
+  		.card-header a{
+  			color: #666;
+			font-weight: bold;
+			transition: all 0.2s linear;
+  		}
+		.card-header a:hover{
+			color: black;
+		}
+  		.card-body .btn+.btn{
+  			margin-left: 0.5rem;
+  		}
+  	</style>
   </head>
 
   <body>
@@ -71,18 +84,43 @@
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
+				<div class="row">
+					<div class="col-lg">
+	                  <div class="card mb-4">
+	                    <h5 class="card-header">
+	                    	<a href="#">
+	                    		대기중인 결재건
+	                    		<span class="badge bg-warning rounded-pill">4</span>
+	                    	</a>
+	                    </h5>
+	                    <div class="card-body">
+                           <a href="#" class="btn btn-primary">
+                             승인대기 결재건
+                             <span class="badge badge-center rounded-pill bg-label-warning">4</span>
+                           </a>
+                           <a href="#" class="btn btn-primary">
+                             결재대기 결재건
+                             <span class="badge badge-center rounded-pill bg-label-warning">4</span>
+                           </a>
+	                    </div>
+	                  </div>
+	                </div>
+	                <div class="col-lg">
+	                  <div class="card mb-4">
+	                    <h5 class="card-header">Button with Badges</h5>
+	                    <div class="card-body">
+	                    </div>
+	                  </div>
+	                </div>
+				</div>
+              </div>
+      		</div>
 
-             
-          <!-- Content wrapper -->
-
-        <!-- / Layout page -->
-      </div>
-
-      <!-- Overlay -->
-      <div class="layout-overlay layout-menu-toggle"></div>
-    </div>
+		    <!-- Overlay -->
+		    <div class="layout-overlay layout-menu-toggle"></div>
     	</div>
-    </div>
+   	</div>
+   </div>
     <!-- / Layout wrapper -->
     </div>
 
