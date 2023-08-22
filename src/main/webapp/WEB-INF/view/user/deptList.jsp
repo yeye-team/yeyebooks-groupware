@@ -12,6 +12,72 @@
 <head>
 	<title>조직도</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<style>
+		.swal2-container{
+			z-index: 1100;
+		}
+	</style>
+	<script>
+		$(document).ready(function(){
+			$('#addDeptBtn').on('click',function(){
+				$.ajax({
+					async : false, 
+					url : 'rest/deptNmList',
+					type : 'get',
+					success : function(model) {
+						var d = 0;
+						$(model).each(function(index, item){
+							if(item.deptNm == $('#addDeptNm').val()){
+								d = 1;
+								return false;
+							}
+						});
+						if(d == 1) {
+							Swal.fire({
+			                    icon: 'warning',
+			                    title: '중복된 조직명 입니다.'
+			                });
+							
+						} else if(d == 0){
+							$('#addDeptForm').submit();	
+						}
+					}
+				});
+			});
+			
+			var mdBtn = $('.modifyDeptBtn');
+			mdBtn.on('click',function(){
+				var indexNo = mdBtn.index(this);
+				var mdForm = $('.modifyDeptForm').get(indexNo);
+				var mdNm = $('.modifyDeptNm').get(indexNo);
+				$.ajax({
+					async : false, 
+					url : 'rest/deptNmList',
+					type : 'get',
+					success : function(model) {
+						var d = 0;
+						$(model).each(function(index, item){
+							if(item.deptNm == $(mdNm).val()){
+								d = 1;
+								return false;
+							}
+						});
+						if(d == 1) {
+							Swal.fire({
+			                    icon: 'warning',
+			                    title: '중복된 조직명 입니다.'
+			                });
+							
+						} else if(d == 0){
+							$(mdForm).submit()	
+						}
+					}
+				});
+			});
+		});
+	</script>
 </head>
 <body>
 	<!-- Layout wrapper -->
@@ -73,7 +139,7 @@
 	                                  aria-label="Close"
 	                                ></button>
 	                              </div>
-	                              <form action="${pageContext.request.contextPath}/addDept" method="post">
+	                              <form action="${pageContext.request.contextPath}/addDept" method="post" id="addDeptForm">
 		                              <div class="modal-body pb-0">
 		                                <div class="row">
 		                                  <div class="col mb-3">
@@ -93,7 +159,7 @@
 		                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
 		                                  취소
 		                                </button>
-		                                <button type="submit" class="btn btn-secondary">생성</button>
+		                                <button type="button" class="btn btn-secondary" id="addDeptBtn">생성</button>
 		                              </div>
 	                              </form>
 	                            </div>
@@ -157,7 +223,7 @@
 			                                  aria-label="Close"
 			                                ></button>
 			                              </div>
-			                              <form action="${pageContext.request.contextPath}/modifyDept" method="post">
+			                              <form action="${pageContext.request.contextPath}/modifyDept" method="post" class="modifyDeptForm">
 				                              <div class="modal-body pb-0">
 				                                <div class="row">
 				                                  <div class="col mb-3">
@@ -165,9 +231,8 @@
 				                                    <input type="hidden" name="deptCd" value="${d.deptCd}">
 				                                    <input
 				                                      type="text"
-				                                      id="modifyDeptNm"
 				                                      name="deptNm"
-				                                      class="form-control"
+				                                      class="form-control modifyDeptNm"
 				                                      placeholder="조직명을 입력하세요"
 				                                      value="${d.deptNm}"
 				                                      required="required"
@@ -179,7 +244,7 @@
 				                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
 				                                  취소
 				                                </button>
-				                                <button type="submit" class="btn btn-secondary">변경</button>
+				                                <button type="button" class="btn btn-secondary modifyDeptBtn">변경</button>
 				                              </div>
 			                              </form>
 			                            </div>

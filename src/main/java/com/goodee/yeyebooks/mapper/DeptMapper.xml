@@ -59,7 +59,7 @@
 	</update>
 	
 	<select id="selectDeptNmList" resultType="java.util.Map">
-		SELECT code_nm deptNm
+		SELECT code deptCd, code_nm deptNm
 		FROM common_code
 		WHERE group_code = 'D001'
 	</select>
