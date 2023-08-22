@@ -31,7 +31,7 @@ public class DeptController {
 		model.addAttribute("userList",userList);
 		model.addAttribute("userCnt",userCnt);
 		
-		return "emp/deptList";
+		return "user/deptList";
 	}
 	
 	@PostMapping("/addDept")
@@ -58,6 +58,18 @@ public class DeptController {
 		Map<String, Object> map = new HashMap<>();
 		map.put("deptCd", deptCd);
 		deptService.removeDept(map);
+		
+		return "redirect:/dept";
+	}
+	
+	@PostMapping("/modifyUserDept")
+	public String modifyUserDept(@RequestParam(name = "userId", required = false) String userId, String deptCd) {
+		if(userId != null) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("userId", userId);
+			map.put("deptCd", deptCd);
+			deptService.modifyUserDept(map);
+		}
 		
 		return "redirect:/dept";
 	}
