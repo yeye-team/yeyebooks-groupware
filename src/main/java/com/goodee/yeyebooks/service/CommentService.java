@@ -27,7 +27,7 @@ public class CommentService {
 	public List<Map<String, Object>> selectComment(int boardNo){
 		
 		List<Map<String, Object>> commentList = commentMapper.selectComment(boardNo);
-		log.debug("\u001B[41m"  + "commentList : "+ commentList + "\u001B[0m");
+		//log.debug("\u001B[41m"  + "commentList : "+ commentList + "\u001B[0m");
 		
 		return commentList;
 	}

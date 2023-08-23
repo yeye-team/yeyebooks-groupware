@@ -23,16 +23,16 @@ public class CommentController {
 	// 댓글입력
 	@PostMapping("board/addComment")
 	public String addComment(HttpServletRequest request,
-						@RequestParam(name="comment") String comment, int boardNo, String loginId, String userId) {
+						@RequestParam(name="comment") String comment, int boardNo, String userId) {
 		Comment c = new Comment();
 		c.setBoardNo(boardNo);
-		c.setUserId(loginId);
+		c.setUserId(userId);
 		c.setCmntContents(comment);
 		
 		int row = commentService.addComment(c);
-		log.debug("\u001B[41m"+ "CommentController Post row : " + row + "\u001B[0m");
+		//log.debug("\u001B[41m"+ "CommentController Post row : " + row + "\u001B[0m");
 		
-		return "redirect:/board/boardOne?boardNo="+boardNo+"&userId="+userId;
+		return "redirect:/board/boardOne?boardNo="+boardNo;
 	}
 	
 	// 댓글 수정
@@ -40,21 +40,21 @@ public class CommentController {
 	public String modifyComment(HttpServletRequest request,
 							@RequestParam(name="cmntNo") int cmntNo,
 							@RequestParam(name="modifyComment") String cmntContents, 
-							int boardNo, String userId) {
+							int boardNo) {
 		
 		commentService.modifyComment(cmntNo, cmntContents);
 		
-		return "redirect:/board/boardOne?boardNo="+boardNo+"&userId="+userId;
+		return "redirect:/board/boardOne?boardNo="+boardNo;
 	}
 	
 	// 댓글 삭제
 	@PostMapping("board/deleteComment")
 	public String deleteComment(HttpServletRequest request,
 								@RequestParam(name="cmntNo") int cmntNo,
-								int boardNo, String userId) {
+								int boardNo) {
 		
 		commentService.deleteComment(cmntNo);
 		
-		return "redirect:/board/boardOne?boardNo="+boardNo+"&userId="+userId;
+		return "redirect:/board/boardOne?boardNo="+boardNo;
 	}
 }
