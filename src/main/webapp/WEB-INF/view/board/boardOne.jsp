@@ -50,29 +50,32 @@
 		    });
 		    
 		    // 댓글 수정 비동기처리
-			$(".modifyBox form").submit(function(e) {
+			$(".modifyCmtBtn").click(function(e) {
 				// 기존 redirect 막기
 				e.preventDefault();
 			
-				var form = $(this);
-				var formData = form.serialize(); // serialize 값 인코딩
+				var modifyRow = $(this).closest(".commentRow");
+				var boardNo = modifyRow.find("[name='boardNo']").val();
+				var userId = modifyRow.find("[name='userId']").val();
+				var cmntNo = modifyRow.find("[name='cmntNo']").val();
+				var modifyComment = modifyRow.find("[name='modifyComment']").val();
 			
 				$.ajax({
 					type: "POST",
 					url: "${pageContext.request.contextPath}/board/modifyComment",
-					data: formData,
+					data: {
+						boardNo: boardNo,
+						userId: userId,
+						cmntNo: cmntNo,
+						modifyComment: modifyComment
+					},
 					success: function(response) {
 						// 수정된값
-						var modifiedComment = form.find("textarea").val();
-						var cmntNo = form.attr("id").split("-")[1]; // modifyForm-${cmntNo}
 						// 기존값 > 수정값 변경, 수정폼 숨기기, 드롭다운 표시
-						var commentRow = $("#modifyForm-" + cmntNo);
-						
-						commentRow.find(".oriComment").text(modifiedComment);
-						commentRow.find(".modifyBox").hide();
-						commentRow.find(".oriComment").show();
-						commentRow.find(".comDropdown").show();
-						alert("댓글 수정 성공");
+						modifyRow.find(".oriComment").text(modifyComment);
+						modifyRow.find(".modifyBox").hide();
+						modifyRow.find(".oriComment").show();
+						modifyRow.find(".comDropdown").show();
 					},
 					error: function() {
 					    alert("댓글 수정 실패");
@@ -110,17 +113,28 @@
 			});
 		    
 		    // 댓글 등록 비동기처리
-		    $(".insertComBtn").click(function(){
+		    $(".insertComBtn").click(function(e){
+		    	// 기존 redirect 막기
+				e.preventDefault();
 		    	
-		    	var form = $("#addCommentForm");
-		        var formData = form.serialize();
+		        var addForm = $(this).closest("#addComForm");
+				var boardNo = addForm.find("[name='boardNo']").val();
+				var loginId = addForm.find("[name='loginId']").val();
+				var userId = addForm.find("[name='userId']").val();
+				var addComment = addForm.find("[name='comment']").val();
 		        
 		        $.ajax({
 		        	type: "POST",
-		        	url: form.atter("action"),
-		        	data: formData,
+		        	url: "${pageContext.request.contextPath}/board/addComment",
+		        	data: {
+						boardNo: boardNo,
+						loginId: loginId,
+						userId: userId,
+						comment: addComment
+					},
 		        	success: function(response){
-		        		form.find("textarea").val("");
+		        		addForm.find("textarea").val("");
+		        		location.reload();
 		        	},
 		        	error: function(){
 		        		alert("등록실패");
@@ -353,7 +367,7 @@
 													<i style="font-size: 28px;" class="bx bx-dots-vertical-rounded"></i>
 												</button>
 												<div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-													<a class="dropdown-item modifyBoardBtn" href="javascript:void(0);">수정</a>
+													<a class="dropdown-item modifyBoardBtn" href="${pageContext.request.contextPath}/board/modifyBoard">수정</a>
 													<a class="dropdown-item deleteBoardBtn" href="javascript:void(0);">삭제</a>
 												</div>
 											</div>
@@ -427,7 +441,7 @@
 								                        </div>
 								                        <div style="margin-top: 5px; margin-bottom: 5px; float: right;">
 															<button type="button" class="modifyCancel btn btn-outline-secondary">취소</button>
-															<button type="submit" class="btn btn-secondary">수정</button>
+															<button type="button" class="modifyCmtBtn btn btn-secondary">수정</button>
 								                        </div>
 													</div>
 												</form>
@@ -476,7 +490,7 @@
 					                        <textarea class="form-control" aria-label="With textarea" name="comment" placeholder="댓글을 남겨보세요" required="required"></textarea>
 					                        <br>
 				                        </div>
-				                        <button type="submit" class="insertComBtn btn btn-secondary m-3" style="float: right;">등록</button>
+				                        <button type="button" class="insertComBtn btn btn-secondary m-3" style="float: right;">등록</button>
 			                        </form>
 								</div>
 							</c:if>
