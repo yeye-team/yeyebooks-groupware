@@ -30,5 +30,9 @@ public interface ApprovalMapper {
 	
 	public int updateApprovalWithDrawn(Approval approval);
 	
+	//결재대기건수
+	int selectApprovalWaitingCnt(String userId);
 	
+	//승인대기건수
+	int selectApproveWaitingCnt(String userId);
 }

@@ -18,40 +18,7 @@
 
     <title>마이페이지</title>
 
-    <meta name="description" content="" />
-
-   	<!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_mini.png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-
-    <!-- Page CSS -->
-
-    <!-- Helpers -->
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   	<jsp:include page="./inc/head.jsp"></jsp:include>
   	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   	<style>
   		.app-brand img{
@@ -65,6 +32,7 @@
   			object-fit: cover;
   		}
   		#target{
+  			width: 100%;
   			border-radius: 4px;
   			border: 1px solid lightgray;
   			margin-bottom: 10px;
@@ -97,11 +65,13 @@
   					success: function(jsonData){
 						// 사인 등록 성공
 						$('#modalCenter').modal('hide');
+						$("#target").attr('src', jsonData);
 						Swal.fire({
 			                icon: 'success',
 			                title: '사인등록 성공',
+			            }).then(function(){
+			            	location.reload();
 			            })
-  						$("#target").attr('src', jsonData);
   					}
   				});
   			});
@@ -156,6 +126,8 @@
 						Swal.fire({
 							icon: 'success',
 							title: '수정 성공'
+						}).then(function(){
+							location.reload();
 						})
   					}
   				})
@@ -287,12 +259,16 @@
                           </div>
                           <div class="mb-3 col-md-6">
                             <label for="dept" class="form-label">부서</label>
+                            <c:set var="userDept" value="-"></c:set>
+                            <c:if test="${user.dept != null}">
+                            	<c:set var="userDept" value="${user.dept }"></c:set>
+                            </c:if>
                             <input
                               type="text"
                               class="form-control"
                               id="dept"
                               name="dept"
-                              value="${user.dept }"
+                              value="${user.dept}"
                               readonly
                             />
                           </div>

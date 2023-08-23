@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.service.UserService;
 import com.goodee.yeyebooks.vo.User;
 import com.goodee.yeyebooks.vo.UserFile;
@@ -22,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class HomeController {
 	@Autowired
 	UserService userService;
+	@Autowired
+	ApprovalService approvalService;
 	
 	@GetMapping("/")
 	public String home(HttpSession session,
@@ -50,6 +53,10 @@ public class HomeController {
 		String loginId = (String)session.getAttribute("userId");
 		log.debug("\u001B[42m" + "현재 접속한 아이디 : " + loginId + "\u001B[0m");
 		
+		if(loginId.equals("admin")) {
+			return "adminHome";
+		}
+		
 		Map<String, Object> userInfo = userService.mypage(loginId);
 		User user = (User)userInfo.get("user");
 		UserFile photoFile = (UserFile)userInfo.get("photoFile");
@@ -63,9 +70,11 @@ public class HomeController {
 		if(userInfo.get("signFile") == null) {
 			return "redirect:/mypage";
 		}
-		if(loginId.equals("admin")) {
-			return "adminHome";
-		}
+		
+		Map<String, Object> approvalWaitingCnt = approvalService.getApprovalWaitingCnt(loginId);
+		model.addAttribute("approvalCnt", approvalWaitingCnt.get("approvalCnt"));
+		model.addAttribute("approveCnt", approvalWaitingCnt.get("approveCnt"));
+		
 		return "userHome";
 	}
 }

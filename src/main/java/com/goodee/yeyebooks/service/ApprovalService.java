@@ -76,5 +76,11 @@ public class ApprovalService {
 		approvalLine.setAprvNo(approval.getAprvNo());
 		approvalMapper.insertApprovalLine(approvalLine);
 	}
-
+	
+	public Map<String, Object> getApprovalWaitingCnt(String userId){
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("approvalCnt", approvalMapper.selectApprovalWaitingCnt(userId));
+		result.put("approveCnt", approvalMapper.selectApproveWaitingCnt(userId));
+		return result;
+	}
 }

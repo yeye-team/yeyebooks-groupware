@@ -183,5 +183,23 @@
 		WHERE aprv_no = #{aprv_no} 
 		AND user_id = #{loginId};
 	</update>
-	
+	<select id="selectApprovalWaitingCnt" resultType="int">
+		SELECT COUNT(*)
+		FROM approval INNER JOIN approval_line
+		ON approval.aprv_no = approval_line.aprv_no
+		WHERE approval_line.user_id = #{userId}
+		AND approval_line.aprv_stat_cd = (SELECT CODE 
+	                              FROM common_code 
+	                              WHERE group_code = 'A001' 
+	                              AND code_nm = '진행중')
+	</select>
+	<select id="selectApproveWaitingCnt" resultType="int">
+		SELECT COUNT(*)
+		FROM approval
+		WHERE user_id = #{userId}
+		AND approval.aprv_stat_cd = (SELECT CODE 
+		                              FROM common_code 
+		                              WHERE group_code = 'A001' 
+		                              AND code_nm = '진행중')
+	</select>
 </mapper>

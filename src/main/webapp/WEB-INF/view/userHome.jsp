@@ -90,17 +90,17 @@
 	                    <h5 class="card-header">
 	                    	<a href="#">
 	                    		대기중인 결재건
-	                    		<span class="badge bg-warning rounded-pill">4</span>
+	                    		<span class="badge bg-warning rounded-pill">${approvalCnt + approveCnt }</span>
 	                    	</a>
 	                    </h5>
 	                    <div class="card-body">
                            <a href="#" class="btn btn-primary">
                              승인대기 결재건
-                             <span class="badge badge-center rounded-pill bg-label-warning">4</span>
+                             <span class="badge badge-center rounded-pill bg-label-warning">${approveCnt }</span>
                            </a>
                            <a href="#" class="btn btn-primary">
                              결재대기 결재건
-                             <span class="badge badge-center rounded-pill bg-label-warning">4</span>
+                             <span class="badge badge-center rounded-pill bg-label-warning">${approvalCnt }</span>
                            </a>
 	                    </div>
 	                  </div>
