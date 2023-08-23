@@ -113,7 +113,7 @@
 										<div data-i18n="Analytics">전체 게시판</div>
 									</button>
 								</li>
-								<!-- 관리자 사용자 메뉴 구분 -->
+								<!-- 사용자 관리자 메뉴 구분 -->
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item">
@@ -158,7 +158,7 @@
 										<div data-i18n="Analytics">전체 게시판</div>
 									</button>
 								</li>
-								<!-- 관리자 사용자 메뉴 구분 -->
+								<!-- 사용자 관리자 메뉴 구분 -->
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item">
@@ -283,12 +283,9 @@
 				              <tbody class="table-border-bottom-0">
 								<!-- 게시판 변경 시 내용변경 -->
 								<c:forEach var="n" items="${selectBoard}">
-									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/board/boardOne?boardNo=${n.boardNo}&userId=${n.userId}'">
+									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/board/boardOne?boardNo=${n.boardNo}'">
 										<td>${n.boardTitle}</td>
-										<td>
-											<input type="hidden" name="userId" value="${n.userId}" readonly="readonly">
-											${n.userNm}
-										</td>
+										<td>${n.userNm}</td>
 										<td>${fn:substring(n.cDate,0,11)}</td>
 										<td>${n.boardView}</td>
 									</tr>

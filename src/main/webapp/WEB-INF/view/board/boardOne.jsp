@@ -56,7 +56,6 @@
 			
 				var modifyRow = $(this).closest(".commentRow");
 				var boardNo = modifyRow.find("[name='boardNo']").val();
-				var userId = modifyRow.find("[name='userId']").val();
 				var cmntNo = modifyRow.find("[name='cmntNo']").val();
 				var modifyComment = modifyRow.find("[name='modifyComment']").val();
 			
@@ -65,7 +64,6 @@
 					url: "${pageContext.request.contextPath}/board/modifyComment",
 					data: {
 						boardNo: boardNo,
-						userId: userId,
 						cmntNo: cmntNo,
 						modifyComment: modifyComment
 					},
@@ -90,7 +88,6 @@
 				if (deleteCk) {
 					var deleteRow = $(this).closest(".commentRow");
 					var boardNo = deleteRow.find("[name='boardNo']").val();
-					var userId = deleteRow.find("[name='userId']").val();
 					var cmntNo = deleteRow.find("[name='cmntNo']").val();
 					
 					$.ajax({
@@ -98,7 +95,6 @@
 						url: "${pageContext.request.contextPath}/board/deleteComment",
 						data: {
 							boardNo: boardNo,
-							userId: userId,
 							cmntNo: cmntNo
 						},
 						success: function(response) {
@@ -119,7 +115,6 @@
 		    	
 		        var addForm = $(this).closest("#addComForm");
 				var boardNo = addForm.find("[name='boardNo']").val();
-				var loginId = addForm.find("[name='loginId']").val();
 				var userId = addForm.find("[name='userId']").val();
 				var addComment = addForm.find("[name='comment']").val();
 		        
@@ -128,7 +123,6 @@
 		        	url: "${pageContext.request.contextPath}/board/addComment",
 		        	data: {
 						boardNo: boardNo,
-						loginId: loginId,
 						userId: userId,
 						comment: addComment
 					},
@@ -166,8 +160,10 @@
 			<!-- Menu -->
 			<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 				<div class="app-brand demo">
-					<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
-					style="width:100%">
+					<a href="${pageContext.request.contextPath}">
+						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
+						style="width:100%">
+					</a>
 				</div>
 		
 				<div class="menu-inner-shadow"></div>
@@ -177,7 +173,7 @@
 					<ul class="menu-inner py-1">
 						<!-- 각 게시판을 클릭한 각각의 경우별로 active 부여 -->
 						<c:choose>
-							<c:when test="${boardCatCd=='00'}">
+							<c:when test="${board.boardCatCd=='00'}">
 								<!-- Dashboard -->
 								<li class="menu-item active">
 									<button type="submit" name="boardCatCd" value="00" class="menu-link">
@@ -195,9 +191,9 @@
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item">
-											<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+											<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
 												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
+												<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
 											</button>
 										</li>
 									</c:when>
@@ -222,7 +218,7 @@
 								</c:choose>
 							</c:when>
 							
-							<c:when test="${boardCatCd=='99'}">
+							<c:when test="${board.boardCatCd=='99'}">
 								 <!-- Dashboard -->
 								<li class="menu-item">
 									<button type="submit" name="boardCatCd" value="00" class="menu-link">
@@ -240,9 +236,9 @@
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item">
-											<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+											<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
 												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
+												<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
 											</button>
 										</li>
 									</c:when>
@@ -285,9 +281,9 @@
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item active">
-											<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+											<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
 												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
+												<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
 											</button>
 										</li>
 									</c:when>
@@ -322,7 +318,6 @@
 	        <!-- Layout container -->
 	        <c:set value="${board}" var="b"></c:set>
 			<c:set value="${boardFile}" var="f"></c:set>
-			<c:set value="${user}" var="u"></c:set>
 	        <div class="layout-page">
 	        	<jsp:include page="../inc/navbar.jsp"></jsp:include>
 				<!-- Content wrapper -->
@@ -334,18 +329,29 @@
 		            			<div class="col-md-11">
 					            	<!-- 게시물 상세 헤더 -->
 					            	<div class="card-header">
+						            	<c:choose>
+						            		<c:when test="${b.boardCatCd=='00'}">
+												<h5 class="fw-bold py-0 mb-2">공지 게시판</h5>
+						            		</c:when>
+						            		<c:when test="${b.boardCatCd=='99'}">
+												<h5 class="fw-bold py-0 mb-2">전체 게시판</h5>
+						            		</c:when>
+						            		<c:otherwise>
+												<h5 class="fw-bold py-0 mb-2">${b.userDept} 게시판</h5>
+						            		</c:otherwise>
+						            	</c:choose>
 										<h2 class="fw-bold py-0 mb-2">${b.boardTitle}</h2>
 										<h6 class="fw-bold py-0 mb-1">
 											<c:choose>
-												<c:when test="${u.userNm == null}">
+												<c:when test="${b.userRank == null}">
 													<td>관리자</td>
 												</c:when>
 												<c:otherwise>
-													<td>${u.userNm} ${u.codeNm}</td>
+													<td>${b.userNm} ${b.userRank}</td>
 												</c:otherwise>
 											</c:choose>
 										</h6>
-										<h6 class="fw-bold py-0 mb-2">${fn:substring(b.CDate,0,16)}&nbsp;&nbsp;&nbsp;조회 ${b.boardView}</h6>
+										<h6 class="fw-bold py-0 mb-2">${fn:substring(b.cDate,0,16)}&nbsp;&nbsp;&nbsp;조회 ${b.boardView}</h6>
 			            			</div>
 				            	</div>
 				            	<div class="col-md-1" 
@@ -353,7 +359,7 @@
        										justify-content: center;
        										align-items: center; ">
 					            	<c:choose>
-										<c:when test="${loginId == b.userId}">
+										<c:when test="${userId == b.userId}">
 											<!-- 게시글 수정삭제 버튼 -->
 											<div class="dropdown">
 												<button
@@ -374,7 +380,7 @@
 											<%-- <a href="${pageContext.request.contextPath}/board/modifyBoard">수정</a>
 											<a href="${pageContext.request.contextPath}/board/removeBoard">삭제</a> --%>
 										</c:when>
-										<c:when test="${loginId == 'admin'}">
+										<c:when test="${userId == 'admin'}">
 											<div class="dropdown">
 												<button
 													class="btn p-0"
@@ -434,7 +440,6 @@
 												<form id="modifyForm-${c.cmntNo}"action="${pageContext.request.contextPath}/board/modifyComment" method="post">
 													<div class="modifyBox" style="display: none;">
 														<div class="input-group">
-															<input type="hidden" name="userId" value="${u.userId}" readonly="readonly">
 															<input type="hidden" name="boardNo" value="${c.boardNo}" readonly="readonly">
 															<input type="hidden" name="cmntNo" value="${c.cmntNo}" readonly="readonly">
 									                        <textarea class="form-control" aria-label="With textarea" name="modifyComment" placeholder="댓글을 남겨보세요" required="required"></textarea>
@@ -451,7 +456,7 @@
 	       										 		justify-content: center;
 	       										 		align-items: center; ">
 												<c:choose>
-													<c:when test="${c.userId == loginId}">
+													<c:when test="${c.userId == userId}">
 														<!-- 댓글 수정삭제 버튼 -->
 														<div class="dropdown comDropdown">
 															<button
@@ -482,10 +487,16 @@
 									<form id="addComForm" action="${pageContext.request.contextPath}/board/addComment" method="post">
 										<div class="input-group">
 					                        <span class="input-group-text">
-					                        	<a>${u.userNm}</a><br>
+					                        	<c:choose>
+					                        		<c:when test="${userDept.userNm == null}">
+					                        			<a>관리자</a><br>
+					                        		</c:when>
+					                        		<c:otherwise>
+							                        	<a>${userDept.userNm}</a><br>
+					                        		</c:otherwise>
+					                        	</c:choose>
 												<input type="hidden" name="boardNo" value="${b.boardNo}">
-												<input type="hidden" name="loginId" value="${loginId}">
-												<input type="hidden" name="userId" value="${u.userId}">
+												<input type="hidden" name="userId" value="${userId}">
 					                        </span>
 					                        <textarea class="form-control" aria-label="With textarea" name="comment" placeholder="댓글을 남겨보세요" required="required"></textarea>
 					                        <br>

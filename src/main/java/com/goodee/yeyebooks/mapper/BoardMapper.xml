@@ -34,6 +34,7 @@
 	<!-- 로그인 유저의 부서코드와 부서이름 가져오기 -->
 	<select id="selectUserDept">
 		SELECT
+			user_nm userNm,
 			dept_cd deptCd,
 			(SELECT code_nm FROM common_code WHERE group_code = 'D001'AND CODE = dept_cd) deptNm
 		FROM user
@@ -52,14 +53,22 @@
 	</select>
 	
 	<!-- 게시물상세 -->
-	<select id="selectBoardOne" 
-			resultType="com.goodee.yeyebooks.vo.Board">
+	<select id="selectBoardOne">
 			SELECT 
 				b.board_no boardNo,
 				b.board_cat_cd boardCatCd,
 				b.board_title boardTitle,
 				b.board_contents boardContents,
 				b.user_id userId,
+				(SELECT user_nm FROM user WHERE user_id = b.user_id) userNm,
+				(SELECT 
+					(SELECT code_nm FROM common_code WHERE group_code = 'D001'AND CODE = dept_cd) deptNm 
+				 FROM user 
+				 WHERE user_id = b.user_id) userDept,
+				(SELECT 
+					(SELECT code_nm FROM common_code WHERE group_code = 'R001'AND CODE = rank_cd) rankNm 
+				 FROM user 
+				 WHERE user_id = b.user_id) userRank,
 				b.c_date cDate,
 				b.board_view boardView,
 				bf.origin_filename originFilename,
@@ -68,22 +77,6 @@
 			ON b.board_no = bf.board_no
 			WHERE 
 				b.board_no = #{boardNo}
-	</select>
-	
-	<!-- 게시물 상세 조회 시 게시자 정보를 가져오기 -->
-	<!-- 아이디 / 이름 / 직급 / 부서 -->
-	<select id="selectUser" 
-			parameterType="String" 
-			resultType="java.util.Map">
-			SELECT 
-				u.user_id userId, 
-				u.user_nm userNm, 
-				c.code_nm codeNm
-			FROM user u
-				INNER JOIN 
-					common_code c ON u.rank_cd = c.code AND c.group_code = 'R001'
-			WHERE 
-				u.user_id = #{userId};
 	</select>
 	
 	<!-- 조회수 증가 -->

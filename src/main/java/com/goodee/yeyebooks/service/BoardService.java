@@ -40,7 +40,7 @@ public class BoardService {
 		
 		// 로그인 아이디
 		String userId = (String)session.getAttribute("userId");
-		log.debug("\u001B[41m" + userId + "< userId" + "\u001B[0m");
+		//log.debug("\u001B[41m" + userId + "< userId" + "\u001B[0m");
 		
 		Map<String, Object> userDept = null;
 		if(!userId.equals("admin")) {
@@ -50,10 +50,9 @@ public class BoardService {
 			// 부서게시판 클릭시 부서 value값과 동일하다면 사용자의 부서코드를 저장
 			if (!boardCatCd.equals("00") && !boardCatCd.equals("99")) {
 				boardCatCd = (String)userDept.get("deptCd");
-				log.debug("\u001B[41m" + boardCatCd + "< userDept.get(deptCd)" + "\u001B[0m");
+				//log.debug("\u001B[41m" + boardCatCd + "< userDept.get(deptCd)" + "\u001B[0m");
 			}
 		}
-
 		
 		// map에 담아 변수로 넘기게
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -64,7 +63,7 @@ public class BoardService {
 
 		// 각 리스트 조회
 		List<Map<String, Object>> selectBoard = boardMapper.selectBoard(paramMap);
-		log.debug("\u001B[41m" + selectBoard + "< selectBoard" + "\u001B[0m");
+		//log.debug("\u001B[41m" + selectBoard + "< selectBoard" + "\u001B[0m");
 
 		// 모든 부서 코드 조회
 		List<Map<String, Object>> selectAllCatCode = boardMapper.selectAllCatCode();
@@ -116,15 +115,33 @@ public class BoardService {
 	}
 
 	// 게시물 상세조회 
-	public Map<String, Object> getBoardOne(int boardNo, String userId) {
+	public Map<String, Object> getBoardOne(HttpSession session, int boardNo) {
+
+		// 로그인 아이디
+		String userId = (String)session.getAttribute("userId");
+		
+		// 메인메뉴바 사용자 소속 부서 게시판 선택을 위한 사용자 부서 정보
+		Map<String, Object> userDept = null;
+		if(!userId.equals("admin")) {
+			userDept = boardMapper.selectUserDept(userId);
+			//log.debug("\u001B[41m" + userDept + "< userDept" + "\u001B[0m");
+		}
+		
+		// 관리자 메인메뉴바 : 모든 부서 코드 조회
+		List<Map<String, Object>> selectAllCatCode = boardMapper.selectAllCatCode();
+		//log.debug("\u001B[41m" + selectAllCatCode + "< selectAllCatCode" + "\u001B[0m");
+		
 		Map<String, Object> map = new HashMap<>(); 
 		// 게시물 정보
 		map.put("board", boardMapper.selectBoardOne(boardNo)); 
 		// 첨부파일 정보
 		map.put("boardFile", boardfileMapper.selectBoardFile(boardNo));
-		// 게시자 정보
-		map.put("user", boardMapper.selectUser(userId));
-		log.debug("\u001B[41m"+ boardMapper.selectUser(userId) + "< BoardService getBoardOne user" + "\u001B[0m");
+		// 메인메뉴바 구현 위한 유저정보
+		map.put("userDept", userDept);
+		// 메인메뉴바 관리자 구현
+		map.put("selectAllCatCode",selectAllCatCode);
+		
+		//log.debug("\u001B[41m"+  "BoardService getBoardOne map : " + map + "\u001B[0m");
 		
 		return map; 
 	}

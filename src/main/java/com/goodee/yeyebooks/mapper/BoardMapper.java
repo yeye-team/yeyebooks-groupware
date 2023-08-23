@@ -16,17 +16,14 @@ public interface BoardMapper {
 	// 게시판 별 게시물 전체 개수
 	int selectBoardCount(String boardCatCd);
 	
-	// 부서 게시판 조회를 위한 사용자 부서 코드 조회
+	// 부서 게시판 조회를 위한 사용자 부서 코드,부서 이름 조회
 	Map<String, Object> selectUserDept (String userId);
 	
 	// 관리자일 때 모든 부서 코드 조회
 	List<Map<String, Object>> selectAllCatCode();
 	
 	// 게시물 상세 조회
-	Board selectBoardOne(int boardNo);
-	
-	// 사용자 정보 조회
-	Map<String, Object> selectUser(String userId);
+	Map<String, Object> selectBoardOne(int boardNo);
 	
 	// 조회수 증가
 	int updateView(int boardNo);
