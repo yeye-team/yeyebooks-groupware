@@ -39,3 +39,12 @@
 	<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
 	<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 	<script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
+	<!-- ajax -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<!-- alert -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<style>
+		.swal2-container{
+			z-index: 1100;
+		}
+	</style>
