@@ -21,7 +21,7 @@
 		    leave_ymd AS leaveYmd,
 		    dayoff_cnt AS dayoffCnt
 		FROM USER
-		WHERE user_id = 'user';
+		WHERE user_id = #{userId};
 	</select>
 	<update id="updateUserInfoByUser">
 		UPDATE USER SET user_nm = #{userNm}, phone_no = #{phoneNo}
