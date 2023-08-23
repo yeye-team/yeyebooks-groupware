@@ -10,21 +10,14 @@
   data-template="vertical-menu-template-free"
 >
 <head>
-	<title>조직도</title>
+	<title>부서관리</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<style>
-		.swal2-container{
-			z-index: 1100;
-		}
-	</style>
 	<script>
 		$(document).ready(function(){
 			$('#addDeptBtn').on('click',function(){
 				$.ajax({
 					async : false, 
-					url : 'rest/deptNmList',
+					url : 'rest/deptList',
 					type : 'get',
 					success : function(model) {
 						var d = 0;
@@ -37,7 +30,7 @@
 						if(d == 1) {
 							Swal.fire({
 			                    icon: 'warning',
-			                    title: '중복된 조직명 입니다.'
+			                    title: '중복된 부서명 입니다.'
 			                });
 							
 						} else if(d == 0){
@@ -54,7 +47,7 @@
 				var mdNm = $('.modifyDeptNm').get(indexNo);
 				$.ajax({
 					async : false, 
-					url : 'rest/deptNmList',
+					url : 'rest/deptList',
 					type : 'get',
 					success : function(model) {
 						var d = 0;
@@ -67,7 +60,7 @@
 						if(d == 1) {
 							Swal.fire({
 			                    icon: 'warning',
-			                    title: '중복된 조직명 입니다.'
+			                    title: '중복된 부서명 입니다.'
 			                });
 							
 						} else if(d == 0){
@@ -92,19 +85,19 @@
 			<div class="menu-inner-shadow"></div>
 			
 			<ul class="menu-inner py-1">
-	            <!-- 조직관리 -->
+	            <!-- 부서관리 -->
 	            <li class="menu-item active">
-	              <a href="${pageContext.request.contextPath}/dept" class="menu-link">
+	              <a href="${pageContext.request.contextPath}/deptList" class="menu-link">
 	                <i class="menu-icon tf-icons bx bx-group"></i>
-	                <div data-i18n="Analytics">조직관리</div>
+	                부서관리
 	              </a>
 	            </li>
 
 	            <!-- 사용자관리 -->
 	            <li class="menu-item">
-					<a href="javascript:void(0);" class="menu-link">
+					<a href="${pageContext.request.contextPath}/userList" class="menu-link">
 					  <i class="menu-icon tf-icons bx bx-user"></i>
-					  <div data-i18n="Layouts">사용자관리</div>
+					  사용자관리
 					</a>
             	</li>
           	</ul>
@@ -119,19 +112,19 @@
 			<div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-				<div class="card mb-4">
+				<div class="card">
 					<div class="row">
 						<div class="col-md-8">
-							<h4 class="card-header"><strong>조직관리</strong></h4>
+							<h4 class="card-header"><strong>부서관리</strong></h4>
 						</div>
 						<div class="col-md-4" style="align-items: center">
-							<button type="button" class="btn btn-secondary m-3" data-bs-toggle="modal" data-bs-target="#modalAddDept" style="float: right">조직생성</button>
+							<button type="button" class="btn btn-secondary m-3" data-bs-toggle="modal" data-bs-target="#modalAddDept" style="float: right">부서생성</button>
 							<!-- Modal -->
 	                        <div class="modal fade" id="modalAddDept" tabindex="-1" aria-hidden="true">
 	                          <div class="modal-dialog modal-dialog-centered" role="document">
 	                            <div class="modal-content">
 	                              <div class="modal-header">
-	                                <h5 class="modal-title" id="modalAddDeptTitle">조직생성</h5>
+	                                <h5 class="modal-title" id="modalAddDeptTitle">부서생성</h5>
 	                                <button
 	                                  type="button"
 	                                  class="btn-close"
@@ -143,13 +136,13 @@
 		                              <div class="modal-body pb-0">
 		                                <div class="row">
 		                                  <div class="col mb-3">
-		                                    <label for="addDeptNm" class="form-label">조직명</label>
+		                                    <label for="addDeptNm" class="form-label">부서명</label>
 		                                    <input
 		                                      type="text"
 		                                      id="addDeptNm"
 		                                      name="deptNm"
 		                                      class="form-control"
-		                                      placeholder="조직명을 입력하세요"
+		                                      placeholder="부서명을 입력하세요"
 		                                      required="required"
 		                                    />
 		                                  </div>
@@ -215,7 +208,7 @@
 			                          <div class="modal-dialog modal-dialog-centered" role="document">
 			                            <div class="modal-content">
 			                              <div class="modal-header">
-			                                <h5 class="modal-title" id="modalmodifyDeptTitle">조직변경</h5>
+			                                <h5 class="modal-title" id="modalmodifyDeptTitle">부서변경</h5>
 			                                <button
 			                                  type="button"
 			                                  class="btn-close"
@@ -227,13 +220,13 @@
 				                              <div class="modal-body pb-0">
 				                                <div class="row">
 				                                  <div class="col mb-3">
-				                                    <label for="modifyDeptNm" class="form-label">조직명</label>
+				                                    <label for="modifyDeptNm" class="form-label">부서명</label>
 				                                    <input type="hidden" name="deptCd" value="${d.deptCd}">
 				                                    <input
 				                                      type="text"
 				                                      name="deptNm"
 				                                      class="form-control modifyDeptNm"
-				                                      placeholder="조직명을 입력하세요"
+				                                      placeholder="부서명을 입력하세요"
 				                                      value="${d.deptNm}"
 				                                      required="required"
 				                                    />
@@ -253,7 +246,7 @@
 			                        </c:forEach>
                           		</div>
                           		<div class="col-md-9 col-12">
-                            		<div class="card overflow-hidden" style="height: 500px; box-shadow: none;">
+                            		<div class="card overflow-hidden" style="height: 540px; box-shadow: none;">
 						                    <div class="card-body" id="vertical-example">
 					                    		<div class="tab-content p-0">
 						                        	<div class="tab-pane fade show active" id="list-home">
