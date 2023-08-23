@@ -8,7 +8,9 @@ public class User {
 	private String userPw;
 	private String userNm;
 	private String rank;
+	private String rankCd;
 	private String dept;
+	private String deptCd;
 	private String userStatus;
 	private String gender;
 	private String phoneNo;

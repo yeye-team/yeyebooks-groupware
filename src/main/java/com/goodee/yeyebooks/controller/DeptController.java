@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.goodee.yeyebooks.service.DeptService;
+import com.goodee.yeyebooks.vo.User;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,11 +22,11 @@ public class DeptController {
 	@Autowired
 	DeptService deptService;
 	
-	@GetMapping("/dept")
+	@GetMapping("/deptList")
 	public String getDeptList(Model model) {
-		List<Map<String, Object>> deptList = deptService.getDeptList();
+		List<Map<String, Object>> deptList = deptService.getUserCntByDept();
 		List<Map<String, Object>> userList = deptService.getUserListByDept();
-		List<Map<String, Object>> userCnt = deptService.getUserCntByDept();
+		List<Map<String, Object>> userCnt = deptService.getUserCntByDeptAndAll();
 		
 		model.addAttribute("deptList",deptList);
 		model.addAttribute("userList",userList);
@@ -40,7 +41,7 @@ public class DeptController {
 		map.put("deptNm", deptNm);
 		deptService.addDept(map);
 		
-		return "redirect:/dept";
+		return "redirect:/deptList";
 	}
 	
 	@PostMapping("/modifyDept")
@@ -50,7 +51,7 @@ public class DeptController {
 		map.put("deptCd", deptCd);
 		deptService.modifyDept(map);
 		
-		return "redirect:/dept";
+		return "redirect:/deptList";
 	}
 	
 	@GetMapping("/removeDept")
@@ -59,7 +60,7 @@ public class DeptController {
 		map.put("deptCd", deptCd);
 		deptService.removeDept(map);
 		
-		return "redirect:/dept";
+		return "redirect:/deptList";
 	}
 	
 	@PostMapping("/modifyUserDept")
@@ -71,6 +72,28 @@ public class DeptController {
 			deptService.modifyUserDept(map);
 		}
 		
-		return "redirect:/dept";
+		return "redirect:/deptList";
+	}
+	
+	@GetMapping("/userList")
+	public String getUserList(Model model, @RequestParam(name = "currentPage", defaultValue = "1") int currentPage, @RequestParam(name = "rowPerPage", defaultValue = "8") int rowPerPage) {
+		Map<String, Object> map = deptService.getUserList(currentPage, rowPerPage);
+		map.put("currentPage", currentPage);
+		
+		model.addAllAttributes(map);
+		return "user/userList";
+	}
+	
+	@PostMapping("/addUser")
+	public String addUser(String userNm, String deptCd, String rankCd, String joinYmd, String gender) {
+		User user = new User();
+		user.setUserNm(userNm);
+		user.setDeptCd(deptCd);
+		user.setRankCd(rankCd);
+		user.setJoinYmd(joinYmd);
+		user.setGender(gender);
+		int row = deptService.addUser(user);
+		
+		return "redirect:/userList";
 	}
 }

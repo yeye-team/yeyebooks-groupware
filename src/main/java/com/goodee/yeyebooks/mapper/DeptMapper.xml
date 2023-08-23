@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goodee.yeyebooks.mapper.DeptMapper">
-	<select id="selectDeptList" resultType="java.util.Map">
+	<select id="selectUserCntByDept" resultType="java.util.Map">
 		SELECT c2.code deptCd, c2.code_nm deptNm, COALESCE(COUNT(u.user_id),0) cnt FROM user u 
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)         
 		RIGHT OUTER JOIN 
@@ -37,7 +37,7 @@
 		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
 	</select>
 	
-	<select id="selectUserCntByDept" resultType="java.util.Map">
+	<select id="selectUserCntByDeptAndAll" resultType="java.util.Map">
 		SELECT u.dept_cd deptCd, c2.code_nm deptNm, COUNT(*) cnt FROM user u      
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
 		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
@@ -58,10 +58,59 @@
 		WHERE user_id = #{userId}
 	</update>
 	
-	<select id="selectDeptNmList" resultType="java.util.Map">
+	<select id="selectDeptList" resultType="java.util.Map">
 		SELECT code deptCd, code_nm deptNm
 		FROM common_code
 		WHERE group_code = 'D001'
 	</select>
 	
+	<select id="selectUserList" resultType="java.util.Map">
+		SELECT 
+			u.user_id userId, 
+			u.user_nm userNm, 
+			u.rank_cd rankCd, 
+			u.dept_cd deptCd,
+			c1.code_nm rankNm, 
+			c2.code_nm deptNm,
+			u.gender,
+			u.phone_no phoneNo,
+			u.user_stat_cd userStatCd,
+			c3.code_nm userStatNm,
+			u.join_ymd joinYmd,
+			u.leave_ymd leaveYmd,
+			u.dayoff_cnt dayoffCnt
+		FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)	
+		INNER JOIN common_code c3 ON (c3.group_code = 'U001' AND u.user_stat_cd = c3.code)
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectUserCnt" resultType="int">
+		SELECT 
+			COUNT(*) cnt
+		FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)	
+		INNER JOIN common_code c3 ON (c3.group_code = 'U001' AND u.user_stat_cd = c3.code)
+	</select>
+	
+	<select id="selectRankList" resultType="java.util.Map">
+		SELECT code rankCd, code_nm rankNm
+		FROM common_code
+		WHERE group_code = 'R001'
+	</select>
+	
+	<insert id="insertUser" parameterType="com.goodee.yeyebooks.vo.User">
+		INSERT INTO user(user_id, user_pw, user_nm, rank_cd, dept_cd, user_stat_cd, gender, mail, 
+						join_ymd, dayoff_cnt, c_date, u_date)
+		VALUES (#{userId}, PASSWORD('1234'), #{userNm}, #{rankCd}, #{deptCd}, '02', #{gender}, #{mail}, 
+				#{joinYmd}, 0, NOW(), NOW())
+	</insert>
+	
+	<select id="selectjoinYmdCnt" parameterType="String" resultType="int">
+		SELECT COUNT(*) 
+		FROM user
+		WHERE join_ymd = #{joinYmd}
+	</select>
 </mapper>

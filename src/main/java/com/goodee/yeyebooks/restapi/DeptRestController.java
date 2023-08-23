@@ -16,8 +16,13 @@ public class DeptRestController {
 	@Autowired
 	DeptService deptService;
 	
-	@GetMapping("/rest/deptNmList")
-	public List<Map<String, Object>> getLocalNmList(){
-		return deptService.getDeptNmList();	
+	@GetMapping("/rest/deptList")
+	public List<Map<String, Object>> getDeptList(){
+		return deptService.getDeptList();	
+	}
+	
+	@GetMapping("/rest/rankList")
+	public List<Map<String, Object>> getRankList(){
+		return deptService.getRankList();	
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.goodee.yeyebooks.mapper.DeptMapper;
+import com.goodee.yeyebooks.vo.User;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,8 +18,8 @@ public class DeptService {
 	@Autowired
 	DeptMapper deptMapper;
 	
-	public List<Map<String, Object>> getDeptList(){
-		List<Map<String, Object>> list = deptMapper.selectDeptList();
+	public List<Map<String, Object>> getUserCntByDept(){
+		List<Map<String, Object>> list = deptMapper.selectUserCntByDept();
 		return list;
 	}
 	
@@ -27,8 +28,8 @@ public class DeptService {
 		return list;
 	}
 	
-	public List<Map<String, Object>> getUserCntByDept(){
-		List<Map<String, Object>> list = deptMapper.selectUserCntByDept();
+	public List<Map<String, Object>> getUserCntByDeptAndAll(){
+		List<Map<String, Object>> list = deptMapper.selectUserCntByDeptAndAll();
 		return list;
 	}
 	
@@ -63,8 +64,60 @@ public class DeptService {
 		return row;
 	}
 	
-	public List<Map<String, Object>> getDeptNmList(){
-		List<Map<String, Object>> list = deptMapper.selectDeptNmList();
+	public List<Map<String, Object>> getDeptList(){
+		List<Map<String, Object>> list = deptMapper.selectDeptList();
 		return list;
+	}
+	
+	public List<Map<String, Object>> getRankList(){
+		List<Map<String, Object>> list = deptMapper.selectRankList();
+		return list;
+	}
+	
+	public Map<String, Object> getUserList(int currentPage, int rowPerPage){
+		int beginRow = (currentPage-1)*rowPerPage;
+		List<Map<String, Object>> list = deptMapper.selectUserList(beginRow, rowPerPage);
+		
+		int totalRow = deptMapper.selectUserCnt();
+		int lastPage = totalRow / rowPerPage;
+		if (totalRow % rowPerPage != 0) {
+			lastPage += 1;
+		}
+	
+		int pagePerPage = 5;
+		int minPage = (currentPage-1) / pagePerPage * pagePerPage + 1;
+		int maxPage = minPage + pagePerPage - 1;
+		if(maxPage > lastPage) {
+			maxPage = lastPage;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", list);
+		map.put("pagePerPage", pagePerPage);
+		map.put("minPage", minPage);
+		map.put("maxPage", maxPage);
+		map.put("lastPage", lastPage);
+		
+		return map;
+	}
+	
+	public int addUser(User user) {
+		int joinNo = deptMapper.selectjoinYmdCnt(user.getJoinYmd()) + 1;
+		String userId = "y"+user.getJoinYmd().replace("-", "");
+		if(joinNo > 9) {
+			userId += joinNo;
+		} else {
+			userId += "0"+joinNo;
+		}
+		user.setUserId(userId);
+		
+		String mail = userId + "@yeye.co.kr";
+		user.setMail(mail);
+		
+		if(user.getDeptCd().equals(" ")) {
+			user.setDeptCd(null);
+		}
+		
+		int row = deptMapper.insertUser(user);
+		return row;
 	}
 }
