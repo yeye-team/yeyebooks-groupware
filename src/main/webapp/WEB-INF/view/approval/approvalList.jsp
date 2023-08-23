@@ -56,10 +56,11 @@
 		</tr>
 		<c:forEach var="m" items="${approvalList}">
 			<tr>
+				<td>${m.aprvNo}</td>
 				<td>${m.userId}</td>
 				<td>${m.docCatCd}</td>
 				<td>${m.aprvTitle}</td>
-				<td>${m.approvalContents}</td>
+				<td>${m.aprvContents}</td>
 				<td>${m.reference}</td>
 			</tr>
 		</c:forEach>

@@ -35,25 +35,28 @@ public class ApprovalService {
 	}
 	
 	public List<Approval> selectMyApproval(String loginId){
-		return approvalMapper.selectMyApproval(loginId);
+		List<Approval> approvalList = approvalMapper.selectMyApproval(loginId);
+		return approvalList;
 	}
 	
 	// 내 문서함 리스트
-	public Map<String, Object> selectApprovalByStatus(String loginId, String approvalStatus){
-		Map<String, Object> resultMap = new HashMap<>();
-		
-		String approvalCode = getApprovalStatusCode(approvalStatus);
-		
-		List<Approval> allApprovalList = approvalMapper.selectApprovalByStatus(loginId, approvalStatus);
-		
-		List<Approval> approvalList = approvalMapper.selectApprovalByStatus(loginId, approvalStatus);
-		
-		resultMap.put("approvalCode", approvalCode);
-		resultMap.put("approvalList", approvalList);
-		resultMap.put("status", approvalStatus);
-		
-		return resultMap;
-	}
+	/*
+	 * public Map<String, Object> selectApprovalByStatus(String loginId, String
+	 * approvalStatus){ Map<String, Object> resultMap = new HashMap<>();
+	 * 
+	 * String approvalCode = getApprovalStatusCode(approvalStatus);
+	 * 
+	 * List<Approval> allApprovalList =
+	 * approvalMapper.selectApprovalByStatus(loginId, approvalStatus);
+	 * 
+	 * List<Approval> approvalList = approvalMapper.selectApprovalByStatus(loginId,
+	 * approvalStatus);
+	 * 
+	 * resultMap.put("approvalCode", approvalCode); resultMap.put("approvalList",
+	 * approvalList); resultMap.put("status", approvalStatus);
+	 * 
+	 * return resultMap; }
+	 */
 	
 	public String getApprovalStatusCode(String approvalStatus) {
 		return approvalMapper.selectApprovalCode(approvalStatus);

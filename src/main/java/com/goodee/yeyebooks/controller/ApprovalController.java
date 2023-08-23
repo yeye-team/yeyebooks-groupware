@@ -16,6 +16,9 @@ import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping
 public class ApprovalController {
@@ -27,25 +30,29 @@ public class ApprovalController {
 		this.approvalService = approvalService;
 	}
 	
-	@GetMapping("/myApproval")
-	public String myApproval(Model model, @RequestParam("loginId") String loginId) {
+	@GetMapping("/approval/approvalList")
+	public String myApproval(Model model, 
+							@RequestParam(name = "loginId", defaultValue = "admin") String loginId) {
 		List<Approval> approvalList = approvalService.selectMyApproval(loginId);
+		log.debug("approvalList{} : ",approvalList);
 		model.addAttribute("approvalList",approvalList);
 		return "approval/approvalList";
 	}
 	
-	// 내문서함 불러오기
-	@GetMapping("/approval/approvalList")
-	public String getMyDocuments(@RequestParam(name = "statusHidden", required = false) String statusHidden, Model model) {
-		String approvalStatus = "A001";
-		String loginId = "admin";
-		String userId = loginId;
-		
-		Map<String, Object> myDocuments = approvalService.selectApprovalByStatus(userId, approvalStatus);
-		model.addAttribute("approvalList" , myDocuments);
-		model.addAttribute("statusHidden" , statusHidden);
-		return "approval/approvalList";
-	}
+	/*
+	 * // 내문서함 불러오기
+	 * 
+	 * @GetMapping("/approval/approvalList") public String
+	 * getMyDocuments(@RequestParam(name = "statusHidden", required = false) String
+	 * statusHidden, Model model) { String approvalStatus = "A001"; String loginId =
+	 * "admin"; String userId = loginId;
+	 * 
+	 * Map<String, Object> myDocuments =
+	 * approvalService.selectApprovalByStatus(userId, approvalStatus);
+	 * model.addAttribute("approvalList" , myDocuments);
+	 * model.addAttribute("statusHidden" , statusHidden); return
+	 * "approval/approvalList"; }
+	 */
 	
 	// 문서작성
 	@GetMapping("/create")

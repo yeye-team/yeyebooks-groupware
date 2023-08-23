@@ -78,18 +78,19 @@
 	<!-- 내 문서함 -->
 	<select id="selectMyApproval" parameterType="map" resultType="com.goodee.yeyebooks.vo.Approval">
 		SELECT 
-			a.aprv_no, a.user_id,
-			a.doc_cat_cd, a.aprv_title,
-			a.aprv_contents, a.aprv_ymd,
-			a.rjct_reason, a.aprv_stat_cd,
-			a.reference, a.c_date,
-			af.orgin_filename, af.save_filename,
-			al.aprv_yn, al.aprv_ymd as aprv_line_ymd
+			a.aprv_no aprvNo, a.user_id userId,
+			a.doc_cat_cd docCatCd, c1.code_nm codeNm, a.aprv_title aprvTitle,
+			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
+			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm codeName,
+			a.reference, a.c_date cDate,
+			af.orgin_filename orginFilename, af.save_filename saveFilename,
+			al.aprv_yn aprvYn, al.aprv_ymd as aprv_line_ymd
 		FROM approval a
 		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
 		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-		WHERE a.user_id = #{admin}
-		AND a.doc_cat_cd = 'A001'
+		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
+		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
+		WHERE (a.user_id = 'admin' OR al.user_id = 'admin' OR a.reference LIKE '%admin%')
 		ORDER BY a.aprv_ymd DESC;
 	</select>
 	
