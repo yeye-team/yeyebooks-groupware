@@ -18,43 +18,11 @@
 
     <title>Home</title>
 
-    <meta name="description" content="" />
-
-   	<!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_mini.png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-
-    <!-- Page CSS -->
-
-    <!-- Helpers -->
-    <script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <jsp:include page="./inc/head.jsp"></jsp:include>
+	<link href='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.css' rel='stylesheet' />
+    <script src='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.js'></script>
   	<style>
-  		.card-header a{
+  		.card-header, .card-header a{
   			color: #666;
 			font-weight: bold;
 			transition: all 0.2s linear;
@@ -65,7 +33,51 @@
   		.card-body .btn+.btn{
   			margin-left: 0.5rem;
   		}
+  		#calendar .fc-scroller {
+		  overflow-x: hidden !important;
+		  overflow-y: hidden !important;
+		}
+		/* 일요일 날짜 빨간색 */
+		.fc-day-sun a {
+		  color: red;
+		  text-decoration: none;
+		}
+		
+		/* 토요일 날짜 파란색 */
+		.fc-day-sat a {
+		  color: blue;
+		  text-decoration: none;
+		}
   	</style>
+  	<script>
+  	document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+       	  googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw',
+       	  events: {
+       	    googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+       	  	color: 'red',
+       	  	textColor: 'white'
+       	  }
+        });
+        calendar.render();
+      });
+  		/* $(document).ready(function(){
+  			const calendarEl = $('#calendar');
+  	  		const calendar = new FullCalendar.Calendar(calendarEl, {
+  	  			googleCalendarApiKey: "AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw",
+  	  			events: [
+  	  				{
+  		  				googleCalendarId: '814508606902-gcmu2h1eb1cqscmgplvq97d9vnj9b2o8.apps.googleusercontent.com',
+  		  				color: 'white',
+  		  				textColor: 'red'
+  	  				}
+  	  			]
+  	  		})
+  	  		calendar.render();
+  		}) */
+  	</script>
+  	
   </head>
 
   <body>
@@ -107,7 +119,26 @@
 	                </div>
 	                <div class="col-lg">
 	                  <div class="card mb-4">
-	                    <h5 class="card-header">Button with Badges</h5>
+	                    <h5 class="card-header">오늘의 출/퇴근</h5>
+	                    <div class="card-body">
+	                    </div>
+	                  </div>
+	                </div>
+				</div>
+				<div class="row">
+					<div class="col-lg">
+	                  <div class="card mb-4">
+	                    <h5 class="card-header">
+	                    	이번달 일정
+	                    </h5>
+	                    <div class="card-body">
+	                    	<div id="calendar"></div>
+	                    </div>
+	                  </div>
+	                </div>
+	                <div class="col-lg">
+	                  <div class="card mb-4">
+	                    <h5 class="card-header">최근 공지사항</h5>
 	                    <div class="card-body">
 	                    </div>
 	                  </div>
@@ -145,5 +176,6 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+  	
   </body>
 </html>
