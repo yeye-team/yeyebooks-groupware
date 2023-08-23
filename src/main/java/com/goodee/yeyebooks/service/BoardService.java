@@ -1,8 +1,12 @@
 package com.goodee.yeyebooks.service;
 
+import java.io.File;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
@@ -11,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.goodee.yeyebooks.vo.BoardFile;
 import com.goodee.yeyebooks.mapper.BoardFileMapper;
 import com.goodee.yeyebooks.mapper.BoardMapper;
 import com.goodee.yeyebooks.vo.Board;
@@ -31,23 +37,30 @@ public class BoardService {
 	public Map<String, Object> selectBoardList(HttpSession session, int currentPage, int rowPerPage, String boardCatCd) {
 		// 첫행
 		int beginRow = (currentPage - 1) * rowPerPage;
-
+		
+		// 로그인 아이디
 		String userId = (String)session.getAttribute("userId");
 		log.debug("\u001B[41m" + userId + "< userId" + "\u001B[0m");
-		String deptCd = boardMapper.selectUserDept(userId);
-		log.debug("\u001B[41m" + deptCd + "< deptCd" + "\u001B[0m");
-
-		// 부서게시판 클릭시 부서 value값과 동일하다면 사용자의 부서코드를 저장
-		if (boardCatCd.equals("dept")) {
-			boardCatCd = deptCd;
+		
+		Map<String, Object> userDept = null;
+		if(!userId.equals("admin")) {
+			userDept = boardMapper.selectUserDept(userId);
+			//log.debug("\u001B[41m" + userDept + "< userDept" + "\u001B[0m");
+			
+			// 부서게시판 클릭시 부서 value값과 동일하다면 사용자의 부서코드를 저장
+			if (!boardCatCd.equals("00") && !boardCatCd.equals("99")) {
+				boardCatCd = (String)userDept.get("deptCd");
+				log.debug("\u001B[41m" + boardCatCd + "< userDept.get(deptCd)" + "\u001B[0m");
+			}
 		}
+
 		
 		// map에 담아 변수로 넘기게
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("beginRow", beginRow);
 		paramMap.put("rowPerPage", rowPerPage);
 		paramMap.put("boardCatCd", boardCatCd);
-		log.debug("\u001B[41m" + paramMap + "< paramMap" + "\u001B[0m");
+		//log.debug("\u001B[41m" + paramMap + "< paramMap" + "\u001B[0m");
 
 		// 각 리스트 조회
 		List<Map<String, Object>> selectBoard = boardMapper.selectBoard(paramMap);
@@ -55,7 +68,7 @@ public class BoardService {
 
 		// 모든 부서 코드 조회
 		List<Map<String, Object>> selectAllCatCode = boardMapper.selectAllCatCode();
-		log.debug("\u001B[41m" + selectAllCatCode + "< selectAllCatCode" + "\u001B[0m");
+		//log.debug("\u001B[41m" + selectAllCatCode + "< selectAllCatCode" + "\u001B[0m");
 		
 		// ================ 페이지 =================
 		// 페이징을 위한 게시판 별 게시물 전체 개수
@@ -96,8 +109,8 @@ public class BoardService {
 		resultMap.put("pagePerPage", pagePerPage);
 		resultMap.put("minPage", minPage);
 		resultMap.put("maxPage", maxPage);
-		resultMap.put("userId", userId);
 		resultMap.put("selectAllCatCode",selectAllCatCode);
+		resultMap.put("userDept", userDept);
 
 		return resultMap;
 	}
@@ -124,4 +137,50 @@ public class BoardService {
 		return row;
 	}
 	
+	// 게시글 입력
+	public int insertBoard(Board board, String path) {
+		log.debug("\u001B[41m"+ "boardService board : " +  board + "\u001B[0m");
+		
+		int row = boardMapper.insertBoard(board);
+		
+		// addboard 성공 및 첨부된 파일이 1개 이상 있다면
+		List<MultipartFile> fileList = board.getMultipartFile();
+		if(row == 1 && fileList != null && fileList.size() > 0) {
+			int boardNo = board.getBoardNo();
+		
+			for(MultipartFile mf : fileList) { // 첨부 파일 개수만큼 반복
+				if(mf.getSize() > 0) {
+					BoardFile bf = new BoardFile();
+					bf.setBoardNo(boardNo); // 부모키값
+					bf.setOriginFilename(mf.getOriginalFilename()); // 파일원본이름
+					bf.setFiletype(mf.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
+					
+					// 저장될 파일 이름
+					// 확장자
+					int lastIdx = mf.getOriginalFilename().lastIndexOf(".");
+					String ext = mf.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
+					// 새로운 이름 + 확장자
+					bf.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
+					
+					// 테이블에 저장
+					boardfileMapper.insertBoardfile(bf);
+					// 파일저장(저장위치필요 > path변수 필요)
+					// path 위치에 저장파일이름으로 빈파일을 생성
+					File f = new File(path+bf.getSaveFilename());
+					// 빈파일에 첨부된 파일의 스트림을 주입한다.
+					try {
+						mf.transferTo(f);
+					} catch(IllegalStateException | IOException e) {
+						// 트랜잭션 작동을 위해 예외 발생이 필요
+						e.printStackTrace();
+						// 트랜잭션 작동을 위해 예외(try catch 강요하지 않는 예외 ex) RuntimeException) 발생 필요
+						throw new RuntimeException();
+					}
+				}
+			}
+		}
+		return row;
+	}
+	// 게시물 수정
+	// 게시물 삭제
 }

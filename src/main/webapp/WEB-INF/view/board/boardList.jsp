@@ -12,7 +12,7 @@
   data-template="vertical-menu-template-free"
 >
   <head>
-
+	<c:set value="${userDept}" var="ud"></c:set>
     <!-- 게시판 변경 시 타이틀 변경 -->
 	<c:choose>
 		<c:when test="${boardCatCd=='00'}">
@@ -22,16 +22,29 @@
 			<title>전체 게시판</title>
 		</c:when>
 		<c:otherwise>
-			<title>부서 게시판</title>
+			<c:choose>
+				<c:when test="${userId != 'admin'}">
+					<title>${ud.deptNm} 게시판</title>
+				</c:when>
+				<c:otherwise>
+					<title>부서 게시판</title>
+				</c:otherwise>
+			</c:choose>
 		</c:otherwise>
 	</c:choose>
 	
     <jsp:include page="../inc/head.jsp"></jsp:include>
     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script>
 	    /* // url파라미터값 삭제
 		history.replaceState({}, null, location.pathname);  */
+		$(document).ready(function() {
+			// url파라미터값 삭제
+			/* history.replaceState({}, null, location.pathname);  */
+		});
     </script>
+    
     <style>
     	.menu-link{
     		background-color: white;
@@ -55,6 +68,13 @@
     	
     	.table{
     		text-align: center;
+    		table-layout: fixed;
+       		width: 100%; /* 테이블의 전체 너비 */
+    	}
+    	
+    	.table th,
+   		.table td:nth-child(1) {
+	        width: 25%;
     	}
     </style>
   </head>
@@ -66,8 +86,10 @@
 			<!-- Menu -->
 			<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 				<div class="app-brand demo">
-					<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
-					style="width:100%">
+					<a href="${pageContext.request.contextPath}">
+						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
+						     style="width:100%">
+					</a>
 				</div>
 		
 				<div class="menu-inner-shadow"></div>
@@ -95,9 +117,9 @@
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item">
-											<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+											<button type="submit" name="boardCatCd" value="${ud.deptCd}" class="menu-link">
 												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
+												<div data-i18n="Analytics">${ud.deptNm} 게시판</div>
 											</button>
 										</li>
 									</c:when>
@@ -140,9 +162,9 @@
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item">
-											<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+											<button type="submit" name="boardCatCd" value="${ud.deptCd}" class="menu-link">
 												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
+												<div data-i18n="Analytics">${ud.deptNm} 게시판</div>
 											</button>
 										</li>
 									</c:when>
@@ -185,9 +207,9 @@
 								<c:choose>
 									<c:when test="${userId != 'admin'}">
 										<li class="menu-item active">
-											<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+											<button type="submit" name="boardCatCd" value="${ud.deptCd}" class="menu-link">
 												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
+												<div data-i18n="Analytics">${ud.deptNm} 게시판</div>
 											</button>
 										</li>
 									</c:when>
@@ -235,13 +257,20 @@
 								<h2 class="fw-bold py-3 mb-4">전체 게시판</h2>
 							</c:when>
 							<c:otherwise>
-								<h2 class="fw-bold py-3 mb-4">부서 게시판</h2>
+								<c:choose>
+									<c:when test="${userId != 'admin'}">
+										<h2 class="fw-bold py-3 mb-4">${ud.deptNm} 게시판</h2>
+									</c:when>
+									<c:otherwise>
+										<h2 class="fw-bold py-3 mb-4">게시글 관리</h2>
+									</c:otherwise>
+								</c:choose>
 							</c:otherwise>
 						</c:choose>
 						
 						<!-- 게시물 리스트 -->
-				        <div class="card">
-				          <div class="table-responsive text-nowrap">
+				        <div class="card" style="height: 600px;">
+				          <div class="table-responsive text-nowrap" style="height: 500px;">
 				            <table class="table">
 				              <thead>
 				                <tr>
@@ -266,84 +295,94 @@
 								</c:forEach>
 							  </tbody>
 							</table>
+							<!-- 구분선 -->
+							<hr class="m-0">
 						  </div>
-						</div><br>
-	             		<!--/ 게시물 리스트 -->
-	             		
-	             		<!-- 작성버튼 구분 -->
-						<div class="addBtn">
-							<c:choose>
-								<c:when test="${userId == 'admin' && boardCatCd == '00'}">
-									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">공지 작성</button>
-								</c:when>
-								<c:when test="${userId != 'admin' && boardCatCd != '00'}">
-									<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard">게시물 작성</button>
-								</c:when>
-							</c:choose>
-						</div>
 						
-	             		<!-- 페이징 -->
-		                <div class="card-body">
-							<div class="row">
-			                    <div class="col">
-									<div class="demo-inline-spacing">
-				                        <nav aria-label="Page navigation">
-											<ul class="pagination">
-					                          	<!-- 페이징 -->
-												<c:if test="${currentPage!=1}">
-													<li class="page-item first">
-														<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=1">
-															<i class="tf-icon bx bx-chevrons-left"></i>
-														</a>
-													</li>
-												</c:if>
-												<!-- 1페이지가 아닐때 출력 -->
-												<c:if test="${minPage>1}">
-													<li class="page-item prev">
-														<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage-pagePerPage}">
-															<i class="tf-icon bx bx-chevron-left"></i>
-														</a>
-													</li>
-												</c:if>
-												<!-- 페이지 5단위 출력 -->
-												<c:forEach var="i" begin="${minPage}" end="${maxPage}">
-													<c:choose>
-														<c:when test="${i==currentPage}">
-															<!-- 현재 페이지일때 출력 -->
-															<li class="page-item active">
-																<a class="page-link">${i}</a>
-															</li>
-														</c:when>
-														<c:otherwise>
-															<!-- 현재 페이지 아닐때 출력 -->
-															<li class="page-item">
-																<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${i}">${i}</a>
-															</li>
-														</c:otherwise>
-													</c:choose>
-												</c:forEach>
-												<!-- 마지막 페이지 아닐때 출력 -->
-												<c:if test="${maxPage!=lastPage}">
-													<li class="page-item next">
-														<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage+pagePerPage}">
-															<i class="tf-icon bx bx-chevron-right"></i>
-														</a>
-													</li>
-												</c:if>
-												<!-- 마지막 페이지일때 출력 -->
-												<c:if test="${currentPage!=lastPage}">
-													<li class="page-item last">
-														<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${lastPage}">
-															<i class="tf-icon bx bx-chevrons-right"></i>
-														</a>
-													</li>
-												</c:if>
-											</ul>
-				                        </nav>
+		             		<!-- 페이징 -->
+			                <div class="card-body" 
+			                	style="height: 30px;
+			                		   display: flex;
+        							   justify-content: space-between;">
+								<div class="row">
+				                    <div class="col">
+										<div class="demo-inline-spacing">
+					                        <nav aria-label="Page navigation">
+												<ul class="pagination">
+						                          	<!-- 페이징 -->
+													<c:if test="${currentPage!=1}">
+														<li class="page-item first">
+															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=1">
+																<i class="tf-icon bx bx-chevrons-left"></i>
+															</a>
+														</li>
+													</c:if>
+													<!-- 1페이지가 아닐때 출력 -->
+													<c:if test="${minPage>1}">
+														<li class="page-item prev">
+															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage-pagePerPage}">
+																<i class="tf-icon bx bx-chevron-left"></i>
+															</a>
+														</li>
+													</c:if>
+													<!-- 페이지 5단위 출력 -->
+													<c:forEach var="i" begin="${minPage}" end="${maxPage}">
+														<c:choose>
+															<c:when test="${i==currentPage}">
+																<!-- 현재 페이지일때 출력 -->
+																<li class="page-item active">
+																	<a class="page-link">${i}</a>
+																</li>
+															</c:when>
+															<c:otherwise>
+																<!-- 현재 페이지 아닐때 출력 -->
+																<li class="page-item">
+																	<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${i}">${i}</a>
+																</li>
+															</c:otherwise>
+														</c:choose>
+													</c:forEach>
+													<!-- 마지막 페이지 아닐때 출력 -->
+													<c:if test="${maxPage!=lastPage}">
+														<li class="page-item next">
+															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage+pagePerPage}">
+																<i class="tf-icon bx bx-chevron-right"></i>
+															</a>
+														</li>
+													</c:if>
+													<!-- 마지막 페이지일때 출력 -->
+													<c:if test="${currentPage!=lastPage}">
+														<li class="page-item last">
+															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${lastPage}">
+																<i class="tf-icon bx bx-chevrons-right"></i>
+															</a>
+														</li>
+													</c:if>
+												</ul>
+					                        </nav>
+										</div>
+				                    </div>
+								</div>
+				             		<!-- 작성버튼 구분 -->
+									<div class="addBtn">
+										<c:choose>
+											<c:when test="${userId == 'admin' && boardCatCd == '00'}">
+												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=00'">공지 작성</button>
+											</c:when>
+											<c:when test="${userId != 'admin' && boardCatCd == '99'}">
+												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=99'">게시물 작성</button>
+											</c:when>
+											<c:when test="${userId != 'admin' && boardCatCd != '00' && boardCatCd != '99'}">
+												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=${ud.deptCd}'">게시물 작성</button>
+											</c:when>
+										</c:choose>
 									</div>
-			                    </div>
-							</div>
-		                </div>
+									<!-- / 작성버튼 -->
+			                </div>
+			                <!-- / 페이징 -->
+			                
+						</div>
+	             		<!--/ 게시물 리스트 -->
 					</div>
 				<!-- / Content -->
 				</div>
