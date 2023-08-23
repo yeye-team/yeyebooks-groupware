@@ -1,7 +1,6 @@
 package com.goodee.yeyebooks.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,18 +10,17 @@ import com.goodee.yeyebooks.vo.ApprovalLine;
 
 @Mapper
 public interface ApprovalMapper {
-	
+	// 결재문서 추가
 	public int insertApproval(Approval approval);
-	
+	// 결재문서 파일추가
 	public int insertApprovalFile(ApprovalFile approvalFile);
-	
+	// 결재문서 결재선 추가
 	public int insertApprovalLine(ApprovalLine approvalLine);
-	
+	// 내 문서함 조회
+	List<Approval> selectMyApproval(String loginId, int status);
+	// 각 상태별 문서함 조회
 	List<Approval> selectApprovalByStatus(String loginId, String status);
 	
-	List<Approval> selectMyApproval(String loginId);
-	
-	String selectApprovalCode(String approvalStatus);
 
 	public Approval selectApprovalOne(int aprvNo);
 	

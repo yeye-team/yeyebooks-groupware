@@ -1,7 +1,6 @@
 package com.goodee.yeyebooks.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,8 +31,9 @@ public class ApprovalController {
 	
 	@GetMapping("/approval/approvalList")
 	public String myApproval(Model model, 
-							@RequestParam(name = "loginId", defaultValue = "admin") String loginId) {
-		List<Approval> approvalList = approvalService.selectMyApproval(loginId);
+							@RequestParam(name = "loginId", defaultValue = "admin") String loginId,
+							@RequestParam(name = "status", defaultValue = "0") int status) {
+		List<Approval> approvalList = approvalService.selectMyApproval(loginId, status);
 		log.debug("approvalList{} : ",approvalList);
 		model.addAttribute("approvalList",approvalList);
 		return "approval/approvalList";
