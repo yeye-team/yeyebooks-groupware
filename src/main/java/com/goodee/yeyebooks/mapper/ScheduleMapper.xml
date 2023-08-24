@@ -1,3 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goodee.yeyebooks.mapper.ScheduleMapper"></mapper>
+<mapper namespace="com.goodee.yeyebooks.mapper.ScheduleMapper">
+	<select id="selectTodaySchedule">
+		SELECT skd_title skdTitle, skd_start_time skdStartTime, '개인' skdCategory
+		FROM schedule
+		WHERE skd_cat_cd = (SELECT CODE FROM common_code WHERE group_code = 'S001' AND code_nm = '개인')
+		AND user_id = #{userId}
+		AND skd_ymd = #{todayYmd}
+		UNION 
+		SELECT skd_title skdTitle, skd_start_time skdStartTime, '전체' skdCategory
+		FROM schedule
+		WHERE skd_cat_cd = (SELECT CODE FROM common_code WHERE group_code = 'S001' AND code_nm = '전체')
+		AND skd_ymd = #{todayYmd}
+		UNION
+		SELECT skd_title skdTitle, skd_start_time skdStartTime, '부서' skdCategory
+		FROM schedule
+		WHERE skd_cat_cd = (SELECT dept_cd FROM user WHERE user_id = #{userId})
+		AND skd_ymd = #{todayYmd}
+		ORDER BY skdStartTime
+	</select>
+</mapper>

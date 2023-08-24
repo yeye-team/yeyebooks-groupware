@@ -70,13 +70,17 @@
 	   	    	googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
 	   	  		color: 'red',
 	   	  		textColor: 'white',
-	   	  		//오늘일정
 	   	  	},
         });
         calendar.render();
         
         $('#moveToNoticeAll').click(function(){
         	location.href="/yeyebooks/board/boardList?boardCatCd=00";
+        })
+        
+        $('#moveToCalendarAll').click(function(){
+        	//캘린더 주소
+        	location.href="/yeyebooks/";
         })
       });
 	
@@ -132,10 +136,24 @@
 				<div class="row">
 					<div class="col-lg">
 	                  <div class="card mb-4">
-	                    <h5 class="card-header">
+	                    <h5 class="card-header d-flex justify-content-between align-items-center">
 	                    	오늘의 일정
+	                    	<button type="button" class="btn btn-secondary" id="moveToCalendarAll">전체보기</button>
 	                    </h5>
-	                    <div class="card-body">
+	                    <div class="card-body ">
+	                    	<div class="mb-2 text-center">
+		                    	<c:forEach var="s" items="${scheduleList }">
+		                    		<c:if test="${s.skdCategory == '전체' }">
+		                    			<span class="badge bg-info">[전체]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
+		                    		</c:if>
+		                    		<c:if test="${s.skdCategory == '부서' }">
+		                    			<span class="badge bg-success">[부서]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
+		                    		</c:if>
+		            				<c:if test="${s.skdCategory == '개인' }">
+		                    			<span class="badge bg-dark">[개인]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
+		                    		</c:if>
+		                    	</c:forEach>
+	                    	</div>
 	                    	<div id="calendar"></div>
 	                    </div>
 	                  </div>

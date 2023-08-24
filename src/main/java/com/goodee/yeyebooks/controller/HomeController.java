@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.service.BoardService;
+import com.goodee.yeyebooks.service.ScheduleService;
 import com.goodee.yeyebooks.service.UserService;
 import com.goodee.yeyebooks.vo.Board;
+import com.goodee.yeyebooks.vo.Schedule;
 import com.goodee.yeyebooks.vo.User;
 import com.goodee.yeyebooks.vo.UserFile;
 
@@ -30,6 +32,8 @@ public class HomeController {
 	ApprovalService approvalService;
 	@Autowired
 	BoardService boardService;
+	@Autowired
+	ScheduleService scheduleService;
 	
 	@GetMapping("/")
 	public String home(HttpSession session,
@@ -89,6 +93,10 @@ public class HomeController {
 		// 최근 공지사항 리스트 모델에 셋팅
 		List<Board> noticeList = boardService.selectRecentNotice();
 		model.addAttribute("noticeList", noticeList);
+		
+		// 오늘의 일정 리스트 모델에 셋팅
+		List<Schedule> scheduleList = scheduleService.selectTodaySchedule(loginId);
+		model.addAttribute("scheduleList", scheduleList);
 		
 		return "userHome";
 	}
