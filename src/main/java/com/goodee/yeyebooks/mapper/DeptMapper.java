@@ -22,8 +22,6 @@ public interface DeptMapper {
 	
 	List<Map<String, Object>> selectUserCntByDeptAndAll();
 	
-	int updateUserDept(Map<String, Object> map);
-	
 	List<Map<String, Object>> selectDeptList();
 	
 	List<Map<String, Object>> selectUserList(int beginRow, int rowPerPage);
@@ -34,5 +32,15 @@ public interface DeptMapper {
 	
 	int insertUser(User user);
 	
-	int selectjoinYmdCnt(String joinYmd);
+	int selectjoinYmdCnt(User user);
+	
+	int updateUserPwReset(User user);
+	
+	List<Map<String, Object>> selectUserStatList();
+	
+	int updateUserRank(User user);
+	
+	int updateUserDept(User user);
+	
+	int updateUserStat(User user);
 }

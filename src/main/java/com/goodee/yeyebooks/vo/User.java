@@ -12,6 +12,7 @@ public class User {
 	private String dept;
 	private String deptCd;
 	private String userStatus;
+	private String userStatCd;
 	private String gender;
 	private String phoneNo;
 	private String mail;

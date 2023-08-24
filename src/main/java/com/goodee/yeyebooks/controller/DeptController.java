@@ -64,12 +64,9 @@ public class DeptController {
 	}
 	
 	@PostMapping("/modifyUserDept")
-	public String modifyUserDept(@RequestParam(name = "userId", required = false) String userId, String deptCd) {
-		if(userId != null) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("userId", userId);
-			map.put("deptCd", deptCd);
-			deptService.modifyUserDept(map);
+	public String modifyUserDept(User user) {
+		if(user.getUserId() != null) {
+			deptService.modifyUserDept(user);
 		}
 		
 		return "redirect:/deptList";
@@ -85,14 +82,22 @@ public class DeptController {
 	}
 	
 	@PostMapping("/addUser")
-	public String addUser(String userNm, String deptCd, String rankCd, String joinYmd, String gender) {
-		User user = new User();
-		user.setUserNm(userNm);
-		user.setDeptCd(deptCd);
-		user.setRankCd(rankCd);
-		user.setJoinYmd(joinYmd);
-		user.setGender(gender);
+	public String addUser(User user) {
 		int row = deptService.addUser(user);
+		
+		return "redirect:/userList";
+	}
+	
+	@GetMapping("/resetUserPw")
+	public String resetUserPw(User user) {
+		int row = deptService.resetUserPw(user);
+		
+		return "redirect:/userList";
+	}
+	
+	@PostMapping("/modifyUser")
+	public String modifyUser(User user) {
+		int row = deptService.modifyUser(user);
 		
 		return "redirect:/userList";
 	}

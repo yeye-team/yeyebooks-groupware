@@ -22,32 +22,92 @@
 	<script>
 		$(document).ready(function(){
 			$.ajax({
-				async : false, 
 				url : 'rest/deptList',
 				type : 'get',
 				success : function(model) {
 					$(model).each(function(index, item){
 						let str = '<option value="'+item.deptCd+'">'+item.deptNm+'</option>';
-						$('#deptList').append(str);	
+						$('.deptList').append(str);	
 					});
 				}
 			});
 			$.ajax({
-				async : false, 
 				url : 'rest/rankList',
 				type : 'get',
 				success : function(model) {
 					$(model).each(function(index, item){
 						let str = '<option value="'+item.rankCd+'">'+item.rankNm+'</option>';
-						$('#rankList').append(str);	
+						$('.rankList').append(str);	
 					});
 				}
 			});
 			
-			$('#addUserBtn').on('click',function(){
-				$('#addUserForm').submit();
+			var modalModifyUserDeptBtn = $('.modalModifyUserDeptBtn');
+			modalModifyUserDeptBtn.on('click',function(){
+				var indexNo = modalModifyUserDeptBtn.index(this);
+				var userId = $('.getUserId').get(indexNo);
+				var userNm = $('.getUserNm').get(indexNo);
+				$('#modalModifyUserTitle').text($(userNm).text()+' 부서변경');
+				$('#modifyUser').html('<input type="hidden" name="userId" value="'+$(userId).text()+'" id="userId">');
+				$('#modifyUser').append('<select name="deptCd" class="form-select deptList">');
+				$('.deptList').html('<option value=" ">부서 선택</option>');
+				$.ajax({
+					url : 'rest/deptList',
+					type : 'get',
+					success : function(model) {
+						$(model).each(function(index, item){
+							let str = '<option value="'+item.deptCd+'">'+item.deptNm+'</option>';
+							$('.deptList').append(str);	
+						});
+					}
+				});
+				$('#modifyUser').append('</select>');
 			});
 			
+			var modalModifyUserRankBtn = $('.modalModifyUserRankBtn');
+			modalModifyUserRankBtn.on('click',function(){
+				var indexNo = modalModifyUserRankBtn.index(this);
+				var userId = $('.getUserId').get(indexNo);
+				var userNm = $('.getUserNm').get(indexNo);
+				$('#modalModifyUserTitle').text($(userNm).text()+' 직급변경');
+				$('#modifyUser').html('<input type="hidden" name="userId" value="'+$(userId).text()+'" id="userId">');
+				$('#modifyUser').append('<select name="rankCd" class="form-select rankList" required="required">');
+				$('.rankList').html('<option value="">직급 선택</option>');
+				$.ajax({
+					url : 'rest/rankList',
+					type : 'get',
+					success : function(model) {
+						$(model).each(function(index, item){
+							let str = '<option value="'+item.rankCd+'">'+item.rankNm+'</option>';
+							$('.rankList').append(str);	
+						});
+					}
+				});
+				$('#modifyUser').append('</select>');
+			});
+			
+			var modalModifyUserStatBtn = $('.modalModifyUserStatBtn');
+			modalModifyUserStatBtn.on('click',function(){
+				var indexNo = modalModifyUserStatBtn.index(this);
+				var userId = $('.getUserId').get(indexNo);
+				var userNm = $('.getUserNm').get(indexNo);
+				$('#modalModifyUserTitle').text($(userNm).text()+' 상태변경');
+				$('#modifyUser').html('<input type="hidden" name="userId" value="'+$(userId).text()+'" id="userId">');
+				$('#modifyUser').append('<select name="userStatCd" class="form-select statList" required="required">');
+				$('.statList').html('<option value="">상태 선택</option>');
+				$.ajax({
+					url : 'rest/userStatList',
+					type : 'get',
+					success : function(model) {
+						$(model).each(function(index, item){
+							let str = '<option value="'+item.userStatCd+'">'+item.userStatNm+'</option>';
+							$('.statList').append(str);	
+						});
+					}
+				});
+				$('#modifyUser').append('</select>');
+			});
+
 		});
 	</script>
 </head>
@@ -58,7 +118,9 @@
 		<!-- Menu -->
 		<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 			<div class="app-brand demo">
-				<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+				<a href="${pageContext.request.contextPath}">
+					<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+				</a>
 			</div>
 
 			<div class="menu-inner-shadow"></div>
@@ -99,10 +161,11 @@
 					</div>
 				  	<hr class="m-0" />
 				  	<div class="card-body">
-	                	<div class="table-responsive text-nowrap">
+	                	<div class="table-responsive text-nowrap card" style="height: 540px; box-shadow: none;">
+	                	<div class="card-body" id="horizontal-example">
 	                	<form action="${pageContext.request.contextPath}/addUser" method="post" id="addUserForm">
 		                  <table class="table">
-		                    <thead>
+		                    <thead align="center">
 		                      <tr>
 		                        <th>이름</th>
 		                        <th>사원번호</th>
@@ -117,19 +180,19 @@
 		                        <th>상태</th>
 		                      </tr>
 		                    </thead>
-		                    <tbody class="table-border-bottom-0">                    
+		                    <tbody class="table-border-bottom-0" align="center">                    
 		                    	<tr>
 			                      	<td colspan="2"><input type="text" name="userNm" class="form-control" placeholder="이름 입력" required="required"></td>
 			                      	<td colspan="2">
 				                      <div>
-				                        <select id="deptList" name="deptCd" class="form-select">
+				                        <select name="deptCd" class="form-select deptList">
 				                          <option value=" ">부서 선택</option>
 				                        </select>
 				                      </div>
 			                      	</td>
 			                      	<td colspan="2">
 				                      <div>
-				                        <select id="rankList" name="rankCd" class="form-select" required="required">
+				                        <select name="rankCd" class="form-select rankList" required="required">
 				                          <option value="">직급 선택</option>
 				                        </select>
 				                      </div>
@@ -143,16 +206,43 @@
 				                        </select>
 				                      </div>
 			                      	</td>
-			                      	<td colspan="2"><input name="joinYmd" type="date" class="form-control" required="required"></td>
-			                      	<td colspan="2" style="text-align: center;"><button type="button" class="btn btn-secondary" id="addUserBtn">추가</button></td>
+			                      	<td colspan="2">
+			                      		<input name="joinYmd" type="date" class="form-control" required="required">
+			                      	</td>
+			                      	<td colspan="2">
+				                      	<button type="submit" class="btn btn-secondary" id="addUserBtn">
+				              				추가
+				                      	</button>
+			                      	</td>
 	                      		</tr>
 		                    	<c:forEach var="u" items="${list}">
 		                    		<tr>
-				                      	<td>${u.userNm}</td>
-				                      	<td>${u.userId}</td>
-				                      	<td>******</td>
-				                      	<td>${u.deptNm}</td>
-				                      	<td>${u.rankNm}</td>
+				                      	<td class="getUserNm">${u.userNm}</td>
+				                      	<td class="getUserId">${u.userId}</td>
+				                      	<td>
+					                      	<a href="${pageContext.request.contextPath}/resetUserPw?userId=${u.userId}">
+					                      		<i class="bx bx-reset rounded-pill btn-outline-secondary"></i>
+					                      	</a>
+				                      	</td>
+				                      	<c:if test="${u.deptNm == null}">
+				                      		<td>
+					                      		<a type="button" data-bs-toggle="modal" data-bs-target="#modalModifyUser" class="modalModifyUserDeptBtn">
+					                      			<i class='bx bx-minus'></i>
+					                      		</a>
+				                      		</td>
+				                      	</c:if>
+				                      	<c:if test="${u.deptNm != null}">
+				                      		<td>
+					                      		<a type="button" data-bs-toggle="modal" data-bs-target="#modalModifyUser" class="modalModifyUserDeptBtn">
+					                      			${u.deptNm}
+					                      		</a>
+				                      		</td>
+				                      	</c:if>
+				                      	<td>
+					                      	<a type="button" data-bs-toggle="modal" data-bs-target="#modalModifyUser" class="modalModifyUserRankBtn">
+					                      		${u.rankNm}
+					                      	</a>
+				                      	</td>
 				                      	<c:if test="${u.gender == 1}">
 				                      		<td>남</td>
 				                      	</c:if>
@@ -162,13 +252,50 @@
 				                      	<td>${u.phoneNo}</td>
 				                      	<td>${u.joinYmd}</td>
 				                      	<td>${u.leavYmd}</td>
-				                      	<td align="center">${u.dayoffCnt}</td>
-				                      	<td>${u.userStatNm}</td>
+				                      	<td>${u.dayoffCnt}</td>
+				                      	<td>
+					                      	<a type="button" data-bs-toggle="modal" data-bs-target="#modalModifyUser" class="modalModifyUserStatBtn">
+					                      		${u.userStatNm}
+					                      	</a>
+				                      	</td>
 		                      		</tr>
 		                    	</c:forEach>
 		                    </tbody>
 		                  </table>
 		                  </form>
+	                	</div>
+	                	
+	                	<!-- Modal -->
+                        <div class="modal fade" id="modalModifyUser" tabindex="-1" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="modalModifyUserTitle"></h5>
+                                <button
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <form action="${pageContext.request.contextPath}/modifyUser" method="post" id="modifyUserForm">
+	                              <div class="modal-body pb-0">
+	                                <div class="row">
+	                                  <div class="col mb-3" id="modifyUser">
+	                                  </div>
+	                                </div>
+	                              </div>
+	                              <div class="modal-footer">
+	                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+	                                  취소
+	                                </button>
+	                                <button type="submit" class="btn btn-secondary" id="modifyUserBtn">변경</button>
+	                              </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+	                	
 		                </div>
 		                <div class="mt-3">
 		                <!-- Basic Pagination -->

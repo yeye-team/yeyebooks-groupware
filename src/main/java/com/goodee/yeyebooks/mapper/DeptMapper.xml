@@ -52,12 +52,6 @@
 		ORDER BY deptCd ASC
 	</select>
 	
-	<update id="updateUserDept" parameterType="java.util.Map">
-		UPDATE user
-		SET dept_cd = #{deptCd}
-		WHERE user_id = #{userId}
-	</update>
-	
 	<select id="selectDeptList" resultType="java.util.Map">
 		SELECT code deptCd, code_nm deptNm
 		FROM common_code
@@ -108,9 +102,39 @@
 				#{joinYmd}, 0, NOW(), NOW())
 	</insert>
 	
-	<select id="selectjoinYmdCnt" parameterType="String" resultType="int">
+	<select id="selectjoinYmdCnt" parameterType="com.goodee.yeyebooks.vo.User" resultType="int">
 		SELECT COUNT(*) 
 		FROM user
 		WHERE join_ymd = #{joinYmd}
 	</select>
+	
+	<update id="updateUserPwReset" parameterType="com.goodee.yeyebooks.vo.User">
+		UPDATE user
+		SET user_pw = PASSWORD('1234')
+		WHERE user_id = #{userId}
+	</update>
+	
+	<select id="selectUserStatList" resultType="java.util.Map">
+		SELECT code userStatCd, code_nm userStatNm
+		FROM common_code
+		WHERE group_code = 'U001'
+	</select>
+	
+	<update id="updateUserDept" parameterType="com.goodee.yeyebooks.vo.User">
+		UPDATE user
+		SET dept_cd = #{deptCd}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<update id="updateUserRank" parameterType="com.goodee.yeyebooks.vo.User">
+		UPDATE user
+		SET rank_cd = #{rankCd}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<update id="updateUserStat" parameterType="com.goodee.yeyebooks.vo.User">
+		UPDATE user
+		SET user_stat_cd = #{userStatCd}
+		WHERE user_id = #{userId}
+	</update>
 </mapper>

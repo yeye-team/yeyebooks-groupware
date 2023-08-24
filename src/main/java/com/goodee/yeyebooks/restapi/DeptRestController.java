@@ -25,4 +25,9 @@ public class DeptRestController {
 	public List<Map<String, Object>> getRankList(){
 		return deptService.getRankList();	
 	}
+	
+	@GetMapping("/rest/userStatList")
+	public List<Map<String, Object>> getUserStatList(){
+		return deptService.getUserStatList();	
+	}
 }
