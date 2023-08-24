@@ -54,29 +54,26 @@
 	
 	<!-- 게시물상세 -->
 	<select id="selectBoardOne">
-			SELECT 
-				b.board_no boardNo,
-				b.board_cat_cd boardCatCd,
-				b.board_title boardTitle,
-				b.board_contents boardContents,
-				b.user_id userId,
-				(SELECT user_nm FROM user WHERE user_id = b.user_id) userNm,
-				(SELECT 
-					(SELECT code_nm FROM common_code WHERE group_code = 'D001'AND CODE = dept_cd) deptNm 
-				 FROM user 
-				 WHERE user_id = b.user_id) userDept,
-				(SELECT 
-					(SELECT code_nm FROM common_code WHERE group_code = 'R001'AND CODE = rank_cd) rankNm 
-				 FROM user 
-				 WHERE user_id = b.user_id) userRank,
-				b.c_date cDate,
-				b.board_view boardView,
-				bf.origin_filename originFilename,
-				bf.path
-			FROM board b left JOIN board_file bf 
-			ON b.board_no = bf.board_no
-			WHERE 
-				b.board_no = #{boardNo}
+			SELECT
+				board_no boardNo,
+				board_cat_cd boardCatCd,
+				board_title boardTitle,
+				board_contents boardContents,
+				user_id userId,
+				(SELECT user_nm FROM user WHERE user_id = userId) userNm,
+				(SELECT
+					(SELECT code_nm FROM common_code WHERE group_code = 'D001' AND CODE = dept_cd) deptNm
+				 FROM user
+				 WHERE user_id = userId) userDept,
+				(SELECT
+					(SELECT code_nm FROM common_code WHERE group_code = 'R001' AND CODE = rank_cd) rankNm
+				 FROM user
+				 WHERE user_id = userId) userRank,
+				 c_date cDate,
+				 board_view boardView
+			FROM board
+			WHERE
+				board_no = #{boardNo}
 	</select>
 	
 	<!-- 조회수 증가 -->
@@ -90,7 +87,10 @@
 	</update>
 	
 	<!-- 게시물 등록 -->
-	<insert id="insertBoard">
+	<insert id="insertBoard" parameterType="com.goodee.yeyebooks.vo.Board">
+		<selectKey order="AFTER" keyProperty="boardNo" resultType="java.lang.Integer">
+			SELECT last_insert_id()
+		</selectKey>
 		INSERT INTO
 			board (
 				user_id, board_cat_cd, board_title, board_contents, board_view, c_date, u_date
@@ -99,17 +99,6 @@
 		)
 	</insert>
 	
-	<!-- 게시물 등록 시 사용할 로그인 유저 정보 -->
-	<select id="selectLoginUserInfo">
-		SELECT 
-			user_id userId,
-			user_nm userNm,
-			(SELECT code_nm FROM common_code WHERE group_code = 'R001' AND CODE = rank_cd) userRank,
-			(SELECT code_nm FROM common_code WHERE group_code = 'D001' AND CODE = dept_cd) userDept
-		FROM user
-		WHERE user_id = #{userId}
-	</select>
-
 	<!-- 게시물 수정 -->
 	<update id="modifyBoard">
 		UPDATE 

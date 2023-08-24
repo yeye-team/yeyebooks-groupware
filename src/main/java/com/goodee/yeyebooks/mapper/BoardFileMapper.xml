@@ -3,9 +3,9 @@
 <mapper namespace="com.goodee.yeyebooks.mapper.BoardFileMapper">
 
 	<!-- 게시물 첨부파일 조회 -->
-	<select id="selectBoardFile" 
-			resultType="com.goodee.yeyebooks.vo.BoardFile">
+	<select id="selectBoardFile">
 		SELECT 
+			board_file_no boardFileNo,
 			board_no boardNo,
 			file_cat_cd fileCatCd,
 			origin_filename originFilename,

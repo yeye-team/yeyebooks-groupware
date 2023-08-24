@@ -31,11 +31,9 @@ public interface BoardMapper {
 	// 게시물 등록
 	int insertBoard(Board board);
 	
-	// 게시물 등록시 사용할 로그인 유저 정보
-	User selectLoginUserInfo(String userId);
-	
 	// 게시물 수정
 	int modifyBoard(int boardNo);
+	
 	// 게시물 삭제
 	int deleteBoard(int boardNo);
 }
