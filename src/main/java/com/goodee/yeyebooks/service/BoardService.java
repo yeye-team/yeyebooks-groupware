@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 
@@ -187,7 +188,7 @@ public class BoardService {
 		//log.debug("\u001B[41m" + selectAllCatCode + "< selectAllCatCode" + "\u001B[0m");
 		
 		int row = boardMapper.insertBoard(board);
-		// log.debug("\u001B[41m" + "insertBoard row : " + row + "\u001B[0m");
+		//log.debug("\u001B[41m" + "insertBoard row : " + row + "\u001B[0m");
 		// addboard 성공 및 첨부된 파일이 1개 이상 있다면
 		List<MultipartFile> fileList = board.getMultipartFile();
 		if(row == 1 && fileList != null && fileList.size() > 0) {
@@ -206,6 +207,8 @@ public class BoardService {
 					// 확장자
 					int lastIdx = mf.getOriginalFilename().lastIndexOf(".");
 					String ext = mf.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
+					//log.debug("\u001B[41m" + "insertBoard boardFile lastIdx : " + lastIdx + "\u001B[0m");
+					//log.debug("\u001B[41m" + "insertBoard boardFile ext : " + ext + "\u001B[0m");
 					// 새로운 이름 + 확장자
 					bf.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
 					
@@ -215,6 +218,8 @@ public class BoardService {
 					// path 위치에 저장파일이름으로 빈파일을 생성
 					File f = new File(path+bf.getSaveFilename());
 					// 빈파일에 첨부된 파일의 스트림을 주입한다.
+					log.debug("\u001B[41m" + "insertBoard boardFile f : " + f + "\u001B[0m");
+					log.debug("\u001B[41m" + "insertBoard boardFile f.getAbsolutePath() : " + f.getAbsolutePath() + "\u001B[0m");
 					try {
 						mf.transferTo(f);
 					} catch(IllegalStateException | IOException e) {

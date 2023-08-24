@@ -215,15 +215,6 @@
 							                </div>
 							                <!-- 내용 입력 -->
                      						<div class="mb-1">
-                     							<!-- <textarea
-							                         id="basic-default-message"
-							                         class="form-control"
-							                         placeholder="내용을 입력하세요"
-							                         name="boardContents"
-							                         maxlength="2500"
-							                         style="height: 440px;
-							                         		resize: none;"
-							                         required="required"></textarea> -->
                      							<!-- 네이버 에디터 -->
 												<textarea name="boardContents"
 														  class="form-control"
@@ -260,7 +251,7 @@
 							                	</div>
 							                </div>
 							                <div>
-							                	<button type="button" class="btn btn-icon btn-primary" id="addFile"><i class='bx bx-upload'></i></button>
+							                	<button type="button" class="btn btn-icon btn-primary" id="addFile"><i class='bx bxs-file-plus'></i></button>
 												<button type="button" class="btn btn-icon btn-primary" id="removeFile"><i class='bx bxs-x-square'></i></button>
 												<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()">등록</button>
 							                </div>
