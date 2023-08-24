@@ -99,7 +99,11 @@
 						},
 						success: function(response) {
 							deleteRow.remove();
-							alert("댓글 삭제 성공");
+							Swal.fire({
+				                icon: 'success',
+				                title: '성공',
+				                text: '댓글이 삭제되었습니다.',
+							});
 						},
 						error: function() {
 							alert("댓글 삭제 실패");
@@ -113,29 +117,36 @@
 		    	// 기존 redirect 막기
 				e.preventDefault();
 		    	
-		        var addForm = $(this).closest("#addComForm");
-				var boardNo = addForm.find("[name='boardNo']").val();
-				var userId = addForm.find("[name='userId']").val();
-				var addComment = addForm.find("[name='comment']").val();
-		        
-		        $.ajax({
-		        	type: "POST",
-		        	url: "${pageContext.request.contextPath}/board/addComment",
-		        	data: {
-						boardNo: boardNo,
-						userId: userId,
-						comment: addComment
-					},
-		        	success: function(response){
-		        		addForm.find("textarea").val("");
-		        		location.reload();
-		        	},
-		        	error: function(){
-		        		alert("등록실패");
-		        	}
-		        });
+				if($('#newComment').val()==''){
+					Swal.fire({
+			                icon: 'warning',
+			                title: '경고',
+			                text: '댓글은 필수값입니다.',
+					});
+				} else {
+			        var addForm = $(this).closest("#addComForm");
+					var boardNo = addForm.find("[name='boardNo']").val();
+					var userId = addForm.find("[name='userId']").val();
+					var addComment = addForm.find("[name='comment']").val();
+					
+			        $.ajax({
+			        	type: "POST",
+			        	url: "${pageContext.request.contextPath}/board/addComment",
+			        	data: {
+							boardNo: boardNo,
+							userId: userId,
+							comment: addComment
+						},
+			        	success: function(response){
+			        		addForm.find("textarea").val("");
+			        		location.reload();
+			        	},
+			        	error: function(){
+			        		alert("등록실패");
+			        	}
+			        });
+				}
 		    });
-		    
 		});
 	</script>
 	<style>
@@ -317,7 +328,6 @@
 
 	        <!-- Layout container -->
 	        <c:set value="${board}" var="b"></c:set>
-			<c:set value="${boardFile}" var="f"></c:set>
 	        <div class="layout-page">
 	        	<jsp:include page="../inc/navbar.jsp"></jsp:include>
 				<!-- Content wrapper -->
@@ -404,19 +414,20 @@
 							<hr class="m-0">
 							<!-- 게시물 상세 내용 -->
 							<div class="card-body">
-								<c:if test="${f.originFilename != null}">
-									<!-- 첨부파일 -->
-									<div>
-										<a 
-											href="${pageContext.request.contextPath}/${f.path}/${f.saveFilename}" 
-											download="${f.saveFilename}">${f.originFilename}
-										</a>
-									</div>
-								</c:if>
-								<br>
 								<div>
 									${b.boardContents}
-								</div>
+								</div><br>
+								<c:if test="${boardFile != null}">
+									<!-- 첨부파일 -->
+									<div>
+										<c:forEach items="${boardFile}" var="f">
+											<a 
+												href="${pageContext.request.contextPath}/${f.path}/${f.saveFilename}" 
+												download="${f.originFilename}">${f.originFilename}
+											</a><br>
+										</c:forEach>
+									</div>
+								</c:if>
 							</div>
 	             			<!--/ 게시물 상세 내용 -->
 	             			<!-- 구분선 -->
@@ -498,7 +509,7 @@
 												<input type="hidden" name="boardNo" value="${b.boardNo}">
 												<input type="hidden" name="userId" value="${userId}">
 					                        </span>
-					                        <textarea class="form-control" aria-label="With textarea" name="comment" placeholder="댓글을 남겨보세요" required="required"></textarea>
+					                        <textarea class="form-control" aria-label="With textarea" name="comment" placeholder="댓글을 남겨보세요" required="required" id="newComment"></textarea>
 					                        <br>
 				                        </div>
 				                        <button type="button" class="insertComBtn btn btn-secondary m-3" style="float: right;">등록</button>
