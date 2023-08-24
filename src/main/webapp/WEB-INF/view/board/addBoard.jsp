@@ -15,35 +15,7 @@
 <title>YEYEBOOKS</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-	<!-- 네이버 스마트 에디터 스크립트 -->
-	<!-- <script type="text/javascript" src="smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script> -->
-	<!-- <script>
-	let oEditors = [];
-
-    smartEditor = function() {
-           nhn.husky.EZCreator.createInIFrame({
-               oAppRef: oEditors,
-               elPlaceHolder: "editorTxt0", //textarea에 부여한 아이디와 동일해야한다.
-               sSkinURI: "/static/smarteditor/SmartEditor2Skin.html", //자신의 프로젝트에 맞게 경로 수
-               fCreator: "createSEditor2"
-           })
-       }
-		
-	    $(document).ready(function() {
-	     	//스마트에디터 적용
-	          smartEditor(); 
-	              //값 불러오기
-	           function preview(){
-	            	// 에디터의 내용을 textarea에 적용
-	            	oEditors.getById["editorTxt0"].exec("UPDATE_CONTENTS_FIELD", []);
-	                // textarea 값 불러오기 
-	            	var content = document.getElementById("editorTxt0").value;
-	            	alert(content);
-	            	return;
-	        }
-	           
-	     })
-	</script> -->
+	<script type="text/javascript" src="${pageContext.request.contextPath}/smartEditor/js/HuskyEZCreator.js"></script>
 	<script>
 		$(document).ready(function(){
 			// 파일 개수 3개제한
@@ -243,7 +215,7 @@
 							                </div>
 							                <!-- 내용 입력 -->
                      						<div class="mb-1">
-						                        <textarea
+                     							<!-- <textarea
 							                         id="basic-default-message"
 							                         class="form-control"
 							                         placeholder="내용을 입력하세요"
@@ -251,7 +223,35 @@
 							                         maxlength="2500"
 							                         style="height: 440px;
 							                         		resize: none;"
-							                         required="required"></textarea>
+							                         required="required"></textarea> -->
+                     							<!-- 네이버 에디터 -->
+												<textarea name="boardContents"
+														  class="form-control"
+														  id="editor"
+														  placeholder="내용을 입력하세요"
+														  maxlength="2500" 
+														  style="
+														  	height: 380px;
+														  	width: 100%"
+							                         	  ></textarea>
+												<script type="text/javascript">
+											        var oEditors = [];
+											        nhn.husky.EZCreator.createInIFrame({
+											            oAppRef: oEditors,
+											            elPlaceHolder: "editor",
+											            sSkinURI: "${pageContext.request.contextPath}/smartEditor/SmartEditor2Skin.html",  // 스킨 경로
+											            fCreator: "createSEditor2",
+											            htParams: {
+											            	bUseToolbar : true,
+											            	bUseVerticalResizer: false,
+											            	bUseModeChanger: false
+											            }
+											        });
+											        
+											        function submitContents(){
+											        	oEditors.getById["editor"].exec("UPDATE_CONTENTS_FIELD",[]);
+											        }
+											    </script>
                							  	</div>
                							  	<!-- 첨부 파일 -->
 							                <div class="mb-1">
@@ -262,7 +262,7 @@
 							                <div>
 							                	<button type="button" class="btn btn-icon btn-primary" id="addFile"><i class='bx bx-upload'></i></button>
 												<button type="button" class="btn btn-icon btn-primary" id="removeFile"><i class='bx bxs-x-square'></i></button>
-												<button type="submit" class="btn btn-primary" style="float: right;">등록</button>
+												<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()">등록</button>
 							                </div>
 										</form>
 										<br>
