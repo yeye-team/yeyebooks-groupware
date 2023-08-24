@@ -13,12 +13,15 @@ import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 public class ApprovalService {
 	
-	private final ApprovalMapper approvalMapper;
+	@Autowired 
+	private ApprovalMapper approvalMapper;
 	/*
 	 status들어오면
 	 > String approvalCode = approvalMapper.selectApprovalCode(status);
@@ -27,7 +30,6 @@ public class ApprovalService {
 	 */
 	
 	
-	@Autowired 
 	public ApprovalService(ApprovalMapper approvalMapper) {
 		this.approvalMapper = approvalMapper;
 	}
@@ -35,6 +37,7 @@ public class ApprovalService {
 	public List<Approval> selectMyApproval(String loginId, int status){
 		List<Approval> approvalList = null;
 		approvalList = approvalMapper.selectMyApproval(loginId, status);
+		log.debug("\u001B[35m"+"aprovalList : " + approvalList);
 		return approvalList;
 	}
 	

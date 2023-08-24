@@ -1,6 +1,9 @@
 package com.goodee.yeyebooks.controller;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,10 +37,13 @@ public class ApprovalController {
 							@RequestParam(name = "loginId", defaultValue = "admin") String loginId,
 							@RequestParam(name = "status", defaultValue = "0") int status) {
 		List<Approval> approvalList = approvalService.selectMyApproval(loginId, status);
-		log.debug("approvalList{} : ",approvalList);
+		log.debug("\u001B[35m"+"approvalList{} : ",approvalList);
 		model.addAttribute("approvalList",approvalList);
+		model.addAttribute("status", status);
 		return "approval/approvalList";
 	}
+	
+
 	
 	/*
 	 * // 내문서함 불러오기

@@ -59,7 +59,7 @@
 	
 	
 	<!-- 내 문서함 -->
-	<select id="selectMyApproval" resultType="com.goodee.yeyebooks.vo.Approval">
+	<select id="selectMyApproval" parameterType="java.util.Map" resultType="com.goodee.yeyebooks.vo.Approval">
 		SELECT 
 			a.aprv_no aprvNo, a.user_id userId,
 			a.doc_cat_cd docCatCd, c1.code_nm codeNm, a.aprv_title aprvTitle,
@@ -73,8 +73,17 @@
 		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
-		WHERE (a.user_id = 'admin' OR al.user_id = 'admin' OR a.reference LIKE '%admin%')
-			<choose>
+		<choose>
+	         <when test="status == 0 or status == 1 or status == 4 or status == 5 or status == 6">
+	            WHERE (a.user_id = 'admin' OR al.user_id = 'admin' OR a.reference LIKE '%admin%')
+	         </when>
+	         <when test="status == 2">
+	            WHERE a.user_id = 'admin'
+	         </when>
+	         <when test="status == 3">
+	            WHERE al.user_id = 'admin'
+	         </when>
+
 				<when test="status != 0">
 					AND c2.code = 
 					<choose>
@@ -85,21 +94,8 @@
 						<when test="status == 5"> '03' </when>
 						<when test="status == 6"> '04' </when>
 					</choose>
-						AND 
-						<choose>
-							<when test="status == 2">
-								a.user_id = 'admin'
-							</when>
-							<when test="status == 3">
-								al.user_id = 'admin'
-							</when>
-							<otherwise>
-								a.user_id = 'admin'
-							</otherwise>
-						</choose>
 				</when>
 						<otherwise>
-							AND a.user_id = 'admin'
 						</otherwise>
 				</choose>
 
