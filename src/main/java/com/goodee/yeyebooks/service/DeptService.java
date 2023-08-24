@@ -48,18 +48,16 @@ public class DeptService {
 		return row;
 	}
 	
-	public int modifyUserDept(Map<String, Object> map) {
-		log.debug("\u001B[44m"+map.get("userId")+"\u001B[0m");
-		String[] userIdList = ((String)map.get("userId")).split(",");
-		String deptCd = (String)map.get("deptCd");
+	public int modifyUserDept(User user) {
+		String[] userIdList = user.getUserId().split(",");
+		String deptCd = user.getDeptCd();
 		int row = 0;
 		
 		for (String s : userIdList) {
-			log.debug("\u001B[44m"+s+"\u001B[0m");
-			Map<String, Object> m = new HashMap<>();
-			m.put("deptCd", deptCd);
-			m.put("userId", s);
-			row += deptMapper.updateUserDept(m);
+			User u = new User();
+			u.setUserId(s);
+			u.setDeptCd(deptCd);
+			row += deptMapper.updateUserDept(u);
 		}
 		return row;
 	}
@@ -71,6 +69,11 @@ public class DeptService {
 	
 	public List<Map<String, Object>> getRankList(){
 		List<Map<String, Object>> list = deptMapper.selectRankList();
+		return list;
+	}
+	
+	public List<Map<String, Object>> getUserStatList(){
+		List<Map<String, Object>> list = deptMapper.selectUserStatList();
 		return list;
 	}
 	
@@ -101,7 +104,7 @@ public class DeptService {
 	}
 	
 	public int addUser(User user) {
-		int joinNo = deptMapper.selectjoinYmdCnt(user.getJoinYmd()) + 1;
+		int joinNo = deptMapper.selectjoinYmdCnt(user) + 1;
 		String userId = "y"+user.getJoinYmd().replace("-", "");
 		if(joinNo > 9) {
 			userId += joinNo;
@@ -118,6 +121,31 @@ public class DeptService {
 		}
 		
 		int row = deptMapper.insertUser(user);
+		return row;
+	}
+	
+	public int resetUserPw(User user) {
+		int row = deptMapper.updateUserPwReset(user);
+		return row;
+	}
+	
+	public int modifyUser(User user) {
+		int row = 0;
+		if(user.getDeptCd() != null) {
+			if(user.getDeptCd().equals(" ")) {
+				user.setDeptCd(null);
+			}
+			row = deptMapper.updateUserDept(user);
+		}
+		
+		if(user.getRankCd() != null) {
+			row = deptMapper.updateUserRank(user);
+		}
+		
+		if(user.getUserStatCd() != null) {
+			row = deptMapper.updateUserStat(user);
+		}
+	
 		return row;
 	}
 }
