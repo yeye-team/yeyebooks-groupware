@@ -127,19 +127,24 @@ public class BoardController {
 	@GetMapping("/board/addBoard")
 	public String addBoard(Model model, HttpSession session, String boardCatCd) {
 		String userId = (String)session.getAttribute("userId");
-		log.debug("\u001B[41m"+ "addBoard loginUserId : " + userId + "\u001B[0m");	
-		log.debug("\u001B[41m"+ "addBoard boardCatCd : " + boardCatCd + "\u001B[0m");
+		//log.debug("\u001B[41m"+ "addBoard loginUserId : " + userId + "\u001B[0m");	
+		//log.debug("\u001B[41m"+ "addBoard boardCatCd : " + boardCatCd + "\u001B[0m");
+		
+		Map<String, Object> mainMenu = boardService.mainMenu(session);
+		//log.debug("\u001B[41m"+ "addBoard mainMenu : " + mainMenu + "\u001B[0m");
 		
 		model.addAttribute("userId", userId);
 		model.addAttribute("boardCatCd", boardCatCd);
+		model.addAllAttributes(mainMenu);
 		return("/board/addBoard");
 	}
 	
 	@PostMapping("/board/addBoard")	
 	public String addBoard(HttpServletRequest request, Board board) {
-		String path = request.getServletContext().getRealPath("/boardFile/");
+		String path = "/boardFile/";
 		int row = boardService.insertBoard(board, path);
-		log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
-		return "redirect:/board/boardList";
+		//log.debug("\u001B[41m"+ board + "입력 board" + "\u001B[0m");	
+		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
+		return "redirect:/board/boardList?boardCatCd="+board.getBoardCatCd();
 	}
 }	
