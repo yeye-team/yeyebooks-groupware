@@ -44,6 +44,74 @@
 	           
 	     })
 	</script> -->
+	<script>
+		$(document).ready(function(){
+			// 파일 개수 3개제한
+			$('#addFile').click(function(){
+				if ($('.boardFiles').length >= 3) {
+					Swal.fire({
+		                icon: 'warning',
+		                title: '경고',
+		                text: '최대 3개의 파일만 첨부할 수 있습니다.',
+					});
+				} else if ($('.boardFiles').last().val() == ''){
+					Swal.fire({
+		                icon: 'warning',
+		                title: '경고',
+		                text: '빈 파일 업로드가 있습니다.',
+					});
+				} else {
+					$('#files').append('<input class="form-control boardFiles" type="file" name="multipartFile"><br>')
+				}
+			});
+			
+			$('#removeFile').click(function(){
+		        if ($('.boardFiles').length === 1) {
+		        	if ($('.boardFiles').val() !== "") {
+		        		$('.boardFiles').val("");
+		            } else {
+		                Swal.fire({
+			                icon: 'warning',
+			                title: '경고',
+			                text: '더 이상 삭제할 파일이 없습니다.',
+						});
+		            }
+		        } else {
+		            $('.boardFiles').last().remove();
+		        }
+		    });
+			
+			// 파일 용량 3MB 제한 / 확장자 제한
+			$(document).on("change", "input[name='multipartFile']", function() {
+				var maxSize = 3 * 1024 * 1024;
+			    var allowedExtensions = ["xlsx", "docs", "hwp", "pdf", "pptx", "ppt", "jpg", "jpeg", "png"];
+			    
+			    var file = this.files[0];
+			    var fileSize = file.size;
+			    var fileExtension = file.name.split('.').pop().toLowerCase();
+			    
+			    if (fileSize > maxSize) {
+			        Swal.fire({
+			            icon: 'warning',
+			            title: '용량을 확인하세요',
+			            text: '3MB 이내로 등록 가능합니다.',
+			        });
+			        $(this).val('');
+			        return false;
+			    }
+
+			    if (allowedExtensions.indexOf(fileExtension) === -1) {
+			        Swal.fire({
+			            icon: 'warning',
+			            title: '확장자를 확인하세요',
+			            text: '업로드 가능 확장자 : xlsx, docs, hwp, pdf, pptx, ppt, jpg, jpeg, png',
+			        });
+			        $(this).val('');
+			        return false;
+			    }
+			});
+		});
+	</script>
 	<style>
     	.menu-link{
     		background-color: white;
@@ -65,8 +133,10 @@
 			<!-- Menu -->
 			<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 				<div class="app-brand demo">
-					<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
-					style="width:100%">
+					<a href="${pageContext.request.contextPath}">
+						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
+						style="width:100%">
+					</a>
 				</div>
 		
 				<div class="menu-inner-shadow"></div>
@@ -91,9 +161,9 @@
 						<c:choose>
 							<c:when test="${userId != 'admin'}">
 								<li class="menu-item">
-									<button type="submit" name="boardCatCd" value="dept" class="menu-link">
+									<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
 										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">부서 게시판</div>
+										<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
 									</button>
 								</li>
 							</c:when>
@@ -142,40 +212,58 @@
 					                    <form action="${pageContext.request.contextPath}/board/addBoard" method="post" enctype="multipart/form-data">
 				                        	<!-- 게시판 선택 -->
 					                        <div class="mb-3">
-				                           		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-					                            	<input
-						                                type="radio"
-						                                class="btn-check"
-						                                name="boardCatCd"
-						                                value="99"
-						                                id="btnradio1"
-						                                checked
-						                                autocomplete="off"
-													/>
-					                                <label class="btn btn-outline-primary" for="btnradio1">전체 게시판</label>
-					                                <input type="radio" class="btn-check" name="boardCatCd" value="${boardCatCd}" id="btnradio2" autocomplete="off" />
-					                                <label class="btn btn-outline-primary" for="btnradio2">부서 게시판</label>
-												</div>
+				                           		<c:choose>
+				                           			<c:when test="${userId == 'admin'}">
+				                           				<select name="boardCatCd" class="form-select">
+								                        	<option value="00" selected="selected">공지 게시판</option>
+								                        </select>
+				                           			</c:when>
+				                           			<c:otherwise>
+				                           				<c:choose>
+				                           					<c:when test="${boardCatCd == '99'}">
+								                                <select name="boardCatCd" class="form-select">
+										                        	<option value="99" selected="selected">전체 게시판</option>
+										                        	<option value="${userDept.deptCd}">${userDept.deptNm} 게시판</option>
+										                        </select>
+				                           					</c:when>
+				                           					<c:otherwise>
+								                                <select name="boardCatCd" class="form-select">
+										                        	<option value="99">전체게시판</option>
+										                        	<option value="${userDept.deptCd}" selected="selected">${userDept.deptNm} 게시판</option>
+										                        </select>
+				                           					</c:otherwise>
+				                           				</c:choose>
+				                           			</c:otherwise>
+				                           		</c:choose>
 					                        </div>
 					                        <!-- 제목 입력 -->
-							                <div class="mb-5">
+							                <div class="mb-3">
 								                <input type="hidden" name="userId" value="${userId}">
-								                <input type="text" name="boardTitle" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" />
-							                </div>
-							                <!-- 첨부 파일 -->
-							                <div class="mb-1">
-							                	<input class="form-control" type="file" name="boardFile" id="formFileMultiple" multiple />
+								                <input type="text" name="boardTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
 							                </div>
 							                <!-- 내용 입력 -->
-                     						<div class="mb-3">
+                     						<div class="mb-1">
 						                        <textarea
 							                         id="basic-default-message"
 							                         class="form-control"
 							                         placeholder="내용을 입력하세요"
 							                         name="boardContents"
-							                         style="height: 500px;"></textarea>
+							                         maxlength="2500"
+							                         style="height: 440px;
+							                         		resize: none;"
+							                         required="required"></textarea>
                							  	</div>
-											<button type="submit" class="btn btn-primary" style="float: right;">등록</button>
+               							  	<!-- 첨부 파일 -->
+							                <div class="mb-1">
+							                	<div id="files">
+							                		<input class="form-control boardFiles" type="file" name="multipartFile"><br>
+							                	</div>
+							                </div>
+							                <div>
+							                	<button type="button" class="btn btn-icon btn-primary" id="addFile"><i class='bx bx-upload'></i></button>
+												<button type="button" class="btn btn-icon btn-primary" id="removeFile"><i class='bx bxs-x-square'></i></button>
+												<button type="submit" class="btn btn-primary" style="float: right;">등록</button>
+							                </div>
 										</form>
 										<br>
 									</div>
