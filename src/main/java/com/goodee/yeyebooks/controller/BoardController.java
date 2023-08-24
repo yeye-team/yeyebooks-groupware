@@ -141,9 +141,9 @@ public class BoardController {
 	
 	@PostMapping("/board/addBoard")	
 	public String addBoard(HttpServletRequest request, Board board) {
-		String path = "/boardFile/";
+		String path = "boardFile";
 		int row = boardService.insertBoard(board, path);
-		//log.debug("\u001B[41m"+ board + "입력 board" + "\u001B[0m");	
+		log.debug("\u001B[41m"+ board + "입력 board" + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
 		return "redirect:/board/boardList?boardCatCd="+board.getBoardCatCd();
 	}
