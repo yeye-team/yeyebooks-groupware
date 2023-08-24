@@ -1,5 +1,6 @@
 package com.goodee.yeyebooks.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -12,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.goodee.yeyebooks.service.ApprovalService;
+import com.goodee.yeyebooks.service.BoardService;
 import com.goodee.yeyebooks.service.UserService;
+import com.goodee.yeyebooks.vo.Board;
 import com.goodee.yeyebooks.vo.User;
 import com.goodee.yeyebooks.vo.UserFile;
 
@@ -25,6 +28,8 @@ public class HomeController {
 	UserService userService;
 	@Autowired
 	ApprovalService approvalService;
+	@Autowired
+	BoardService boardService;
 	
 	@GetMapping("/")
 	public String home(HttpSession session,
@@ -53,16 +58,21 @@ public class HomeController {
 		String loginId = (String)session.getAttribute("userId");
 		log.debug("\u001B[42m" + "현재 접속한 아이디 : " + loginId + "\u001B[0m");
 		
-		if(loginId.equals("admin")) {
-			return "adminHome";
-		}
-		
 		Map<String, Object> userInfo = userService.mypage(loginId);
 		User user = (User)userInfo.get("user");
 		UserFile photoFile = (UserFile)userInfo.get("photoFile");
 		
+		// navbar에 들어갈 이름 세션에 저장
 		session.setAttribute("userNm", user.getUserNm());
+		
+		if(loginId.equals("admin")) {
+			return "adminHome";
+		}
+		
+		// navbar에 들어갈 팀+직급 세션에 저장
 		session.setAttribute("userRank", user.getDept() + " " + user.getRank());
+		
+		// navbar에 들어갈 이미지 세션에 저장
 		if(photoFile != null) {
 			session.setAttribute("userImg", photoFile.getPath() + photoFile.getSaveFilename());
 		}
@@ -71,9 +81,14 @@ public class HomeController {
 			return "redirect:/mypage";
 		}
 		
+		// 대기중인 문서건수 모델에 셋팅
 		Map<String, Object> approvalWaitingCnt = approvalService.getApprovalWaitingCnt(loginId);
 		model.addAttribute("approvalCnt", approvalWaitingCnt.get("approvalCnt"));
 		model.addAttribute("approveCnt", approvalWaitingCnt.get("approveCnt"));
+		
+		// 최근 공지사항 리스트 모델에 셋팅
+		List<Board> noticeList = boardService.selectRecentNotice();
+		model.addAttribute("noticeList", noticeList);
 		
 		return "userHome";
 	}

@@ -230,4 +230,9 @@ public class BoardService {
 	}
 	// 게시물 수정
 	// 게시물 삭제
+	
+	// 최근 공지사항 리스트 조회
+	public List<Board> selectRecentNotice(){
+		return boardMapper.selectRecentNotice();
+	}
 }

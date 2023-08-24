@@ -36,4 +36,7 @@ public interface BoardMapper {
 	
 	// 게시물 삭제
 	int deleteBoard(int boardNo);
+	
+	// 최근 공지사항 리스트 조회
+	List<Board> selectRecentNotice();
 }

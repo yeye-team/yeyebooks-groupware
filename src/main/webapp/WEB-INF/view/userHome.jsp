@@ -35,7 +35,7 @@
   		}
   		#calendar .fc-scroller {
 		  overflow-x: hidden !important;
-		  overflow-y: hidden !important;
+		  overflow-y: auto;
 		}
 		/* 일요일 날짜 빨간색 */
 		.fc-day-sun a {
@@ -48,34 +48,38 @@
 		  color: blue;
 		  text-decoration: none;
 		}
+		.table tbody tr{
+			transition: all 0.2s linear;
+		}
+		.table tbody tr:hover{
+			background-color: dimgray;
+			color: white;
+			cursor: pointer;
+		}
   	</style>
   	<script>
-  	document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-       	  googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw',
-       	  events: {
-       	    googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
-       	  	color: 'red',
-       	  	textColor: 'white'
-       	  }
+	  	 function moveToBoardOne(boardNo){
+	     	location.href="/yeyebooks/board/boardOne?boardNo=" + boardNo; 
+	     }
+  		$(document).ready(function() {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+        	headerToolbar: false,
+        	googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw',
+	   	  	events: {
+	   	    	googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+	   	  		color: 'red',
+	   	  		textColor: 'white',
+	   	  		//오늘일정
+	   	  	},
         });
         calendar.render();
+        
+        $('#moveToNoticeAll').click(function(){
+        	location.href="/yeyebooks/board/boardList?boardCatCd=00";
+        })
       });
-  		/* $(document).ready(function(){
-  			const calendarEl = $('#calendar');
-  	  		const calendar = new FullCalendar.Calendar(calendarEl, {
-  	  			googleCalendarApiKey: "AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw",
-  	  			events: [
-  	  				{
-  		  				googleCalendarId: '814508606902-gcmu2h1eb1cqscmgplvq97d9vnj9b2o8.apps.googleusercontent.com',
-  		  				color: 'white',
-  		  				textColor: 'red'
-  	  				}
-  	  			]
-  	  		})
-  	  		calendar.render();
-  		}) */
+	
   	</script>
   	
   </head>
@@ -129,7 +133,7 @@
 					<div class="col-lg">
 	                  <div class="card mb-4">
 	                    <h5 class="card-header">
-	                    	이번달 일정
+	                    	오늘의 일정
 	                    </h5>
 	                    <div class="card-body">
 	                    	<div id="calendar"></div>
@@ -138,8 +142,31 @@
 	                </div>
 	                <div class="col-lg">
 	                  <div class="card mb-4">
-	                    <h5 class="card-header">최근 공지사항</h5>
+	                    <h5 class="card-header d-flex justify-content-between align-items-center">
+	                    	최근 공지사항
+	                    	<button type="button" class="btn btn-secondary" id="moveToNoticeAll">전체보기</button>
+	                    </h5>
 	                    <div class="card-body">
+	                    <div class="table-responsive text-nowrap">
+                  <table class="table">
+                    <thead>
+                    	<tr>
+                        	<th>공지제목</th>
+                        	<th class="text-center">공지일자</th>
+                        	<th class="text-center">조회수</th>
+                      	</tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    	<c:forEach var="b" items="${noticeList }">
+                    		<tr onclick="moveToBoardOne(${b.boardNo})">
+                    			<td>${b.boardTitle }</td>
+                    			<td class="text-center">${b.CDate }</td>
+                    			<td class="text-center">${b.boardView }</td>
+                    		</tr>
+                    	</c:forEach>
+                    </tbody>
+                  </table>
+                </div>
 	                    </div>
 	                  </div>
 	                </div>

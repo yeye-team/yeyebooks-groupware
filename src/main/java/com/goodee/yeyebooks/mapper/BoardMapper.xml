@@ -115,4 +115,13 @@
 		WHERE
 			board_no = #{boardNo}
 	</update>
+	
+	<!-- 최근 공지사항 5개 -->
+	<select id="selectRecentNotice" resultType="com.goodee.yeyebooks.vo.Board">
+		SELECT board_no boardNo, board_title boardTitle, substring(c_date, 1, 10) cDate, board_view boardView
+		FROM board
+		WHERE board_cat_cd = (SELECT CODE FROM common_code WHERE group_code = 'B001' AND code_nm='공지')
+		ORDER BY c_date DESC
+		LIMIT 0, 5
+	</select>
 </mapper>
