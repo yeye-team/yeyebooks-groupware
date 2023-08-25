@@ -14,60 +14,102 @@
 	<jsp:include page="../inc/head.jsp"></jsp:include>
 	<script>
 		$(document).ready(function(){
-			$('#addDeptBtn').on('click',function(){
-				$.ajax({
-					async : false, 
-					url : 'rest/deptList',
-					type : 'get',
-					success : function(model) {
-						var d = 0;
-						$(model).each(function(index, item){
-							if(item.deptNm == $('#addDeptNm').val()){
-								d = 1;
-								return false;
+
+			$('#modalAddDeptBtn').on('click',function(){
+				$('#modalTitle').text('부서생성');
+				$('#modalForm').attr('action', '${pageContext.request.contextPath}/addDept');
+				$('#modalFooter').html('<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">취소</button>');
+				$('#modalFooter').append('<button type="button" class="btn btn-secondary" id="addDeptBtn">생성</button>');
+				
+				$('#addDeptBtn').on('click',function(){
+					if($('#deptNm').val() == '') {
+						Swal.fire({
+		                    icon: 'warning',
+		                    title: '부서명을 입력하세요.'
+		                });
+					} else {
+						$.ajax({
+							url : 'rest/deptList',
+							type : 'get',
+							success : function(model) {
+								var d = 0;
+								$(model).each(function(index, item){
+									if(item.deptNm == $('#deptNm').val()){
+										d = 1;
+										return false;
+									}
+								});
+								if(d == 1) {
+									Swal.fire({
+					                    icon: 'warning',
+					                    title: '중복된 부서명 입니다.'
+					                });
+									
+								} else if(d == 0){
+									$('#modalForm').submit();	
+								}
 							}
 						});
-						if(d == 1) {
-							Swal.fire({
-			                    icon: 'warning',
-			                    title: '중복된 부서명 입니다.'
-			                });
-							
-						} else if(d == 0){
-							$('#addDeptForm').submit();	
-						}
 					}
 				});
 			});
-			
-			var mdBtn = $('.modifyDeptBtn');
-			mdBtn.on('click',function(){
-				var indexNo = mdBtn.index(this);
-				var mdForm = $('.modifyDeptForm').get(indexNo);
-				var mdNm = $('.modifyDeptNm').get(indexNo);
-				$.ajax({
-					async : false, 
-					url : 'rest/deptList',
-					type : 'get',
-					success : function(model) {
-						var d = 0;
-						$(model).each(function(index, item){
-							if(item.deptNm == $(mdNm).val()){
-								d = 1;
-								return false;
+
+			var modalModifyDeptBtn = $('.modalModifyDeptBtn');
+			modalModifyDeptBtn.on('click',function(){
+				var indexNo = modalModifyDeptBtn.index(this);
+				var deptNm = $('.deptNm').get(indexNo);
+				var deptCd = $('.deptCd').get(indexNo);
+				$('#modalTitle').text('부서명변경');
+				$('#modalForm').attr('action', '${pageContext.request.contextPath}/modifyDept');
+				$('#deptCd').val($(deptCd).val());
+				$('#deptNm').val($(deptNm).text());
+				$('#modalFooter').html('<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">취소</button>');
+				$('#modalFooter').append('<button type="button" class="btn btn-secondary" id="modifyDeptBtn">변경</button>');
+				
+				$('#modifyDeptBtn').on('click',function(){
+					if($('#deptNm').val() == '') {
+						Swal.fire({
+		                    icon: 'warning',
+		                    title: '부서명을 입력하세요.'
+		                });
+					} else {
+						$.ajax({
+							url : 'rest/deptList',
+							type : 'get',
+							success : function(model) {
+								var d = 0;
+								$(model).each(function(index, item){
+									if(item.deptNm == $('#deptNm').val()){
+										d = 1;
+										return false;
+									}
+								});
+								if(d == 1) {
+									Swal.fire({
+					                    icon: 'warning',
+					                    title: '중복된 부서명 입니다.'
+					                });
+									
+								} else if(d == 0){
+									$('#modalForm').submit();	
+								}
 							}
 						});
-						if(d == 1) {
-							Swal.fire({
-			                    icon: 'warning',
-			                    title: '중복된 부서명 입니다.'
-			                });
-							
-						} else if(d == 0){
-							$(mdForm).submit()	
-						}
 					}
 				});
+			});
+
+			var modalAddUserToDeptBtn = $('.modalAddUserToDeptBtn');
+			modalAddUserToDeptBtn.on('click',function(){
+				var indexNo = modalAddUserToDeptBtn.index(this);
+				var deptNm = $('.deptNm2').get(indexNo);
+				var deptCd = $('.deptCd2').get(indexNo);
+				if($(deptNm).val() == ''){
+					$('#modalTitle2').text('부서에서 사용자 제외');
+				} else{
+					$('#modalTitle2').text($(deptNm).val()+'에 사용자 추가');
+					$('#inputDeptCd').html('<input type="hidden" value="'+$(deptCd).val()+'" name="deptCd"/>');
+				}
 			});
 		});
 	</script>
@@ -79,7 +121,9 @@
 		<!-- Menu -->
 		<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 			<div class="app-brand demo">
-				<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+				<a href="${pageContext.request.contextPath}">
+					<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+				</a>
 			</div>
 
 			<div class="menu-inner-shadow"></div>
@@ -118,13 +162,13 @@
 							<h4 class="card-header"><strong>부서관리</strong></h4>
 						</div>
 						<div class="col-md-4" style="align-items: center">
-							<button type="button" class="btn btn-secondary m-3" data-bs-toggle="modal" data-bs-target="#modalAddDept" style="float: right">부서생성</button>
+							<button type="button" class="btn btn-secondary m-3" id="modalAddDeptBtn" data-bs-toggle="modal" data-bs-target="#modal" style="float: right">부서생성</button>
 							<!-- Modal -->
-	                        <div class="modal fade" id="modalAddDept" tabindex="-1" aria-hidden="true">
+	                        <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
 	                          <div class="modal-dialog modal-dialog-centered" role="document">
 	                            <div class="modal-content">
 	                              <div class="modal-header">
-	                                <h5 class="modal-title" id="modalAddDeptTitle">부서생성</h5>
+	                                <h5 class="modal-title" id="modalTitle"></h5>
 	                                <button
 	                                  type="button"
 	                                  class="btn-close"
@@ -132,14 +176,14 @@
 	                                  aria-label="Close"
 	                                ></button>
 	                              </div>
-	                              <form action="${pageContext.request.contextPath}/addDept" method="post" id="addDeptForm">
+	                              <form method="post" id="modalForm">
 		                              <div class="modal-body pb-0">
 		                                <div class="row">
 		                                  <div class="col mb-3">
-		                                    <label for="addDeptNm" class="form-label">부서명</label>
+		                                    <input type="hidden" name="deptCd" id="deptCd">
 		                                    <input
 		                                      type="text"
-		                                      id="addDeptNm"
+		                                      id="deptNm"
 		                                      name="deptNm"
 		                                      class="form-control"
 		                                      placeholder="부서명을 입력하세요"
@@ -148,11 +192,7 @@
 		                                  </div>
 		                                </div>
 		                              </div>
-		                              <div class="modal-footer">
-		                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-		                                  취소
-		                                </button>
-		                                <button type="button" class="btn btn-secondary" id="addDeptBtn">생성</button>
+		                              <div class="modal-footer" id="modalFooter">
 		                              </div>
 	                              </form>
 	                            </div>
@@ -168,7 +208,6 @@
                             		<div class="list-group">
 			                           	<div
 			                               class="list-group-item list-group-item-action active"
-			                               id="list-home-list"
 			                               data-bs-toggle="list"
 			                               href="#list-home"
 			                               >YeYeBooks
@@ -177,10 +216,10 @@
 			                            <c:forEach var="d" items="${deptList}">
 				                           	<div
 				                               class="list-group-item list-group-item-action"
-				                               id="list-${d.deptCd}-list"
 				                               data-bs-toggle="list"
 				                               href="#list-${d.deptCd}"
-				                               >${d.deptNm}
+				                               ><span class="deptNm">${d.deptNm}</span>
+				                               <input class="deptCd" type="hidden" value="${d.deptCd}">
 				                               <span class="dropdown" style="float: right">
 					                              <a
 					                                class="p-0"
@@ -192,8 +231,8 @@
 					                              >
 					                                &nbsp;<i class="bx bx-dots-vertical-rounded"></i>&nbsp;
 					                              </a>
-					                              <span class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-					                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalModify${d.deptCd}">수정</button>
+					                              <span class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3" style="margin: 0;">
+					                                <button type="button" class="dropdown-item modalModifyDeptBtn" data-bs-toggle="modal" data-bs-target="#modal">수정</button>
 					                                <c:if test="${d.cnt == 0}">
 					                                	<a class="dropdown-item" href="${pageContext.request.contextPath}/removeDept?deptCd=${d.deptCd}">삭제</a>
 					                                </c:if>
@@ -202,48 +241,6 @@
 				                               </div>
 			                            </c:forEach>
                             		</div>
-                            		<c:forEach var="d" items="${deptList}">
-	                         		<!-- Modal -->
-			                        <div class="modal fade" id="modalModify${d.deptCd}" tabindex="-1" aria-hidden="true">
-			                          <div class="modal-dialog modal-dialog-centered" role="document">
-			                            <div class="modal-content">
-			                              <div class="modal-header">
-			                                <h5 class="modal-title" id="modalmodifyDeptTitle">부서변경</h5>
-			                                <button
-			                                  type="button"
-			                                  class="btn-close"
-			                                  data-bs-dismiss="modal"
-			                                  aria-label="Close"
-			                                ></button>
-			                              </div>
-			                              <form action="${pageContext.request.contextPath}/modifyDept" method="post" class="modifyDeptForm">
-				                              <div class="modal-body pb-0">
-				                                <div class="row">
-				                                  <div class="col mb-3">
-				                                    <label for="modifyDeptNm" class="form-label">부서명</label>
-				                                    <input type="hidden" name="deptCd" value="${d.deptCd}">
-				                                    <input
-				                                      type="text"
-				                                      name="deptNm"
-				                                      class="form-control modifyDeptNm"
-				                                      placeholder="부서명을 입력하세요"
-				                                      value="${d.deptNm}"
-				                                      required="required"
-				                                    />
-				                                  </div>
-				                                </div>
-				                              </div>
-				                              <div class="modal-footer">
-				                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-				                                  취소
-				                                </button>
-				                                <button type="button" class="btn btn-secondary modifyDeptBtn">변경</button>
-				                              </div>
-			                              </form>
-			                            </div>
-			                          </div>
-			                        </div>
-			                        </c:forEach>
                           		</div>
                           		<div class="col-md-9 col-12">
                             		<div class="card overflow-hidden" style="height: 540px; box-shadow: none;">
@@ -253,10 +250,18 @@
 						                            	<div class="row">
 						                            	 <c:forEach var="uc" items="${userCnt}">
 							                              	<c:if test="${uc.deptNm == null}">
-							                              		<h6>YeYeBooks (${uc.cnt}) <i class='bx bx-user-minus' data-bs-toggle="modal" data-bs-target="#addUserToDept"></i></h6>
+							                              		<h6>YeYeBooks (${uc.cnt})
+							                              			<input class="deptNm2" type="hidden" value="${uc.deptNm}">
+				                               						<input class="deptCd2" type="hidden" value="${uc.deptCd}"> 
+							                              			<i class='bx bx-user-minus modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2"></i>
+							                              		</h6>
 							                              	</c:if>
 							                              	<c:if test="${uc.deptNm != null}">
-							                              		<h6>${uc.deptNm} (${uc.cnt}) <i class='bx bx-user-plus' data-bs-toggle="modal" data-bs-target="#addUserToDept${uc.deptCd}"></i></h6>
+							                              		<h6>${uc.deptNm} (${uc.cnt})
+							                              			<input class="deptNm2" type="hidden" value="${uc.deptNm}">
+				                               						<input class="deptCd2" type="hidden" value="${uc.deptCd}"> 
+							                              			<i class='bx bx-user-plus modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2"></i>
+							                              		</h6>
 							                              	</c:if>  
 								                            	  <c:forEach var="u" items="${userList}">
 								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
@@ -276,7 +281,11 @@
 						                              </div>
 						                              <c:forEach var="uc" items="${userCnt}">
 						                              	<div class="tab-pane fade" id="list-${uc.deptCd}">
-						                              		<h6>${uc.deptNm}(${uc.cnt}) <i class='bx bx-user-plus' data-bs-toggle="modal" data-bs-target="#addUserToDept${uc.deptCd}"></i></h6>
+						                              		<h6>${uc.deptNm}(${uc.cnt}) 
+						                              			<input class="deptNm2" type="hidden" value="${uc.deptNm}">
+				                               					<input class="deptCd2" type="hidden" value="${uc.deptCd}">
+						                              			<i class='bx bx-user-plus modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2"></i>
+						                              		</h6>
 						                               		<div class="row">
 							                            	  <c:forEach var="u" items="${userList}">
 							                            	  	<c:if test="${uc.deptCd == u.deptCd}">
@@ -298,11 +307,11 @@
                     							</div>
                   							</div>
                   							<!-- Modal -->
-					                        <div class="modal fade" id="addUserToDept" tabindex="-1" aria-hidden="true">
+					                        <div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
 					                          <div class="modal-dialog modal-dialog-centered" role="document">
 					                            <div class="modal-content">
 					                              <div class="modal-header">
-					                              	<h5 class="modal-title">부서에서 사용자 제외</h5>
+					                              	<h5 class="modal-title" id="modalTitle2"></h5>
 					                                <button
 					                                  type="button"
 					                                  class="btn-close"
@@ -313,6 +322,8 @@
 					                              <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
 						                              <div class="modal-body pb-0 card overflow-hidden" style="height: 500px; box-shadow: none;">
 						                                <div class="row card-body vertical-scroll">
+						                                <div id="inputDeptCd">
+						                                </div>
 						                                  <c:forEach var="uc" items="${userCnt}">
 							                              	<c:if test="${uc.deptNm == null}">
 							                              		<h6>YeYeBooks (${uc.cnt})</h6>
@@ -352,69 +363,7 @@
 					                              </form>
 					                            </div>
 					                          </div>
-					                        </div>
-					                        
-                  							<c:forEach var="d" items="${deptList}">
-			                         		<!-- Modal -->
-					                        <div class="modal fade" id="addUserToDept${d.deptCd}" tabindex="-1" aria-hidden="true">
-					                          <div class="modal-dialog modal-dialog-centered" role="document">
-					                            <div class="modal-content">
-					                              <div class="modal-header">
-					                              	<h5 class="modal-title">${d.deptNm}에 사용자 추가</h5>
-					                                <button
-					                                  type="button"
-					                                  class="btn-close"
-					                                  data-bs-dismiss="modal"
-					                                  aria-label="Close"
-					                                ></button>
-					                              </div>
-					                              <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
-						                              <div class="modal-body pb-0 card overflow-hidden" style="height: 500px; box-shadow: none;">
-						                                <div class="row card-body vertical-scroll">
-						                              	<c:if test="${d.deptNm != null}">
-						                              		<input type="hidden" value="${d.deptCd}" name="deptCd"/>
-						                              	</c:if>
-						                                  <c:forEach var="uc" items="${userCnt}">
-							                              	<c:if test="${uc.deptNm == null}">
-							                              		<h6>YeYeBooks (${uc.cnt})</h6>
-							                              	</c:if>
-							                              	<c:if test="${uc.deptNm != null}">
-							                              		<h6>${uc.deptNm} (${uc.cnt})</h6>
-							                              	</c:if>  
-								                            	  <c:forEach var="u" items="${userList}">
-								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
-								                            	  		<div class="col-md-6 mb-5 row">
-										                              		<div class="col-md-3">
-										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
-										                              		</div>
-										                              		<div class="col-md-9">
-										                              			<div class="row">
-										                              				<div class="col">
-										                              					<h5 class="mb-0">${u.userNm}</h5>
-										                              					<h6><small class="text-muted">${u.rankNm}</small></h6>
-										                              				</div>
-										                              				<div class="col">
-										                              					<input class="form-check-input" type="checkbox" value="${u.userId}" name="userId"/>
-										                              				</div>
-										                              			</div>
-										                              		</div>
-											                            </div>
-								                            	  	</c:if> 
-								                            	  </c:forEach>
-							                              </c:forEach>
-						                                </div>
-						                              </div>
-						                              <div class="modal-footer">
-						                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-						                                  취소
-						                                </button>
-						                                <button type="submit" class="btn btn-secondary">추가</button>
-						                              </div>
-					                              </form>
-					                            </div>
-					                          </div>
-					                        </div>
-					                        </c:forEach>
+					                        </div> 
                           				</div>
                         			</div>
                       			</div>
