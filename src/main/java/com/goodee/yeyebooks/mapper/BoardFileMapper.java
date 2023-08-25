@@ -14,4 +14,7 @@ public interface BoardFileMapper {
 	
 	// 첨부파일 등록
 	int insertBoardfile(BoardFile boardfile);
+	
+	// 첨부파일 삭제
+	int deleteBoardfile(int boardNo);
 }

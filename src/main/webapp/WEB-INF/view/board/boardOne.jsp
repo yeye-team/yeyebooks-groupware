@@ -19,6 +19,37 @@
 		$(document).ready(function() {
 		// url파라미터값 삭제
 		/* history.replaceState({}, null, location.pathname);  */
+			
+			// 게시물 삭제 비동기 처리
+			$(".deleteBoardBtn").click(function(){
+				var deleteBoardCk = confirm("게시물을 삭제하시겠습니까?");
+				if(deleteBoardCk){
+					var boardNo = $(this).data("boardno");
+		            var boardCatCd = $(this).data("boardcatcd");
+					
+					$.ajax({
+						type: "POST",
+						url: "${pageContext.request.contextPath}/board/deleteBoard",
+						data: {
+							boardNo: boardNo,
+							boardCatCd: boardCatCd
+						},
+						success: function(response) {
+							Swal.fire({
+				                icon: 'success',
+				                title: '성공',
+				                text: '게시글이 삭제되었습니다.',
+				                onClose: function() {
+				                    window.location.href = "${pageContext.request.contextPath}/board/boardList?boardCatCd=" + boardCatCd;
+				                }
+				            });
+						},
+						error: function() {
+							alert("게시글 삭제 실패");
+						}
+					});
+				}
+			});
 		
 			// 댓글 수정
 		    $(".modifyCommentBtn").click(function() {
@@ -364,50 +395,32 @@
 										<h6 class="fw-bold py-0 mb-2">${fn:substring(b.cDate,0,16)}&nbsp;&nbsp;&nbsp;조회 ${b.boardView}</h6>
 			            			</div>
 				            	</div>
+				            	
+				            	<!-- 게시글 수정삭제 버튼 -->
 				            	<div class="col-md-1" 
 				            		 style="display: flex;
        										justify-content: center;
        										align-items: center; ">
-					            	<c:choose>
-										<c:when test="${userId == b.userId}">
-											<!-- 게시글 수정삭제 버튼 -->
-											<div class="dropdown">
-												<button
-													class="btn p-0"
-													type="button"
-													id="cardOpt3"
-													data-bs-toggle="dropdown"
-													aria-haspopup="true"
-													aria-expanded="false"
-												>
-													<i style="font-size: 28px;" class="bx bx-dots-vertical-rounded"></i>
-												</button>
-												<div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-													<a class="dropdown-item modifyBoardBtn" href="${pageContext.request.contextPath}/board/modifyBoard">수정</a>
-													<a class="dropdown-item deleteBoardBtn" href="javascript:void(0);">삭제</a>
-												</div>
+       								<c:if test="${userId == b.userId || userId == 'admin'}">
+       									<div class="dropdown">
+											<button
+												class="btn p-0"
+												type="button"
+												id="cardOpt3"
+												data-bs-toggle="dropdown"
+												aria-haspopup="true"
+												aria-expanded="false"
+											>
+												<i style="font-size: 28px;" class="bx bx-dots-vertical-rounded"></i>
+											</button>
+											<div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
+												<c:if test="${userId == b.userId}">
+													<a class="dropdown-item modifyBoardBtn" href="javascript:void(0);">수정</a>
+												</c:if>
+												<a class="dropdown-item deleteBoardBtn" data-boardNo="${b.boardNo}" data-boardCatCd="${b.boardCatCd}" href="javascript:void(0);">삭제</a>
 											</div>
-											<%-- <a href="${pageContext.request.contextPath}/board/modifyBoard">수정</a>
-											<a href="${pageContext.request.contextPath}/board/removeBoard">삭제</a> --%>
-										</c:when>
-										<c:when test="${userId == 'admin'}">
-											<div class="dropdown">
-												<button
-													class="btn p-0"
-													type="button"
-													id="cardOpt3"
-													data-bs-toggle="dropdown"
-													aria-haspopup="true"
-													aria-expanded="false"
-												>
-													<i style="font-size: 28px;" class="bx bx-dots-vertical-rounded"></i>
-												</button>
-												<div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-													<a class="dropdown-item deleteBoardBtn" href="javascript:void(0);">삭제</a>
-												</div>
-											</div>
-										</c:when>
-									</c:choose>
+										</div>
+       								</c:if>
 				            	</div>
 		            		</div>
 		            		<!-- 구분선 -->
@@ -422,14 +435,16 @@
 									<div>
 										<c:forEach items="${boardFile}" var="f">
 											<a 
-												href="${pageContext.request.contextPath}/${f.path}/${f.saveFilename}" 
-												download="${f.originFilename}">${f.originFilename}
+												href="../boardFile/${f.saveFilename}"
+												download="${f.originFilename}">
+												${f.originFilename}
 											</a><br>
 										</c:forEach>
 									</div>
 								</c:if>
 							</div>
 	             			<!--/ 게시물 상세 내용 -->
+	             			
 	             			<!-- 구분선 -->
 							<hr class="m-0">
 							<!-- 공지사항은 댓글이 없음. 제외 -->

@@ -141,10 +141,30 @@ public class BoardController {
 	
 	@PostMapping("/board/addBoard")	
 	public String addBoard(HttpServletRequest request, Board board) {
-		String path = "boardFile";
+		// RealPath를 붙혀야 경로를 안다.
+		String path = request.getServletContext().getRealPath("/boardFile/");
+		log.debug("\u001B[41m" + "path" + path + "\u001B[0m");
 		int row = boardService.insertBoard(board, path);
 		log.debug("\u001B[41m"+ board + "입력 board" + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
 		return "redirect:/board/boardList?boardCatCd="+board.getBoardCatCd();
+	}
+	
+	// 게시글 삭제
+	@PostMapping("/board/deleteBoard")
+	public String deleteBoard(HttpServletRequest request, HttpSession session,
+								@RequestParam int boardNo,
+								@RequestParam String boardCatCd) {
+		String path = request.getServletContext().getRealPath("/boardFile/");
+		
+		Board board = new Board();
+		board.setBoardNo(boardNo);
+		board.setBoardCatCd(boardCatCd);
+		//log.debug("\u001B[41m"+ "BoardController deleteBoard board : " + board + "\u001B[0m");	
+		
+		int row = boardService.deleteBoard(board, path);
+		// log.debug("\u001B[41m"+ "BoardController deleteBoard row : " + row + "\u001B[0m");	
+		
+        return "redirect:/board/boardList?boardCatCd=" + boardCatCd;
 	}
 }	

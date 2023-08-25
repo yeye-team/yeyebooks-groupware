@@ -26,18 +26,10 @@
 		)
 	</insert>
 	
-	<!-- 게시물 첨부파일 수정 -->
-	<update id="modifyBoardfile">
-		UPDATE 
-			board_file
-		SET 
-		 	origin_filename = #{originFilename}, save_filename = #{saveFilename}, filetype = #{filetype}, u_date = NOW()
-		WHERE 
-			board_no = #{boardNo}
-	</update>
+	<!-- 게시물 첨부파일 삭제 -->
 	<delete id="deleteBoardfile">
 		DELETE FROM board_file
 		WHERE
-			board_no = #{boardNo} AND board_file_no = #{boardFileNo}
+			board_no = #{boardNo}
 	</delete>
 </mapper>

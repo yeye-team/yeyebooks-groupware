@@ -2,6 +2,7 @@ package com.goodee.yeyebooks.service;
 
 import java.io.File;
 
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -234,7 +235,20 @@ public class BoardService {
 		return row;
 	}
 	// 게시물 수정
-	// 게시물 삭제
+	// 게시글 삭제
+	public int deleteBoard(Board board, String path) {
+		List<BoardFile> boardFile = boardfileMapper.selectBoardFile(board.getBoardNo());
+		for(BoardFile bf : boardFile) {
+			File f = new File(path+bf.getSaveFilename());
+			if(f.exists()) {
+				f.delete();
+			}
+		}
+		int row = boardfileMapper.deleteBoardfile(board.getBoardNo());
+		row = boardMapper.deleteBoard(board.getBoardNo());
+		
+		return row;
+	}
 	
 	// 최근 공지사항 리스트 조회
 	public List<Board> selectRecentNotice(){
