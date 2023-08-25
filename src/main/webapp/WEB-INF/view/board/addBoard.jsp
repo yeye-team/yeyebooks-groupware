@@ -253,7 +253,7 @@
 							                <div>
 							                	<button type="button" class="btn btn-icon btn-primary" id="addFile"><i class='bx bxs-file-plus'></i></button>
 												<button type="button" class="btn btn-icon btn-primary" id="removeFile"><i class='bx bxs-x-square'></i></button>
-												<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()">등록</button>
+												<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()" id="submitBtn">등록</button>
 							                </div>
 										</form>
 										<br>

@@ -37,8 +37,6 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script>
-	    /* // url파라미터값 삭제
-		history.replaceState({}, null, location.pathname);  */
 		$(document).ready(function() {
 			// url파라미터값 삭제
 			/* history.replaceState({}, null, location.pathname);  */
