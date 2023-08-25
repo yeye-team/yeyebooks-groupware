@@ -234,7 +234,12 @@ public class BoardService {
 		}
 		return row;
 	}
+	
 	// 게시물 수정
+	public int modifyBoard(Board board) {
+		return boardMapper.modifyBoard(board);
+	}
+	
 	// 게시글 삭제
 	public int deleteBoard(Board board, String path) {
 		List<BoardFile> boardFile = boardfileMapper.selectBoardFile(board.getBoardNo());

@@ -32,7 +32,7 @@ public interface BoardMapper {
 	int insertBoard(Board board);
 	
 	// 게시물 수정
-	int modifyBoard(int boardNo);
+	int modifyBoard(Board board);
 	
 	// 게시물 삭제
 	int deleteBoard(int boardNo);

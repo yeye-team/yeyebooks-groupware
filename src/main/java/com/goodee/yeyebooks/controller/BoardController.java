@@ -150,6 +150,43 @@ public class BoardController {
 		return "redirect:/board/boardList?boardCatCd="+board.getBoardCatCd();
 	}
 	
+	//게시물 수정
+	@GetMapping("/board/modifyBoard")
+	public String modifyBoard(Model model, HttpSession session, String boardCatCd, 
+								@RequestParam(name= "boardNo") int boardNo) {
+		String userId = (String)session.getAttribute("userId");
+		//log.debug("\u001B[41m"+ "addBoard loginUserId : " + userId + "\u001B[0m");	
+		//log.debug("\u001B[41m"+ "addBoard boardCatCd : " + boardCatCd + "\u001B[0m");
+		
+		Map<String, Object> mainMenu = boardService.mainMenu(session);
+		//log.debug("\u001B[41m"+ "addBoard mainMenu : " + mainMenu + "\u001B[0m");
+		
+		// 게시물 정보 + 첨부파일 정보
+		Map<String, Object> map = boardService.getBoardOne(session, boardNo);
+		log.debug("\u001B[41m" + "Controller boardOne map : " + map + "\u001B[0m");
+		
+		model.addAttribute("userId", userId);
+		model.addAttribute("boardCatCd", boardCatCd);
+		model.addAllAttributes(mainMenu);
+		model.addAllAttributes(map);
+		
+		return("/board/modifyBoard");
+	}
+	
+	@PostMapping("/board/modifyBoard")
+	public String modifyBoard(HttpServletRequest request, int boardNo, String boardCatCd,
+								String boardTitle, String boardContents) {
+		Board board = new Board();
+		board.setBoardNo(boardNo);
+		board.setBoardCatCd(boardCatCd);
+		board.setBoardTitle(boardTitle);
+		board.setBoardContents(boardContents);
+		
+		int row = boardService.modifyBoard(board);
+		
+		return "redirect:/board/boardOne?boardNo="+boardNo;
+	}
+	
 	// 게시글 삭제
 	@PostMapping("/board/deleteBoard")
 	public String deleteBoard(HttpServletRequest request, HttpSession session,

@@ -368,7 +368,7 @@
 	            		<div class="card">
 		            		<div class="row">
 		            			<div class="col-md-11">
-					            	<!-- 게시물 상세 헤더 -->
+					            	<!-- 게시물 수정 헤더 -->
 					            	<div class="card-header">
 						            	<c:choose>
 						            		<c:when test="${b.boardCatCd=='00'}">
@@ -415,7 +415,7 @@
 											</button>
 											<div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
 												<c:if test="${userId == b.userId}">
-													<a class="dropdown-item modifyBoardBtn" href="javascript:void(0);">수정</a>
+													<a class="dropdown-item modifyBoardBtn" href="${pageContext.request.contextPath}/board/modifyBoard?boardNo=${b.boardNo}">수정</a>
 												</c:if>
 												<a class="dropdown-item deleteBoardBtn" data-boardNo="${b.boardNo}" data-boardCatCd="${b.boardCatCd}" href="javascript:void(0);">삭제</a>
 											</div>
@@ -463,7 +463,7 @@
 												<span class="oriComment">${c.cmntContents}</span>
 												
 												<!-- 댓글 수정 입력 폼 -->
-												<form id="modifyForm-${c.cmntNo}"action="${pageContext.request.contextPath}/board/modifyComment" method="post">
+												<form id="modifyForm-${c.cmntNo}" action="${pageContext.request.contextPath}/board/modifyComment" method="post">
 													<div class="modifyBox" style="display: none;">
 														<div class="input-group">
 															<input type="hidden" name="boardNo" value="${c.boardNo}" readonly="readonly">
