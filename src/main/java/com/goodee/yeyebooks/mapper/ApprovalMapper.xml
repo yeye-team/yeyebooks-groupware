@@ -93,7 +93,7 @@
 			<when test="status == 6"> AND c2.code =  '04' </when>
 		</choose>
 
-		ORDER BY a.aprv_ymd DESC;
+		ORDER BY a.c_date DESC;
 		
 	</select>
 	
