@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class SmartEditorController {
-	@RequestMapping(value="smarteditorMultiImageUpload")
+	@RequestMapping(value="/imgUpload")
 	public void smarteditorMultiImageUpload(HttpServletRequest request, HttpServletResponse response){
 		try {
 			//파일정보
