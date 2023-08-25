@@ -29,7 +29,7 @@ public class ApprovalService {
 	  
 	 */
 	
-	
+	// 내 문서함 리스트
 	public ApprovalService(ApprovalMapper approvalMapper) {
 		this.approvalMapper = approvalMapper;
 	}
@@ -39,26 +39,15 @@ public class ApprovalService {
 		approvalList = approvalMapper.selectMyApproval(loginId, status);
 		log.debug("\u001B[35m"+"aprovalList : " + approvalList);
 		return approvalList;
-	}
+	};
 	
-	// 내 문서함 리스트
-	/*
-	 * public Map<String, Object> selectApprovalByStatus(String loginId, String
-	 * approvalStatus){ Map<String, Object> resultMap = new HashMap<>();
-	 * 
-	 * String approvalCode = getApprovalStatusCode(approvalStatus);
-	 * 
-	 * List<Approval> allApprovalList =
-	 * approvalMapper.selectApprovalByStatus(loginId, approvalStatus);
-	 * 
-	 * List<Approval> approvalList = approvalMapper.selectApprovalByStatus(loginId,
-	 * approvalStatus);
-	 * 
-	 * resultMap.put("approvalCode", approvalCode); resultMap.put("approvalList",
-	 * approvalList); resultMap.put("status", approvalStatus);
-	 * 
-	 * return resultMap; }
-	 */
+	// 문서상세보기
+	
+	public List<Approval> selectApprovalOne(int aprvNo) {
+		List<Approval> approvalOneList = null;
+		approvalOneList = approvalMapper.selectApprovalOne(aprvNo);		
+		return approvalOneList;
+	}
 	
 
 	// 전자결재 작성

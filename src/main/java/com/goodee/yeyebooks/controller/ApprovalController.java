@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
@@ -27,6 +28,7 @@ public class ApprovalController {
 	
 	private final ApprovalService approvalService;
 	
+	// 내 문서함 리스트 출력
 	@Autowired
 	public ApprovalController(ApprovalService approvalService) {
 		this.approvalService = approvalService;
@@ -43,23 +45,16 @@ public class ApprovalController {
 		return "approval/approvalList";
 	}
 	
-
-	
-	/*
-	 * // 내문서함 불러오기
-	 * 
-	 * @GetMapping("/approval/approvalList") public String
-	 * getMyDocuments(@RequestParam(name = "statusHidden", required = false) String
-	 * statusHidden, Model model) { String approvalStatus = "A001"; String loginId =
-	 * "admin"; String userId = loginId;
-	 * 
-	 * Map<String, Object> myDocuments =
-	 * approvalService.selectApprovalByStatus(userId, approvalStatus);
-	 * model.addAttribute("approvalList" , myDocuments);
-	 * model.addAttribute("statusHidden" , statusHidden); return
-	 * "approval/approvalList"; }
-	 */
-	
+	// 문서 상세보기
+	@GetMapping("/approval/approvalOne")
+	public String approvalOne(Model model, 
+							@RequestParam(name = "aprvNo", defaultValue = "0") int aprvNo) {
+		List<Approval> approvalOneList = approvalService.selectApprovalOne(aprvNo);
+		model.addAttribute("approvalOneList", approvalOneList);
+		return "approval/approvalOne";
+	}
+			
+			
 	// 문서작성
 	@GetMapping("/create")
 	public String showCreateForm() {
