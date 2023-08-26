@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>approvalOne</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
 <body>
@@ -12,15 +12,19 @@
 	
 	<table border="1">
 		<tr>
-			<th>userId</th>
-			<th>docCatCd</th>
-			<th>aprvTitle</th>
-			<th>aprvContents</th>
-			<th>aprvYmd</th>
-			<th>rhctReason</th>
-			<th>aprvStatCd</th>
-			<th>reference</th>
+			<th>문서번호</th>
+			<th>문서번호</th>
+			<th>문서종류</th>
+			<th>제목</th>
+			<th>상세내용</th>
+			<th>기안부서</th>
+			<th>기안자</th>
+			<th>첨부파일</th>
+			<th>기안날짜</th>
 		</tr>
+		<c:forEach var="o" items="${approvalOne}">
+			
+		</c:forEach>
 	</table>
 </body>
 </html>

@@ -15,4 +15,9 @@ public class Approval {
 	private String reference;
 	private String cDate;
 	private String uDate;
+	private String codeName;
+	private String statName;
+	private String alUserId;
+	private String userName;
+	private String ulUserName;
 }

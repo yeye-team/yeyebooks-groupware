@@ -48,9 +48,9 @@ public class ApprovalController {
 	// 문서 상세보기
 	@GetMapping("/approval/approvalOne")
 	public String approvalOne(Model model, 
-							@RequestParam(name = "aprvNo", defaultValue = "0") int aprvNo) {
-		List<Approval> approvalOneList = approvalService.selectApprovalOne(aprvNo);
-		model.addAttribute("approvalOneList", approvalOneList);
+							@RequestParam(name = "aprvNo") String aprvNo) {
+		List<Approval> approvalOne = approvalService.selectApprovalOne(aprvNo);
+		model.addAttribute("approvalOneList", approvalOne);
 		return "approval/approvalOne";
 	}
 			

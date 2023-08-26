@@ -43,10 +43,10 @@ public class ApprovalService {
 	
 	// 문서상세보기
 	
-	public List<Approval> selectApprovalOne(int aprvNo) {
-		List<Approval> approvalOneList = null;
-		approvalOneList = approvalMapper.selectApprovalOne(aprvNo);		
-		return approvalOneList;
+	public List<Approval> selectApprovalOne(String aprvNo) {
+		List<Approval> approvalOne = null;
+		approvalOne = approvalMapper.selectApprovalOne(aprvNo);		
+		return approvalOne;
 	}
 	
 

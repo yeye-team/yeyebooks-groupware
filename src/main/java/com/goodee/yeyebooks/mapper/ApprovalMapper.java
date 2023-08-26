@@ -21,7 +21,7 @@ public interface ApprovalMapper {
 	// 각 상태별 문서함 조회
 	List<Approval> selectApprovalByStatus(String loginId, String status);
 	// 문서 상세보기
-	List<Approval> selectApprovalOne(int aprvNo);
+	List<Approval> selectApprovalOne(String aprvNo);
 	
 	public int updateApprovalProcessed(Approval approval);
 	

@@ -62,15 +62,19 @@
 	<select id="selectMyApproval" parameterType="java.util.Map" resultType="com.goodee.yeyebooks.vo.Approval">
 		SELECT 
 			a.aprv_no aprvNo, a.user_id userId,
-			a.doc_cat_cd docCatCd, c1.code_nm codeNm, a.aprv_title aprvTitle,
+			a.doc_cat_cd docCatCd, c1.code_nm codeName, a.aprv_title aprvTitle,
 			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
-			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm codeName,
+			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm statName,
 			a.reference, a.c_date cDate,
 			af.orgin_filename orginFilename, af.save_filename saveFilename,
-			al.aprv_stat_cd aprvStatCd, al.aprv_ymd as aprv_line_ymd
+			al.aprv_stat_cd aprvStatCd, al.aprv_ymd aprv_line_ymd,
+			al.user_id alUserId, u.user_nm userName,
+			ul.user_nm ulUserName
 		FROM approval a
+		JOIN user u ON a.user_id = u.user_id
 		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
 		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+		LEFT JOIN user ul ON al.user_id = ul.user_id
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
 		<choose>
@@ -97,32 +101,6 @@
 		
 	</select>
 	
-	<!-- 각 상태 별 문서 -->
-	<!-- <select id="selectApprovalByStatus" parameterType="map" resultType="com.goodee.yeyebooks.vo.Approval">
-		SELECT 
-			a.aprv_no aprvNo, a.user_id userId,
-			a.doc_cat_cd docCatCd, c1.code_nm codeNm, a.aprv_title aprvTitle,
-			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
-			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm codeName,
-			a.reference, a.c_date cDate,
-			af.orgin_filename orginFilename, af.save_filename saveFilename,
-			al.aprv_yn aprvYn, al.aprv_ymd as aprv_line_ymd
-		FROM approval a
-		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
-		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
-		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
-		WHERE (a.user_id = 'admin' OR al.user_id = 'admin' OR a.reference LIKE '%admin%')
-		ORDER BY a.aprv_ymd DESC;
-	</select> -->
-
-	<!-- 공통코드 상태값 불러오기 -->
-	<!-- <select id="selectApprovalCode" parameterType="string" resultType="string">
-		SELECT code_nm
-		FROM common_code
-		WHERE group_code = 'A001'
-		AND code = '01'
-	</select> -->
 	
 	<!-- 게시물 개수 조회 -->
 	<select id="selectApprovalCount">
@@ -131,43 +109,6 @@
 		WHER doc_cat_cd = #{docCatCd}
 	</select>
 	
-	<!-- 
-	<select id="selectApprovalByStatus" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
-	    
-	    SELECT 
-			a.aprv_no, a.user_id,
-			a.doc_cat_cd, a.aprv_title,
-			a.aprv_contents, a.aprv_ymd,
-			a.rjct_reason, a.aprv_stat_cd,
-			a.reference, a.c_date,
-			af.orgin_filename, af.save_filename,
-			al.aprv_yn, al.aprv_ymd as aprv_line_ymd
-		FROM approval a
-		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
-		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-	</select> 
-	-->
-
-	
-	
-	
-	<!-- 반려/회수된 문서 -->
-	<!-- <select id="selectRejectedDocuments" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
-		SELECT 
-			a.aprv_no, a.user_id,
-			a.doc_cat_cd, a.aprv_title,
-			a.aprv_contents, a.aprv_ymd,
-			a.rjct_reason, a.aprv_stat_cd,
-			a.reference, a.c_date,
-			af.orgin_filename, af.save_filename,
-			al.aprv_yn, al.aprv_ymd as aprv_line_ymd
-		FROM approval a
-		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
-		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-		WHERE a.user_id = #{loginId}
-		AND (a.aprv_stat_cd = #{rejectedStatus} OR a.aprv_stat_cd = #{withdrawnStatus})
-		ORDER BY a.aprv_ymd DESC;
-	</select> -->
 	
 	<!-- 문서 상세보기 -->
 	<select id="selectApprovalOne" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
@@ -186,12 +127,12 @@
 			al.aprv_stat_cd lineAprvStat,
 			al.aprv_ymd lineAprvYmd,
 			al.aprv_sequence aprvSequence
-		FROM approval AS a
-		JOIN user AS u ON a.user_id = u.user_id
-		LEFT JOIN common_code AS c1 ON u.rank_cd = c1.code AND c1.group_code = 'R001'
-		LEFT JOIN common_code AS c2 ON u.dept_cd = c2.code AND c2.group_code = 'D001'
-		LEFT JOIN approval_line AS al ON a.aprv_no = al.aprv_no
-		WHERE a.aprv_no = '1'
+		FROM approval a
+		JOIN user u ON a.user_id = u.user_id
+		LEFT JOIN common_code c1 ON u.rank_cd = c1.code AND c1.group_code = 'R001'
+		LEFT JOIN common_code c2 ON u.dept_cd = c2.code AND c2.group_code = 'D001'
+		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+		WHERE a.aprv_no = #{aprvNo}
 		ORDER BY al.aprv_sequence;
 	</select> 
 	
