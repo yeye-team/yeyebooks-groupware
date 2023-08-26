@@ -1,5 +1,7 @@
 package com.goodee.yeyebooks.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,15 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.service.BoardService;
 import com.goodee.yeyebooks.service.ScheduleService;
 import com.goodee.yeyebooks.service.UserService;
+import com.goodee.yeyebooks.service.UserTimeService;
 import com.goodee.yeyebooks.vo.Board;
 import com.goodee.yeyebooks.vo.Schedule;
 import com.goodee.yeyebooks.vo.User;
 import com.goodee.yeyebooks.vo.UserFile;
+import com.goodee.yeyebooks.vo.UserTime;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +40,10 @@ public class HomeController {
 	BoardService boardService;
 	@Autowired
 	ScheduleService scheduleService;
+	@Autowired
+	UserTimeService userTimeService;
+	
+	String[] allowedIp = {"192.168.7.146", "172.30.1.100", "192.168.5.7"};
 	
 	@GetMapping("/")
 	public String home(HttpSession session,
@@ -84,7 +94,30 @@ public class HomeController {
 		if(userInfo.get("signFile") == null) {
 			return "redirect:/mypage";
 		}
-		
+		// IP 가져와서 비교
+		InetAddress ipAddress;
+		try {
+			ipAddress = InetAddress.getLocalHost();
+			String nowIp = ipAddress.getHostAddress();
+			log.debug("\u001B[42m" + "현재 아이피 : " + nowIp + "\u001B[0m");
+			boolean isInCompany = false;
+			
+			for(String ip : allowedIp) {
+				if(nowIp.equals(ip)) {
+					isInCompany = true;
+					break;
+				}
+			}
+			
+			model.addAttribute("isInCompany", isInCompany);
+			
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        
+        
 		// 대기중인 문서건수 모델에 셋팅
 		Map<String, Object> approvalWaitingCnt = approvalService.getApprovalWaitingCnt(loginId);
 		model.addAttribute("approvalCnt", approvalWaitingCnt.get("approvalCnt"));
@@ -97,6 +130,13 @@ public class HomeController {
 		// 오늘의 일정 리스트 모델에 셋팅
 		List<Schedule> scheduleList = scheduleService.selectTodaySchedule(loginId);
 		model.addAttribute("scheduleList", scheduleList);
+		
+		// 오늘의 출근기록 모델에 셋팅
+		UserTime userTime = userTimeService.selectTodayWorkTime(loginId);
+		if(userTime != null) {
+			model.addAttribute("workStartTime", userTime.getWorkStartTime());
+			model.addAttribute("workEndTime", userTime.getWorkEndTime());
+		}
 		
 		return "userHome";
 	}

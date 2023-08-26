@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goodee.yeyebooks.mapper.UserTimeMapper"></mapper>
+<mapper namespace="com.goodee.yeyebooks.mapper.UserTimeMapper">
+	<select id="selectTodayWorkTime">
+		SELECT work_start_time workStartTime, work_end_time workEndTime
+		FROM user_time
+		WHERE user_id = #{userId}
+		AND work_ymd = #{todayYmd}
+	</select>
+	<insert id="insertTodayWorkStartTime">
+		INSERT INTO user_time(work_ymd, user_id, work_start_time)
+		VALUES(#{todayYmd}, #{userId}, #{workStartTime})
+	</insert>
+	<update id="updateTodayWorkEndTime">
+		UPDATE user_time SET work_end_time = #{workEndTime}
+		WHERE user_id = #{userId}
+		AND work_ymd = #{todayYmd}
+	</update>
+</mapper>

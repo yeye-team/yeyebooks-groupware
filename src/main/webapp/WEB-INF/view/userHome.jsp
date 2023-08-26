@@ -19,6 +19,7 @@
     <title>Home</title>
 
     <jsp:include page="./inc/head.jsp"></jsp:include>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 	<link href='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.css' rel='stylesheet' />
     <script src='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.js'></script>
   	<style>
@@ -27,9 +28,6 @@
 			font-weight: bold;
 			transition: all 0.2s linear;
   		}
-		.card-header a:hover{
-			color: black;
-		}
   		.card-body .btn+.btn{
   			margin-left: 0.5rem;
   		}
@@ -52,36 +50,109 @@
 			transition: all 0.2s linear;
 		}
 		.table tbody tr:hover{
-			background-color: dimgray;
+			background-color: gray;
 			color: white;
 			cursor: pointer;
+		}
+		#nowTime{
+			font-size: xxx-large;
+			font-weight: bold;
+			color: #555;
+		}
+		.time-check{
+			width: 30%;
+			font-weight: bold;
+			color: #666;
+		}
+		.time-check button{
+			width: 100%;
+		}
+		.time-check + .time-check{
+			margin-left: 10%;
 		}
   	</style>
   	<script>
 	  	 function moveToBoardOne(boardNo){
 	     	location.href="/yeyebooks/board/boardOne?boardNo=" + boardNo; 
 	     }
+	  	 
+		function updateTime(){
+			let nowTime = dayjs().format('HH:mm:ss');
+		 	$('#nowTime').text(nowTime);
+		}
+		
   		$(document).ready(function() {
-        const calendarEl = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-        	headerToolbar: false,
-        	googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw',
-	   	  	events: {
-	   	    	googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
-	   	  		color: 'red',
-	   	  		textColor: 'white',
-	   	  	},
-        });
-        calendar.render();
-        
-        $('#moveToNoticeAll').click(function(){
-        	location.href="/yeyebooks/board/boardList?boardCatCd=00";
-        })
-        
-        $('#moveToCalendarAll').click(function(){
-        	//캘린더 주소
-        	location.href="/yeyebooks/";
-        })
+  			updateTime();
+  			
+        	const calendarEl = document.getElementById('calendar');
+        	const calendar = new FullCalendar.Calendar(calendarEl, {
+	        	headerToolbar: false,
+	        	googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw',
+		   	  	events: {
+		   	    	googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+		   	  		color: 'red',
+		   	  		textColor: 'white',
+		   	  	},
+	        });
+	        calendar.render();
+	        
+	        setInterval(updateTime, 1000);
+	        
+	        $('#moveToNoticeAll').click(function(){
+	        	location.href="/yeyebooks/board/boardList?boardCatCd=00";
+	        })
+	        
+	        $('#moveToCalendarAll').click(function(){
+	        	// 캘린더 주소
+	        	location.href="/yeyebooks/";
+	        })
+	        $('#moveToWaitingAll').click(function(){
+	        	// 진행중인 문서 주소
+	        	location.href="/yeyebooks/"
+	        })
+	        $('#moveToWorkTimeAll').click(function(){
+	        	// 근태현황 전체 주소
+	        	location.href="/yeyebooks/"
+	        })
+	        $('#workStart').click(function(){
+	        	const workStartTime = $('#nowTime').text();
+	        	$.ajax({
+	        		url: "/yeyebooks/workStart",
+	        		type: "POST",
+	        		data: {
+	        			workStartTime: workStartTime
+	        		},
+	        		success: function(){
+	        			Swal.fire({
+			                icon: 'success',
+			                title: '출근 성공',
+			           }).then(function(){
+			        	   $('#workStartTime').text(workStartTime);
+			        	   $('#workEnd').prop('disabled', false);
+			        	   $('#workStart').prop('disabled', true);
+			           })
+	        		}
+	        	})
+	        })
+	        $('#workEnd').click(function(){
+	        	const workEndTime = $('#nowTime').text();
+	        	$.ajax({
+	        		url: "/yeyebooks/workEnd",
+	        		type: "POST",
+	        		data: {
+	        			workEndTime: workEndTime
+	        		},
+	        		success: function(){
+	        			Swal.fire({
+			                icon: 'success',
+			                title: '퇴근 성공',
+			           }).then(function(){
+			        	   $('#workEndTime').text(workEndTime);
+			        	   $('#workEnd').prop('disabled', true);
+			           })
+	        		}
+	        	})
+	        })
       });
 	
   	</script>
@@ -106,87 +177,114 @@
             <div class="container-xxl flex-grow-1 container-p-y">
 				<div class="row">
 					<div class="col-lg">
-	                  <div class="card mb-4">
-	                    <h5 class="card-header">
-	                    	<a href="#">
-	                    		대기중인 결재건
-	                    		<span class="badge bg-warning rounded-pill">${approvalCnt + approveCnt }</span>
-	                    	</a>
-	                    </h5>
-	                    <div class="card-body">
-                           <a href="#" class="btn btn-primary">
-                             승인대기 결재건
-                             <span class="badge badge-center rounded-pill bg-label-warning">${approveCnt }</span>
-                           </a>
-                           <a href="#" class="btn btn-primary">
-                             결재대기 결재건
-                             <span class="badge badge-center rounded-pill bg-label-warning">${approvalCnt }</span>
-                           </a>
-	                    </div>
-	                  </div>
-	                </div>
-	                <div class="col-lg">
-	                  <div class="card mb-4">
-	                    <h5 class="card-header">오늘의 출/퇴근</h5>
-	                    <div class="card-body">
-	                    </div>
-	                  </div>
-	                </div>
-				</div>
-				<div class="row">
-					<div class="col-lg">
-	                  <div class="card mb-4">
-	                    <h5 class="card-header d-flex justify-content-between align-items-center">
-	                    	오늘의 일정
-	                    	<button type="button" class="btn btn-secondary" id="moveToCalendarAll">전체보기</button>
-	                    </h5>
-	                    <div class="card-body ">
-	                    	<div class="mb-2 text-center">
-		                    	<c:forEach var="s" items="${scheduleList }">
-		                    		<c:if test="${s.skdCategory == '전체' }">
-		                    			<span class="badge bg-info">[전체]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
-		                    		</c:if>
-		                    		<c:if test="${s.skdCategory == '부서' }">
-		                    			<span class="badge bg-success">[부서]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
-		                    		</c:if>
-		            				<c:if test="${s.skdCategory == '개인' }">
-		                    			<span class="badge bg-dark">[개인]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
-		                    		</c:if>
-		                    	</c:forEach>
+						<!-- 대기중인 결재건수 -->
+	                	<div class="card mb-4">
+		                    <h5 class="card-header d-flex justify-content-between align-items-center">
+		                    	<a href="#">
+		                    		대기중인 결재건
+		                    		<span class="badge bg-warning rounded-pill">${approvalCnt + approveCnt }</span>
+		                    	</a>
+		                    	<button type="button" class="btn btn-secondary" id="moveToWaitingAll">전체보기</button>
+		                 	</h5>
+	                    	<div class="card-body ">
+	                          <a href="#" class="btn btn-primary btn-lg">
+	                            승인대기 결재건
+	                            <span class="badge badge-center rounded-pill bg-label-warning">${approveCnt }</span>
+	                          </a>
+	                          <a href="#" class="btn btn-primary btn-lg">
+	                            결재대기 결재건
+	                            <span class="badge badge-center rounded-pill bg-label-warning">${approvalCnt }</span>
+	                          </a>
 	                    	</div>
-	                    	<div id="calendar"></div>
-	                    </div>
-	                  </div>
+	                  	</div>
+	                  	<!-- 오늘의 일정 -->
+	                  	<div class="card mb-4">
+	                    	<h5 class="card-header d-flex justify-content-between align-items-center">
+	                    		오늘의 일정
+	                    		<button type="button" class="btn btn-secondary" id="moveToCalendarAll">일정전체</button>
+	                    	</h5>
+	                    	<div class="card-body ">
+	                    		<div class="mb-2 text-center">
+	                    			<c:if test="${scheduleList.size() == 0}">
+	                    				<span class="badge bg-secondary">오늘 날짜의 일정이 없습니다.</span>
+	                    			</c:if>
+		                    		<c:forEach var="s" items="${scheduleList }">
+		                    			<c:if test="${s.skdCategory == '전체' }">
+		                    				<span class="badge bg-info">[전체]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
+		                    			</c:if>
+		                    			<c:if test="${s.skdCategory == '부서' }">
+		                    				<span class="badge bg-success">[부서]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
+		                    			</c:if>
+		            					<c:if test="${s.skdCategory == '개인' }">
+		                    				<span class="badge bg-dark">[개인]${s.skdStartTime.substring(0,2)}시 ${s.skdStartTime.substring(3,5)}분 ${s.skdTitle }</span>
+		                    			</c:if>
+		                    		</c:forEach>
+	                    		</div>
+	                    		<div id="calendar"></div>
+	                    	</div>
+	                  	</div>
 	                </div>
 	                <div class="col-lg">
-	                  <div class="card mb-4">
-	                    <h5 class="card-header d-flex justify-content-between align-items-center">
-	                    	최근 공지사항
-	                    	<button type="button" class="btn btn-secondary" id="moveToNoticeAll">전체보기</button>
-	                    </h5>
-	                    <div class="card-body">
-	                    <div class="table-responsive text-nowrap">
-                  <table class="table">
-                    <thead>
-                    	<tr>
-                        	<th>공지제목</th>
-                        	<th class="text-center">공지일자</th>
-                        	<th class="text-center">조회수</th>
-                      	</tr>
-                    </thead>
-                    <tbody class="table-border-bottom-0">
-                    	<c:forEach var="b" items="${noticeList }">
-                    		<tr onclick="moveToBoardOne(${b.boardNo})">
-                    			<td>${b.boardTitle }</td>
-                    			<td class="text-center">${b.CDate }</td>
-                    			<td class="text-center">${b.boardView }</td>
-                    		</tr>
-                    	</c:forEach>
-                    </tbody>
-                  </table>
-                </div>
-	                    </div>
-	                  </div>
+	                	<!-- 출퇴근 버튼 -->
+	                  	<div class="card mb-4">
+	                    	<h5 class="card-header d-flex justify-content-between align-items-center">
+	                    		오늘의 출/퇴근
+	                    		<button type="button" class="btn btn-secondary" id="moveToWorkTimeAll">근태전체</button>
+	                    	</h5>
+	                    	<div class="card-body text-center">
+	                    		<span id="nowTime"></span>
+
+	                    		<c:if test="${isInCompany == false}">
+	                    			<c:set var="companyOnly" value="disabled"></c:set>
+	                    		</c:if>
+	                    		<c:if test="${workStartTime != null }">
+	                    			<c:set var="workStarted" value="disabled"></c:set>
+	                    		</c:if>
+	                    		<c:if test="${workEndTime != null || workStartTime == null}">
+	                    			<c:set var="workEnded" value="disabled"></c:set>
+	                    		</c:if>
+                    		
+                    			<div class="d-flex align-items-center justify-content-center">
+	                    			<div class="text-center time-check">
+	                    				<button type="button" class="btn btn-primary" ${companyOnly} ${workStarted} id="workStart">출근</button>
+	                    				<div>출근시간 : <span id="workStartTime">${workStartTime != null ? workStartTime : '-'}</span></div>
+	                    			</div>
+	                    			<div class="text-center time-check">
+	                    				<button type="button" class="btn btn-primary" ${companyOnly} ${workEnded} id="workEnd">퇴근</button>
+                    					<div>퇴근시간 : <span id="workEndTime">${workEndTime != null ? workEndTime : '-'}</span></div>
+	                    			</div>
+                    			</div>
+	                    	</div>
+	                  	</div>
+	                  	<!-- 공지사항 목록(최근꺼) -->
+	                  	<div class="card mb-4">
+	                    	<h5 class="card-header d-flex justify-content-between align-items-center">
+	                    		최근 공지사항
+	                    		<button type="button" class="btn btn-secondary" id="moveToNoticeAll">공지전체</button>
+	                    	</h5>
+	                    	<div class="card-body">
+	                    		<div class="table-responsive text-nowrap">
+	                  				<table class="table">
+					                    <thead>
+					                    	<tr>
+					                        	<th>공지제목</th>
+					                        	<th class="text-center">공지일자</th>
+					                        	<th class="text-center">조회수</th>
+					                      	</tr>
+					                    </thead>
+					                    <tbody class="table-border-bottom-0">
+					                    	<c:forEach var="b" items="${noticeList }">
+					                    		<tr onclick="moveToBoardOne(${b.boardNo})">
+					                    			<td>${b.boardTitle }</td>
+					                    			<td class="text-center">${b.CDate }</td>
+					                    			<td class="text-center">${b.boardView }</td>
+					                    		</tr>
+					                    	</c:forEach>
+					                    </tbody>
+									</table>
+               					</div>
+                    		</div>
+	                  	</div>
 	                </div>
 				</div>
               </div>
@@ -198,7 +296,6 @@
    	</div>
    </div>
     <!-- / Layout wrapper -->
-    </div>
 
 
     <!-- Core JS -->
