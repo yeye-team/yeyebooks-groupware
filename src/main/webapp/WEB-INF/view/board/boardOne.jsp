@@ -214,141 +214,75 @@
 				<form action="/yeyebooks/board/boardList" method="post">
 					<ul class="menu-inner py-1">
 						<!-- 각 게시판을 클릭한 각각의 경우별로 active 부여 -->
+						<!-- Dashboard -->
 						<c:choose>
 							<c:when test="${board.boardCatCd=='00'}">
-								<!-- Dashboard -->
 								<li class="menu-item active">
-									<button type="submit" name="boardCatCd" value="00" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">공지사항</div>
-									</button>
-								</li>
-								<li class="menu-item">
-									<button type="submit" name="boardCatCd" value="99" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">전체 게시판</div>
-									</button>
-								</li>
-								<!-- 관리자 사용자 메뉴 구분 -->
-								<c:choose>
-									<c:when test="${userId != 'admin'}">
-										<li class="menu-item">
-											<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
-												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
-											</button>
-										</li>
-									</c:when>
-									<c:otherwise>
-										<li class="menu-item">
-											<a class="menu-link">
-												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
-											</a>
-											<div class="card overflow-hidden" style="height: 250px;">
-								        		<div class="card-body" id="vertical-example">
-													<c:forEach var="s" items="${selectAllCatCode}">
-														<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
-															<i class='bx bx-clipboard'></i>
-															<div data-i18n="Analytics">${s.codeNm} 게시판</div>
-														</button>
-													</c:forEach>
-												</div>
-											</div>
-										</li>
-									</c:otherwise>
-								</c:choose>
 							</c:when>
-							
-							<c:when test="${board.boardCatCd=='99'}">
-								 <!-- Dashboard -->
-								<li class="menu-item">
-									<button type="submit" name="boardCatCd" value="00" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">공지사항</div>
-									</button>
-								</li>
-								<li class="menu-item active">
-									<button type="submit" name="boardCatCd" value="99" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">전체 게시판</div>
-									</button>
-								</li>
-								<!-- 관리자 사용자 메뉴 구분 -->
-								<c:choose>
-									<c:when test="${userId != 'admin'}">
-										<li class="menu-item">
-											<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
-												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
-											</button>
-										</li>
-									</c:when>
-									<c:otherwise>
-										<li class="menu-item">
-											<a class="menu-link">
-												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
-											</a>
-											<div class="card overflow-hidden" style="height: 250px;">
-								        		<div class="card-body" id="vertical-example">
-													<c:forEach var="s" items="${selectAllCatCode}">
-														<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
-															<i class='bx bx-clipboard'></i>
-															<div data-i18n="Analytics">${s.codeNm} 게시판</div>
-														</button>
-													</c:forEach>
-												</div>
-											</div>
-										</li>
-									</c:otherwise>
-								</c:choose>
-							</c:when>
-							
 							<c:otherwise>
-								 <!-- Dashboard -->
 								<li class="menu-item">
-									<button type="submit" name="boardCatCd" value="00" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">공지사항</div>
-									</button>
-								</li>
+							</c:otherwise>
+						</c:choose>
+							<button type="submit" name="boardCatCd" value="00" class="menu-link">
+								<i class='bx bx-clipboard'></i>
+								<div data-i18n="Analytics">공지사항</div>
+							</button>
+						</li>
+						<c:choose>
+							<c:when test="${board.boardCatCd=='99'}">
+								<li class="menu-item active">
+							</c:when>
+							<c:otherwise>
 								<li class="menu-item">
-									<button type="submit" name="boardCatCd" value="99" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">전체 게시판</div>
-									</button>
-								</li>
-								<!-- 관리자 사용자 메뉴 구분 -->
+							</c:otherwise>
+						</c:choose>
+							<button type="submit" name="boardCatCd" value="99" class="menu-link">
+								<i class='bx bx-clipboard'></i>
+								<div data-i18n="Analytics">전체 게시판</div>
+							</button>
+						</li>
+						<!-- 사용자 관리자 메뉴 구분 -->
+						<c:choose>
+							<c:when test="${userId != 'admin'}">
 								<c:choose>
-									<c:when test="${userId != 'admin'}">
+									<c:when test="${board.boardCatCd != '00' && board.boardCatCd != '99'}">
 										<li class="menu-item active">
-											<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
-												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
-											</button>
-										</li>
 									</c:when>
 									<c:otherwise>
-										<li class="menu-item active">
-											<a class="menu-link">
-												<i class='bx bx-clipboard'></i>
-												<div data-i18n="Analytics">부서 게시판</div>
-											</a>
-											<div class="card overflow-hidden" style="height: 250px;">
-								        		<div class="card-body" id="vertical-example">
-													<c:forEach var="s" items="${selectAllCatCode}">
-														<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
-															<i class='bx bx-clipboard'></i>
-															<div data-i18n="Analytics">${s.codeNm} 게시판</div>
-														</button>
-													</c:forEach>
-												</div>
-											</div>
-										</li>
+										<li class="menu-item">
 									</c:otherwise>
 								</c:choose>
-							</c:otherwise>		
+									<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
+										<i class='bx bx-clipboard'></i>
+										<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
+									</button>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<c:choose>
+									<c:when test="${board.boardCatCd != '00' && board.boardCatCd != '99'}">
+										<li class="menu-item active">
+									</c:when>
+									<c:otherwise>
+										<li class="menu-item">
+									</c:otherwise>
+								</c:choose>
+									<a class="menu-link">
+										<i class='bx bx-clipboard'></i>
+										<div data-i18n="Analytics">부서 게시판</div>
+									</a>
+									<div class="card overflow-hidden" style="height: 250px;">
+						        		<div class="card-body" id="vertical-example">
+											<c:forEach var="s" items="${selectAllCatCode}">
+												<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
+													<i class='bx bx-clipboard'></i>
+													<div data-i18n="Analytics">${s.codeNm} 게시판</div>
+												</button>
+											</c:forEach>
+										</div>
+									</div>
+								</li>
+							</c:otherwise>
 						</c:choose>
 						<!-- /각 게시판을 클릭한 각각의 경우별로 active 부여 -->
 					</ul>

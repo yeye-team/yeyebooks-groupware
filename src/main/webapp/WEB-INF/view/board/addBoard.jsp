@@ -117,22 +117,43 @@
 				<form action="/yeyebooks/board/boardList" method="post">
 					<ul class="menu-inner py-1">
 						<!-- Dashboard -->
-						<li class="menu-item">
+						<c:choose>
+							<c:when test="${boardCatCd=='00'}">
+								<li class="menu-item active">
+							</c:when>
+							<c:otherwise>
+								<li class="menu-item">
+							</c:otherwise>
+						</c:choose>
 							<button type="submit" name="boardCatCd" value="00" class="menu-link">
 								<i class='bx bx-clipboard'></i>
 								<div data-i18n="Analytics">공지사항</div>
 							</button>
 						</li>
-						<li class="menu-item">
+						<c:choose>
+							<c:when test="${boardCatCd=='99'}">
+								<li class="menu-item active">
+							</c:when>
+							<c:otherwise>
+								<li class="menu-item">
+							</c:otherwise>
+						</c:choose>
 							<button type="submit" name="boardCatCd" value="99" class="menu-link">
 								<i class='bx bx-clipboard'></i>
 								<div data-i18n="Analytics">전체 게시판</div>
 							</button>
 						</li>
-						<!-- 관리자 사용자 메뉴 구분 -->
+						<!-- 사용자 관리자 메뉴 구분 -->
 						<c:choose>
 							<c:when test="${userId != 'admin'}">
-								<li class="menu-item">
+								<c:choose>
+									<c:when test="${boardCatCd != '00' && boardCatCd != '99'}">
+										<li class="menu-item active">
+									</c:when>
+									<c:otherwise>
+										<li class="menu-item">
+									</c:otherwise>
+								</c:choose>
 									<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
 										<i class='bx bx-clipboard'></i>
 										<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
@@ -140,7 +161,14 @@
 								</li>
 							</c:when>
 							<c:otherwise>
-								<li class="menu-item">
+								<c:choose>
+									<c:when test="${boardCatCd != '00' && boardCatCd != '99'}">
+										<li class="menu-item active">
+									</c:when>
+									<c:otherwise>
+										<li class="menu-item">
+									</c:otherwise>
+								</c:choose>
 									<a class="menu-link">
 										<i class='bx bx-clipboard'></i>
 										<div data-i18n="Analytics">부서 게시판</div>
@@ -157,7 +185,7 @@
 									</div>
 								</li>
 							</c:otherwise>
-						</c:choose>	
+						</c:choose>
 					</ul>
 				</form>
 				<!-- /메뉴바 게시판 클릭 구현부 -->
