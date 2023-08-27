@@ -43,7 +43,7 @@ public class HomeController {
 	@Autowired
 	UserTimeService userTimeService;
 	
-	String[] allowedIp = {"192.168.7.146", "172.30.1.100", "192.168.5.7", "192.168.25.27"};
+	String[] allowedIp = {"192.168.7.146", "172.30.1.99", "192.168.5.7", "192.168.25.27"};
 	
 	@GetMapping("/")
 	public String home(HttpSession session,

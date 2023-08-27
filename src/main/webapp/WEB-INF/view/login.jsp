@@ -91,7 +91,7 @@
   				                title: '로그인 성공',
   				                text: 'OK버튼을 누르시면 접속합니다.',
   				            }).then(function(){
-  				            	if(userPw == '1234'){
+  				            	if(userPw == '1234' && userId != 'admin'){
   				            		location.href="/yeyebooks/changePw";
   				            		return;
   				            	}
