@@ -3,6 +3,7 @@ package com.goodee.yeyebooks.service;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.goodee.yeyebooks.mapper.UserTimeMapper;
@@ -23,4 +24,10 @@ public class UserTimeService {
 	public int updateTodayWorkEndTime(String userId, String workEndTime) {
 		return userTimeMapper.updateTodayWorkEndTime(userId, todayYmd, workEndTime);
 	}
+	
+	@Scheduled(cron = "59 59 23 * * *")
+	public void userTimeScheduling() {
+		userTimeMapper.batchUpdateWorkEndTimeForAll(todayYmd);
+	}
+	
 }

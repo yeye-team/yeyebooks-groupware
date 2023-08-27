@@ -16,4 +16,9 @@
 		WHERE user_id = #{userId}
 		AND work_ymd = #{todayYmd}
 	</update>
+	<update id="batchUpdateWorkEndTimeForAll">
+		UPDATE user_time set work_end_time = '23:59:59'
+		WHERE work_ymd = #{todayYmd}
+		AND work_end_time IS NULL
+	</update>
 </mapper>

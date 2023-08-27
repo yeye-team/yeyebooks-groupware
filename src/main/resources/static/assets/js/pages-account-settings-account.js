@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
       const resetImage = accountUserImage.src;
       fileInput.onchange = () => {
         if (fileInput.files[0]) {
-			if(fileInput.files[0].type != "image/png" && fileInput.files[0].type != "image/jpg"){
+			if(fileInput.files[0].type != "image/png" && fileInput.files[0].type != "image/jpg" && fileInput.files[0].type != "image/jpeg"){
 				Swal.fire({
 	                icon: 'error',
 	                title: '등록실패',
