@@ -174,8 +174,10 @@ public class BoardController {
 	}
 	
 	@PostMapping("/board/modifyBoard")
-	public String modifyBoard(HttpServletRequest request, int boardNo, String boardCatCd,
+	public String modifyBoard(HttpServletRequest request, int boardNo, int boardFileNo, String boardCatCd,
 								String boardTitle, String boardContents) {
+		String path = request.getServletContext().getRealPath("/boardFile/");
+		
 		Board board = new Board();
 		board.setBoardNo(boardNo);
 		board.setBoardCatCd(boardCatCd);

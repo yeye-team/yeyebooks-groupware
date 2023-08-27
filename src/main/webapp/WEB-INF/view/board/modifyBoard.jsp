@@ -82,6 +82,13 @@
 			        return false;
 			    }
 			});
+			
+			$('.deleteAttached').click(function(){
+				if(confirm("파일을 삭제할까요?")){
+					var attachedFile = $(this).closest('.attachedFile');
+					attachedFile.remove();
+				}
+			});
 		});
 	</script>
 	<style>
@@ -96,6 +103,18 @@
     		width: 100%;
     		height: 235px;
     	}
+    	.btn-outline-primary {
+		  color: gray;
+		  border-color: gray;
+		  background: transparent;
+		}
+    	.btn-outline-primary:hover {
+		  color: white;
+		  background-color: gray;
+		  border-color: darkgray;
+		  box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
+		  transform: translateY(-1px);
+		}
     </style>
 </head>
 <body>
@@ -119,22 +138,43 @@
 				<form action="/yeyebooks/board/boardList" method="post">
 					<ul class="menu-inner py-1">
 						<!-- Dashboard -->
-						<li class="menu-item">
+						<c:choose>
+							<c:when test="${board.boardCatCd=='00'}">
+								<li class="menu-item active">
+							</c:when>
+							<c:otherwise>
+								<li class="menu-item">
+							</c:otherwise>
+						</c:choose>
 							<button type="submit" name="boardCatCd" value="00" class="menu-link">
 								<i class='bx bx-clipboard'></i>
 								<div data-i18n="Analytics">공지사항</div>
 							</button>
 						</li>
-						<li class="menu-item">
+						<c:choose>
+							<c:when test="${board.boardCatCd=='99'}">
+								<li class="menu-item active">
+							</c:when>
+							<c:otherwise>
+								<li class="menu-item">
+							</c:otherwise>
+						</c:choose>
 							<button type="submit" name="boardCatCd" value="99" class="menu-link">
 								<i class='bx bx-clipboard'></i>
 								<div data-i18n="Analytics">전체 게시판</div>
 							</button>
 						</li>
-						<!-- 관리자 사용자 메뉴 구분 -->
+						<!-- 사용자 관리자 메뉴 구분 -->
 						<c:choose>
 							<c:when test="${userId != 'admin'}">
-								<li class="menu-item">
+								<c:choose>
+									<c:when test="${board.boardCatCd != '00' && board.boardCatCd != '99'}">
+										<li class="menu-item active">
+									</c:when>
+									<c:otherwise>
+										<li class="menu-item">
+									</c:otherwise>
+								</c:choose>
 									<button type="submit" name="boardCatCd" value="${userDept.deptCd}" class="menu-link">
 										<i class='bx bx-clipboard'></i>
 										<div data-i18n="Analytics">${userDept.deptNm} 게시판</div>
@@ -142,7 +182,14 @@
 								</li>
 							</c:when>
 							<c:otherwise>
-								<li class="menu-item">
+								<c:choose>
+									<c:when test="${board.boardCatCd != '00' && board.boardCatCd != '99'}">
+										<li class="menu-item active">
+									</c:when>
+									<c:otherwise>
+										<li class="menu-item">
+									</c:otherwise>
+								</c:choose>
 									<a class="menu-link">
 										<i class='bx bx-clipboard'></i>
 										<div data-i18n="Analytics">부서 게시판</div>
@@ -159,7 +206,7 @@
 									</div>
 								</li>
 							</c:otherwise>
-						</c:choose>	
+						</c:choose>
 					</ul>
 				</form>
 				<!-- /메뉴바 게시판 클릭 구현부 -->
@@ -249,16 +296,16 @@
                							  	<!-- 첨부 파일 -->
 							                <div class="mb-1">
 							                	<c:forEach items="${boardFile}" var="bf">
-							                		<li>
-									                    <a href="../boardFile/${bf.saveFilename}"
-														   download="${bf.originFilename}" 
-														   target="_blank">
-														   ${bf.originFilename}
-													   </a>
-									                    <a href="/board/deleteFile?fileNo=${bf.boardFileNo}">삭제</a>  <!-- 파일 삭제 링크 -->
-									                </li>
-							                	</c:forEach>
-							                	<div id="files">
+						                			<div class="attachedFile">
+						                				<!-- <input class="form-control boardFiles" type="hidden" name="multipartFile"> -->
+						                				<a name="boardFileNo" value="${bf.boardFileNo}">${bf.originFilename}</a>
+						                				<button type="button" class="btn btn-icon btn-primary deleteAttached" style="height: 20px; width: 20px;">
+						                					<i class='bx bx-checkbox-minus'></i>
+						                				</button>
+						                			</div>
+						             		   	</c:forEach>
+					                			<br>
+							     	           	<div id="files">
 							                		<input class="form-control boardFiles" type="file" name="multipartFile"><br>
 							                	</div>
 							                </div>
@@ -268,7 +315,7 @@
 													<button type="button" class="btn btn-icon btn-primary" id="removeFile"><i class='bx bxs-x-square'></i></button>
 							                	</div>
 							                	<div style="float: right;">
-													<a class="btn btn-outline-primary" style="margin-right: 5px;l" href="${pageContext.request.contextPath}/board/boardOne?boardNo=${b.boardNo}">취소</a>
+													<a class="btn btn-outline-primary" style="margin-right: 5px;" href="${pageContext.request.contextPath}/board/boardOne?boardNo=${b.boardNo}">취소</a>
 													<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()" id="submitBtn">수정</button>
 							                	</div>
 							                </div>

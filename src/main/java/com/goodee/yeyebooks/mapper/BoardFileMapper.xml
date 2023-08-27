@@ -32,4 +32,12 @@
 		WHERE
 			board_no = #{boardNo}
 	</delete>
+	
+	<delete id="deleteModifyFile">
+	DELETE FROM board_file
+		WHERE
+			board_no = #{boardNo}
+		AND
+			board_file_no != #{boardFileNo}
+	</delete>
 </mapper>
