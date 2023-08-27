@@ -112,29 +112,35 @@
 	
 	<!-- 문서 상세보기 -->
 	<select id="selectApprovalOne" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
-		SELECT
-			a.aprv_no aprvNo, a.user_id userId,
-			a.doc_cat_cd docCatCd, a.aprv_title aprvTitle,
-			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
-			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStat,
-			a.reference,
-			a.c_date cDate,
-			a.u_date uDate,
-			u.user_nm userName,
-			u.rank_cd, u.dept_cd,
-			c1.code_nm rankName,
-			c2.code_nm deptName,
-			al.aprv_stat_cd lineAprvStat,
-			al.aprv_ymd lineAprvYmd,
-			al.aprv_sequence aprvSequence
-		FROM approval a
-		JOIN user u ON a.user_id = u.user_id
-		LEFT JOIN common_code c1 ON u.rank_cd = c1.code AND c1.group_code = 'R001'
-		LEFT JOIN common_code c2 ON u.dept_cd = c2.code AND c2.group_code = 'D001'
-		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-		WHERE a.aprv_no = #{aprvNo}
-		ORDER BY al.aprv_sequence;
-	</select> 
+	    SELECT
+	        a.aprv_no aprvNo, a.user_id userId,
+	        a.doc_cat_cd docCatCd, a.aprv_title aprvTitle,
+	        a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
+	        a.rjct_reason rjctReason, a.aprv_stat_cd aprvStat,
+	        a.reference,
+	        a.c_date cDate,
+	        a.u_date uDate,
+	        u.user_nm userName,
+	        u.rank_cd, u.dept_cd,
+	        c1.code_nm rankName,
+	        c2.code_nm deptName,
+	        al.aprv_stat_cd lineAprvStat,
+	        al.aprv_ymd lineAprvYmd,
+	        al.aprv_sequence aprvSequence,
+	        af.aprv_file_no aprvFileNo, 
+	        af.orgin_filename orginFilename, 
+	        af.save_filename saveFilename, 
+	        cm.cmnt_contents commentContents 
+	    FROM approval a
+	    JOIN user u ON a.user_id = u.user_id
+	    LEFT JOIN common_code c1 ON u.rank_cd = c1.code AND c1.group_code = 'R001'
+	    LEFT JOIN common_code c2 ON u.dept_cd = c2.code AND c2.group_code = 'D001'
+	    LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
+	    LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no 
+	    LEFT JOIN comment cm ON a.aprv_no = cm.board_no 
+	    WHERE a.aprv_no = #{aprvNo}
+	    ORDER BY al.aprv_sequence;
+	</select>
 	
 	<!-- 문서처리 -->
 	<update id="updateApprovalProcessed" parameterType="com.goodee.yeyebooks.vo.Approval">
