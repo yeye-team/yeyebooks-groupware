@@ -12,13 +12,6 @@
 <head>
 	<title>사용자 관리</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<style>
-		.swal2-container{
-			z-index: 1100;
-		}
-	</style>
 	<script>
 		$(document).ready(function(){
 			$.ajax({
