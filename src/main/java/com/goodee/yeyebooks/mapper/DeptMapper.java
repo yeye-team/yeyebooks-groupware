@@ -43,4 +43,8 @@ public interface DeptMapper {
 	int updateUserDept(User user);
 	
 	int updateUserStat(User user);
+	
+	List<Map<String, Object>> selectUserTenureList();
+	
+	int updateUserDayoffCnt(User user);
 }
