@@ -14,7 +14,7 @@
 	
 	<insert id="insertDept" parameterType="java.util.Map">
 		INSERT INTO common_code(group_code, group_nm, code, code_nm)
-		SELECT group_code, group_nm, LPAD(MAX(CODE)+1,'2','0'), #{deptNm} 
+		SELECT group_code, group_nm, LPAD(MAX(code)+1,'2','0'), #{deptNm} 
 		FROM common_code 
 		WHERE group_code = 'D001'
 	</insert>
@@ -151,12 +151,12 @@
 	</update>
 	
 	<select id="selectUserTenureList" resultType="java.util.Map">
-		SELECT 
+		SELECT
 			u.user_id userId,
 			u.user_stat_cd userStatCd,
 			u.dayoff_cnt dayoffCnt,
-			TIMESTAMPDIFF(YEAR, join_ymd, NOW()) yearCnt, 
-			TIMESTAMPDIFF(MONTH, join_ymd, NOW()) monthCnt 
+			TIMESTAMPDIFF(YEAR, join_ymd, NOW()) yearCnt,
+			TIMESTAMPDIFF(MONTH, join_ymd, NOW()) monthCnt
 		FROM user u
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
 		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
@@ -164,7 +164,7 @@
 	</select>
 	
 	<update id="updateUserDayoffCnt" parameterType="com.goodee.yeyebooks.vo.User">
-		UPDATE user SET dayoff_cnt = dayoff_cnt + #{dayoffCnt}
+		UPDATE user SET dayoff_cnt = #{dayoffCnt}
 		WHERE user_id = #{userId}
 	</update>
 </mapper>
