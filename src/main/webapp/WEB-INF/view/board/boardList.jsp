@@ -74,6 +74,9 @@
    		.table td:nth-child(1) {
 	        width: 25%;
     	}
+    	tbody tr:hover {
+    		background-color: lightgray;
+    	}
     </style>
   </head>
 
