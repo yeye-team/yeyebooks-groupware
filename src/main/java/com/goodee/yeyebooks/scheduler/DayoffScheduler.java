@@ -25,18 +25,26 @@ public class DayoffScheduler {
 		
 		for(Map<String, Object> m : list) {
 			int yearCnt = Integer.parseInt(String.valueOf(m.get("yearCnt")));
+			int dayoffCnt = Integer.parseInt(String.valueOf(m.get("dayoffCnt")));
 			if(yearCnt > 0) {
-				int plusDayoff = yearCnt / 2;
-				User u = new User();
-				u.setUserId((String)m.get("userId"));
-				u.setDayoffCnt(plusDayoff+15);
-				deptMapper.updateUserDayoffCnt(u);
+				int plusDayoff = (yearCnt / 2) + 15;
+				if(plusDayoff > 25) {
+					plusDayoff = 25;
+				}
+				if(dayoffCnt < plusDayoff) {
+					User u = new User();
+					u.setUserId((String)m.get("userId"));
+					u.setDayoffCnt(plusDayoff);
+					deptMapper.updateUserDayoffCnt(u);
+				}
 			} else {
 				int monthCnt = Integer.parseInt(String.valueOf(m.get("monthCnt")));
-				User u = new User();
-				u.setUserId((String)m.get("userId"));
-				u.setDayoffCnt(monthCnt);
-				deptMapper.updateUserDayoffCnt(u);
+				if(dayoffCnt < monthCnt) {
+					User u = new User();
+					u.setUserId((String)m.get("userId"));
+					u.setDayoffCnt(monthCnt);
+					deptMapper.updateUserDayoffCnt(u);
+				}
 			}
 		}
 	}
