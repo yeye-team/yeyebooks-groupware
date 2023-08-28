@@ -4,58 +4,62 @@
 	
 	<!-- 결제 문서 추가 --> 
 	<insert id="insertApproval" parameterType="com.goodee.yeyebooks.vo.Approval">
-		INSERT INTO
-			approval(
-				user_id, doc_cat_cd, 
-				aprv_title, aprv_contents,
-				aprv_ymd, rjct_reason, 
-				reference, c_date, u_date
-				)
-		VALUES (
-			#{user_id},
-			#{doc_cat_cd},
-			#{aprc_title},
-			#{aprv_contents},
-			#{aprv_ymd},
-			#{rjct_reason},
-			#{reference},
-			NOW(),
-			NOW()
-		)
+		<!-- 문서번호 생성 로직 호출 -->
+	    <selectKey resultType="String" keyProperty="aprv_no" order="BEFORE">
+	        SELECT #{_parameter.doc_cat_cd} AS doc_cat_cd
+	    </selectKey>
+	    INSERT INTO approval (
+	        user_id, doc_cat_cd,
+	        aprv_title, aprv_contents,
+	        aprv_ymd, rjct_reason,
+	        aprv_stat_cd, reference,
+	        c_date, u_date
+	    )
+	    VALUES (
+	        #{user_id},
+	        #{doc_cat_cd},
+	        #{aprv_title},
+	        #{aprv_contents},
+	        #{aprv_ymd},
+	        #{rjct_reason},
+	        #{aprv_stat_cd},
+	        #{reference},
+	        NOW(),
+	        NOW()
+	    )
 	</insert>
 	
-	<!-- 결재첨부파일 -->
-	<insert id="insertApprovalFile" parameterType="com.goodee.yeyebooks.vo.ApprovalFile">
-		INSERT INTO
-			approval_file(
-				aprv_no, orgin_filename,
-				save_filename, filetype,
-				path
-			)
-		VALUES(
-			#{orgin_filename},
-			#{save_filename},
-			#{filetype},
-			#{path}
-		)
-			
-	</insert>
+	 <!-- 첨부 파일 추가 쿼리 -->
+    <insert id="insertApprovalFile" parameterType="com.goodee.yeyebooks.vo.ApprovalFile">
+        INSERT INTO approval_file (
+            aprv_no, orgin_filename,
+            save_filename, filetype,
+            path
+        )
+        VALUES (
+            #{aprv_no},
+            #{orgin_filename},
+            #{save_filename},
+            #{filetype},
+            #{path}
+        )
+    </insert>
 	
-	<!-- 결재선 -->
-	<insert id="insertApprovalLine" parameterType="com.goodee.yeyebooks.vo.ApprovalLine">
-		INSERT INTO
-			approbal_line(
-				aprv_no, user_id,
-				aprv_yn, aprv_sequence
-				aprv_ymd
-			)
-		VALUES(
-			#{user_id},
-			#{aprv_yn},
-			#{aprv_sequence},
-			NOW()
-		)
-	</insert>
+	<!-- 결재 선 추가 쿼리 -->
+    <insert id="insertApprovalLine" parameterType="com.goodee.yeyebooks.vo.ApprovalLine">
+        INSERT INTO approval_line (
+            aprv_no, user_id,
+            aprv_stat_cd, aprv_sequence,
+            aprv_ymd
+        )
+        VALUES (
+            #{aprv_no},
+            #{user_id},
+            #{aprv_stat_cd},
+            #{aprv_sequence},
+            #{aprv_ymd}
+        )
+    </insert>
 	
 	
 	<!-- 내 문서함 -->

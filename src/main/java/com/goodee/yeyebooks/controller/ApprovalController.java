@@ -1,6 +1,8 @@
 package com.goodee.yeyebooks.controller;
 
+import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,50 +60,34 @@ public class ApprovalController {
 			
 	// 문서작성
 	 @GetMapping("/approval/addApproval")
-	    public String showCreateForm() {
-	        return "createform"; // 문서 생성 폼을 보여주는 뷰로 리턴
+	    public String addApproval(Model model) {
+		 	model.addAttribute("approval");
+	        return "approval/addApproval"; // 문서 생성 폼을 보여주는 뷰로 리턴
 	    }
 
-	    @PostMapping("/approval/addApproval")
-	    public String createApproval(
-	            @RequestParam("userId") String userId,
-	            @RequestParam("docCatCd") String docCatCd, 
-	            @RequestParam("aprvTitle") String aprvTitle, 
-	            @RequestParam("aprvContents") String aprvContents, 
-	            @RequestParam("orginFilename") String orginFilename, 
-	            @RequestParam("saveFilename") String saveFilename,
-	            @RequestParam("fileType") String filetype, 
-	            @RequestParam("path") String path, 
-	            @RequestParam("aprvUserId") String aprvUserId 
-	    ) {
-	        // Approval 객체 생성 및 데이터 설정
-	        Approval approval = new Approval();
-	        approval.setUserId(userId);
-	        approval.setDocCatCd(docCatCd);
-	        approval.setAprvTitle(aprvTitle);
-	        approval.setAprvContents(aprvContents);
+	 @PostMapping("/approval/addApproval")
+	    public String addApproval(HttpServletRequest request, Approval approval,
+	            				@RequestParam("files") List<Approval> files,
+	            				@RequestParam("approvalLine") List<ApprovalLine> approvalLine) {
+
+	        String path = request.getServletContext().getRealPath("/approvalFiles/");
+	        List<ApprovalFile> approvalFiles = new ArrayList<>();
 	        
-	        // ApprovalFile 객체 생성 및 데이터 설정
-	        ApprovalFile approvalFile = new ApprovalFile();
-	        approvalFile.setOrginFilename(orginFilename);
-	        approvalFile.setSaveFilename(saveFilename);
-	        approvalFile.setFiletype(filetype);
-	        approvalFile.setPath(path);
+	        for (Approval file : files) {
+	            ApprovalFile approvalFile = new ApprovalFile();
+	            approvalFile.getOrginFilename();
+	            approvalFile.getFiletype();
+	            approvalFile.getPath();
+	            approvalFiles.add(approvalFile);
+	        }
 	        
-	        // ApprovalLine 객체 생성 및 데이터 설정
-	        ApprovalLine approvalLine = new ApprovalLine();
-	        approvalLine.setUserId(aprvUserId);
-	        approvalLine.setAprvYn("N"); // 결재 여부 초기화
-	        approvalLine.setAprvSequence(1); // 결재 순서 초기화
-	        
-	        // 문서 생성 서비스 메서드 호출
-	        approvalService.addApproval(approval, approvalFile, approvalLine);
-	        
-	        // return "redirect:/approval/detail?aprvNo=" + approval.getAprvNo();
-	        
-	        return "redirect:/approval/addApproval"; // 작성한 폼으로 다시 리다이렉트
+	        try {
+	            int row = approvalService.addApproval(approval, approvalFiles, approvalLine);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+
+	        return "redirect:/approval/approvalList"; // 목록 페이지로 리디렉션
 	    }
-	
-	
 
 }
