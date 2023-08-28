@@ -267,7 +267,11 @@
 								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
 								                            	  		<div class="col-md-6 mb-5 row">
 										                              		<div class="col-md-3">
-										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+										                              			<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
+																			    <c:if test="${u.userImg != null}">
+																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+																			    </c:if>
+																			    <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
 										                              		</div>
 										                              		<div class="col-md-9">
 										                              			<h5 class="mb-0">${u.userNm}</h5>
@@ -291,7 +295,11 @@
 							                            	  	<c:if test="${uc.deptCd == u.deptCd}">
 							                            	  		<div class="col-md-6 mb-5 row">
 									                              		<div class="col-md-3">
-									                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+									                              			<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
+																			    <c:if test="${u.userImg != null}">
+																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+																			    </c:if>
+																			    <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
 									                              		</div>
 									                              		<div class="col-md-9">
 									                              			<h5 class="mb-0">${u.userNm}</h5>
@@ -335,7 +343,11 @@
 								                            	  	<c:if test="${uc.deptCd == u.deptCd}">
 								                            	  		<div class="col-md-6 mb-5 row">
 										                              		<div class="col-md-3">
-										                              			<img src="${pageContext.request.contextPath}/assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" width="100%" />
+										                              			<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
+																			    <c:if test="${u.userImg != null}">
+																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+																			    </c:if>
+																			    <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
 										                              		</div>
 										                              		<div class="col-md-9">
 										                              			<div class="row">
