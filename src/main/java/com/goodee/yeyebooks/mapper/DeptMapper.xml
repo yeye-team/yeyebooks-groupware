@@ -164,7 +164,9 @@
 	</select>
 	
 	<update id="updateUserDayoffCnt" parameterType="com.goodee.yeyebooks.vo.User">
-		UPDATE user SET dayoff_cnt = #{dayoffCnt}
+		UPDATE user 
+		SET dayoff_cnt = #{dayoffCnt},
+			u_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
 </mapper>
