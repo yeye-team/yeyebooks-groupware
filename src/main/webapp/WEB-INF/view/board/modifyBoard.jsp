@@ -92,13 +92,24 @@
 			    };
 			
 			$('.deleteAttached').click(function(){
-				if(confirm("파일을 삭제할까요?")){
-					var attachedFile = $(this).closest('.attachedFile');
-					var fileNo = attachedFile.find('.fileToDelete').val();
-		            attachedFile.remove();
-		            filesToDelete.push(fileNo); // 삭제할 파일만 배열에 넣기
-		            //debugger;
-				}
+				Swal.fire({
+                    title: '경고',
+                    text: "파일을 삭제하시겠습니까?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '삭제',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+						var attachedFile = $(this).closest('.attachedFile');
+						var fileNo = attachedFile.find('.fileToDelete').val();
+			            attachedFile.remove();
+			            filesToDelete.push(fileNo); // 삭제할 파일만 배열에 넣기
+			            //debugger;
+					}
+				})
 			});
 			
 			// 수정버튼 누르면 삭제 파일이 있는경우 먼저처리
