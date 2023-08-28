@@ -22,12 +22,7 @@ public class ApprovalService {
 	
 	@Autowired 
 	private ApprovalMapper approvalMapper;
-	/*
-	 status들어오면
-	 > String approvalCode = approvalMapper.selectApprovalCode(status);
-	 > return List<Approval> selectApprovalByStatus(loginId, approvalCode);
-	  
-	 */
+
 	
 	// 내 문서함 리스트
 	public ApprovalService(ApprovalMapper approvalMapper) {
@@ -51,7 +46,7 @@ public class ApprovalService {
 	
 
 	// 전자결재 작성
-	public void createApproval(Approval approval, ApprovalFile approvalFile, ApprovalLine approvalLine) {
+	public void addApproval(Approval approval, ApprovalFile approvalFile, ApprovalLine approvalLine) {
 		// 문서추가
 		approvalMapper.insertApproval(approval);
 		

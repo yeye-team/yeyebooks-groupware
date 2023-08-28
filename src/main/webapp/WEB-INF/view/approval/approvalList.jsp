@@ -12,7 +12,7 @@
   <head>
     <jsp:include page="../inc/head.jsp"></jsp:include>
     <style>
-	    tr:hover {
+	   tbody tr:hover {
 	        background-color: lightgray; /* 마우스를 올렸을 때 배경색 변경 */
 	    }
 	</style>
@@ -81,82 +81,56 @@
 				<div class="menu-inner-shadow"></div>
 				
 				<!-- 메뉴바 게시판 클릭 구현부 -->
-				<form action="/yeyebooks/approval/approvalList" method="get">
 					<ul class="menu-inner py-1">
-						<!-- 각 게시판을 클릭한 각각의 경우별로 active 부여 -->
-						<!-- Dashboard -->
-						<c:choose>
-							<c:when test="${boardCatCd=='00'}">
-								<li class="menu-item active">
-							</c:when>
-							<c:otherwise>
-								<li class="menu-item">
-							</c:otherwise>
-						</c:choose>
-							<button type="submit" name="status" value="1" class="menu-link">
-								<i class='bx bx-clipboard'></i>
-								<div data-i18n="Analytics">공지사항</div>
-							</button>
-						</li>
-						<c:choose>
-							<c:when test="${boardCatCd=='99'}">
-								<li class="menu-item active">
-							</c:when>
-							<c:otherwise>
-								<li class="menu-item">
-							</c:otherwise>
-						</c:choose>
-							<button type="submit" name="boardCatCd" value="99" class="menu-link">
-								<i class='bx bx-clipboard'></i>
-								<div data-i18n="Analytics">전체 게시판</div>
-							</button>
-						</li>
-						<!-- 사용자 관리자 메뉴 구분 -->
-						<c:choose>
-							<c:when test="${userId != 'admin'}">
-								<c:choose>
-									<c:when test="${boardCatCd != '00' && boardCatCd != '99'}">
-										<li class="menu-item active">
-									</c:when>
-									<c:otherwise>
-										<li class="menu-item">
-									</c:otherwise>
-								</c:choose>
-									<button type="submit" name="boardCatCd" value="${ud.deptCd}" class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">${ud.deptNm} 게시판</div>
-									</button>
-								</l i>
-							</c:when>
-							<c:otherwise>
-								<c:choose>
-									<c:when test="${boardCatCd != '00' && boardCatCd != '99'}">
-										<li class="menu-item active">
-									</c:when>
-									<c:otherwise>
-										<li class="menu-item">
-									</c:otherwise>
-								</c:choose>
-									<a class="menu-link">
-										<i class='bx bx-clipboard'></i>
-										<div data-i18n="Analytics">부서 게시판</div>
-									</a>
-									<div class="card overflow-hidden" style="height: 250px;">
-						        		<div class="card-body" id="vertical-example">
-											<c:forEach var="s" items="${selectAllCatCode}">
-												<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
-													<i class='bx bx-clipboard'></i>
-													<div data-i18n="Analytics">${s.codeNm} 게시판</div>
-												</button>
-											</c:forEach>
-										</div>
-									</div>
-								</li>
-							</c:otherwise>
-						</c:choose>
-						<!-- /각 게시판을 클릭한 각각의 경우별로 active 부여 -->
-					</ul>
-				</form>
+					
+		            <!-- Dashboard -->
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=0" data-title="내 문서함" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">내 문서함</div>
+		              </a>
+		            </li>
+		
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=1" data-title="진행중인 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">진행중인 문서</div>
+		              </a>
+		            </li>
+		
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=2" data-title="승인대기 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">승인대기 문서</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=3" data-title="결재대기 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">결재대기 문서</div>
+		              </a>
+		            </li>
+		
+		
+		            </li>
+					<li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=4" data-title="처리 완료된 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">처리 완료된 문서</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=5" data-title="반려된 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">반려된 문서</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=6" data-title="회수된 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">회수된 문서</div>
+		              </a>
+		            </li>
 				<!-- /메뉴바 게시판 클릭 구현부 -->
 			</aside>
 			<!-- / Menu -->
@@ -180,8 +154,6 @@
 									<th>문서번호</th>
 									<th>기안자</th>
 									<th>제목</th>
-									<th>참조</th>
-									<th>결재선</th>
 									<th>문서종류</th>
 									<th>진행상태</th>
 								</tr>
@@ -193,8 +165,6 @@
 										<td>${m.aprvNo}</td>
 										<td>${m.userName}</td>
 										<td>${m.aprvTitle}</td>
-										<td>${m.reference}</td>
-										<td>${m.ulUserName}</td>
 										<td>${m.codeName}</td>
 										<td>${m.statName}</td>
 									</tr>
@@ -271,17 +241,7 @@
 								</div>
 				             		<!-- 작성버튼 구분 -->
 									<div class="addBtn">
-										<c:choose>
-											<c:when test="${userId == 'admin' && boardCatCd == '00'}">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=00'">공지 작성</button>
-											</c:when>
-											<c:when test="${userId != 'admin' && boardCatCd == '99'}">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=99'">게시물 작성</button>
-											</c:when>
-											<c:when test="${userId != 'admin' && boardCatCd != '00' && boardCatCd != '99'}">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=${ud.deptCd}'">게시물 작성</button>
-											</c:when>
-										</c:choose>
+												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/approval/addBoard?boardCatCd=99'">문서 작성</button>
 									</div>
 									<!-- / 작성버튼 -->
 			                </div>

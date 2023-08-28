@@ -56,26 +56,51 @@ public class ApprovalController {
 			
 			
 	// 문서작성
-	@GetMapping("/create")
-	public String showCreateForm() {
-		return "createform";
-	}
+	 @GetMapping("/approval/addApproval")
+	    public String showCreateForm() {
+	        return "createform"; // 문서 생성 폼을 보여주는 뷰로 리턴
+	    }
+
+	    @PostMapping("/approval/addApproval")
+	    public String createApproval(
+	            @RequestParam("userId") String userId,
+	            @RequestParam("docCatCd") String docCatCd, 
+	            @RequestParam("aprvTitle") String aprvTitle, 
+	            @RequestParam("aprvContents") String aprvContents, 
+	            @RequestParam("orginFilename") String orginFilename, 
+	            @RequestParam("saveFilename") String saveFilename,
+	            @RequestParam("fileType") String filetype, 
+	            @RequestParam("path") String path, 
+	            @RequestParam("aprvUserId") String aprvUserId 
+	    ) {
+	        // Approval 객체 생성 및 데이터 설정
+	        Approval approval = new Approval();
+	        approval.setUserId(userId);
+	        approval.setDocCatCd(docCatCd);
+	        approval.setAprvTitle(aprvTitle);
+	        approval.setAprvContents(aprvContents);
+	        
+	        // ApprovalFile 객체 생성 및 데이터 설정
+	        ApprovalFile approvalFile = new ApprovalFile();
+	        approvalFile.setOrginFilename(orginFilename);
+	        approvalFile.setSaveFilename(saveFilename);
+	        approvalFile.setFiletype(filetype);
+	        approvalFile.setPath(path);
+	        
+	        // ApprovalLine 객체 생성 및 데이터 설정
+	        ApprovalLine approvalLine = new ApprovalLine();
+	        approvalLine.setUserId(aprvUserId);
+	        approvalLine.setAprvYn("N"); // 결재 여부 초기화
+	        approvalLine.setAprvSequence(1); // 결재 순서 초기화
+	        
+	        // 문서 생성 서비스 메서드 호출
+	        approvalService.addApproval(approval, approvalFile, approvalLine);
+	        
+	        // return "redirect:/approval/detail?aprvNo=" + approval.getAprvNo();
+	        
+	        return "redirect:/approval/addApproval"; // 작성한 폼으로 다시 리다이렉트
+	    }
 	
-	@PostMapping("/create")
-	public String createApproval(
-			@RequestParam("userId") String userId
-			
-	) {
-		
-		Approval approval = new Approval();
-		ApprovalFile approvalFile = new ApprovalFile();
-		ApprovalLine approvalLine = new ApprovalLine();
-		
-		approvalService.createApproval(approval, approvalFile, approvalLine);
-		
-		return "";
-		
-	}
 	
 
 }
