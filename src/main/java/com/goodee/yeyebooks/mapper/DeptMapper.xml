@@ -110,7 +110,8 @@
 	
 	<update id="updateUserPwReset" parameterType="com.goodee.yeyebooks.vo.User">
 		UPDATE user
-		SET user_pw = PASSWORD('1234')
+		SET user_pw = PASSWORD('1234'),
+			u_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
 	
@@ -122,19 +123,40 @@
 	
 	<update id="updateUserDept" parameterType="com.goodee.yeyebooks.vo.User">
 		UPDATE user
-		SET dept_cd = #{deptCd}
+		SET dept_cd = #{deptCd},
+			u_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
 	
 	<update id="updateUserRank" parameterType="com.goodee.yeyebooks.vo.User">
 		UPDATE user
-		SET rank_cd = #{rankCd}
+		SET rank_cd = #{rankCd},
+			u_date = NOW()
 		WHERE user_id = #{userId}
 	</update>
 	
 	<update id="updateUserStat" parameterType="com.goodee.yeyebooks.vo.User">
 		UPDATE user
-		SET user_stat_cd = #{userStatCd}
+		SET user_stat_cd = #{userStatCd},
+			u_date = NOW()
+		WHERE user_id = #{userId}
+	</update>
+	
+	<select id="selectUserTenureList" resultType="java.util.Map">
+		SELECT 
+			u.user_id userId,
+			u.user_stat_cd userStatCd,
+			u.dayoff_cnt dayoffCnt,
+			TIMESTAMPDIFF(YEAR, join_ymd, NOW()) yearCnt, 
+			TIMESTAMPDIFF(MONTH, join_ymd, NOW()) monthCnt 
+		FROM user u
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
+		WHERE u.user_stat_cd = '02'
+	</select>
+	
+	<update id="updateUserDayoffCnt" parameterType="com.goodee.yeyebooks.vo.User">
+		UPDATE user SET dayoff_cnt = dayoff_cnt + #{dayoffCnt}
 		WHERE user_id = #{userId}
 	</update>
 </mapper>
