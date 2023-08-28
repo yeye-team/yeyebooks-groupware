@@ -83,11 +83,42 @@
 			    }
 			});
 			
+			// 기존 첨부파일 중 삭제 대상만 배열에 담아 삭제
+			var boardNo = $('[name="boardNo"]').val();
+			var filesToDelete = [];
+			var requestData = {
+			        boardNo: boardNo,
+			        filesToDelete: filesToDelete
+			    };
+			
 			$('.deleteAttached').click(function(){
 				if(confirm("파일을 삭제할까요?")){
 					var attachedFile = $(this).closest('.attachedFile');
-					attachedFile.remove();
+					var fileNo = attachedFile.find('.fileToDelete').val();
+		            attachedFile.remove();
+		            filesToDelete.push(fileNo); // 삭제할 파일만 배열에 넣기
+		            //debugger;
 				}
+			});
+			
+			// 수정버튼 누르면 삭제 파일이 있는경우 먼저처리
+			$('#submitBtn').click(function(){
+				if (filesToDelete.length > 0) {
+					$.ajax({
+						type: 'POST',
+						url: '${pageContext.request.contextPath}/board/deleteFilesAndModify', // 서버 URL
+						data: JSON.stringify(requestData),
+						contentType: 'application/json',
+						success: function(response) {
+							$('#modifyForm').submit();
+						},
+						error: function(error) {
+							console.log('삭제실패');
+						}
+					});
+				} else {
+			        $('#modifyForm').submit();
+			    }
 			});
 		});
 	</script>
@@ -230,7 +261,7 @@
 									<!-- 구분선 -->
 									<hr class="m-0">
       						    	<div class="card-body">
-					                    <form action="${pageContext.request.contextPath}/board/modifyBoard" method="post" enctype="multipart/form-data">
+					                    <form action="${pageContext.request.contextPath}/board/modifyBoard" method="post" enctype="multipart/form-data" id="modifyForm">
 				                        	<!-- 게시판 선택 -->
 					                        <div class="mb-3">
 				                           		<c:choose>
@@ -296,9 +327,9 @@
                							  	<!-- 첨부 파일 -->
 							                <div class="mb-1">
 							                	<c:forEach items="${boardFile}" var="bf">
-						                			<div class="attachedFile">
-						                				<!-- <input class="form-control boardFiles" type="hidden" name="multipartFile"> -->
-						                				<a name="boardFileNo" value="${bf.boardFileNo}">${bf.originFilename}</a>
+						                			<div class="attachedFile boardFiles">
+														<input type="hidden" class="fileToDelete" name="boardFileNo" value="${bf.boardFileNo}">
+						                				${bf.originFilename}
 						                				<button type="button" class="btn btn-icon btn-primary deleteAttached" style="height: 20px; width: 20px;">
 						                					<i class='bx bx-checkbox-minus'></i>
 						                				</button>
@@ -316,7 +347,7 @@
 							                	</div>
 							                	<div style="float: right;">
 													<a class="btn btn-outline-primary" style="margin-right: 5px;" href="${pageContext.request.contextPath}/board/boardOne?boardNo=${b.boardNo}">취소</a>
-													<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()" id="submitBtn">수정</button>
+													<button type="button" class="btn btn-primary" style="float: right;" onclick="submitContents()" id="submitBtn">수정</button>
 							                	</div>
 							                </div>
 										</form>

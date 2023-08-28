@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.goodee.yeyebooks.vo.Board;
 import com.goodee.yeyebooks.vo.BoardFile;
@@ -174,8 +175,8 @@ public class BoardController {
 	}
 	
 	@PostMapping("/board/modifyBoard")
-	public String modifyBoard(HttpServletRequest request, int boardNo, int boardFileNo, String boardCatCd,
-								String boardTitle, String boardContents) {
+	public String modifyBoard(HttpServletRequest request, int boardNo, String boardCatCd,
+								String boardTitle, String boardContents, List<MultipartFile> multipartFile) {
 		String path = request.getServletContext().getRealPath("/boardFile/");
 		
 		Board board = new Board();
@@ -183,8 +184,10 @@ public class BoardController {
 		board.setBoardCatCd(boardCatCd);
 		board.setBoardTitle(boardTitle);
 		board.setBoardContents(boardContents);
+		board.setMultipartFile(multipartFile);
 		
-		int row = boardService.modifyBoard(board);
+		int row = boardService.modifyBoard(board, path);
+		log.debug("\u001B[41m" + "Controller modifyBoard row : " + row + "\u001B[0m");
 		
 		return "redirect:/board/boardOne?boardNo="+boardNo;
 	}

@@ -236,39 +236,80 @@ public class BoardService {
 	}
 	
 	// 게시물 수정
-	public int modifyBoard(Board board) {
+	public int modifyBoard(Board board, String path) {
+		
+		int boardNo = board.getBoardNo();
+		log.debug("\u001B[41m" + "modifyBoard board boardNo : " + boardNo + "\u001B[0m");
 		int row = boardMapper.modifyBoard(board);
-		/*
-		 * // 게시물 수정된거 확인해서 지우기 List<MultipartFile> fileList = board.getMultipartFile();
-		 * if(row == 1 && fileList != null && fileList.size() > 0) { int boardNo =
-		 * board.getBoardNo(); //log.debug("\u001B[41m" +
-		 * "insertBoard boardFile boardNo : " + boardNo + "\u001B[0m");
-		 * for(MultipartFile mf : fileList) { // 첨부 파일 개수만큼 반복 if(mf.getSize() > 0) {
-		 * BoardFile bf = new BoardFile(); bf.setBoardNo(boardNo); // 부모키값
-		 * bf.setOriginFilename(mf.getOriginalFilename()); // 파일원본이름
-		 * bf.setFileCatCd("02"); bf.setFiletype(mf.getContentType()); // 파일타입(MIME :
-		 * Multipurpose Internet Mail Extensions = 파일변환타입) bf.setPath(path);
-		 * 
-		 * // 저장될 파일 이름 // 확장자 int lastIdx = mf.getOriginalFilename().lastIndexOf(".");
-		 * String ext = mf.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자
-		 * ex) A.jpg 에서 자른다 //log.debug("\u001B[41m" +
-		 * "insertBoard boardFile lastIdx : " + lastIdx + "\u001B[0m");
-		 * //log.debug("\u001B[41m" + "insertBoard boardFile ext : " + ext +
-		 * "\u001B[0m"); // 새로운 이름 + 확장자
-		 * bf.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext);
-		 * 
-		 * // 테이블에 저장 boardfileMapper.insertBoardfile(bf); // 파일저장(저장위치필요 > path변수 필요)
-		 * // path 위치에 저장파일이름으로 빈파일을 생성 File f = new File(path+bf.getSaveFilename()); //
-		 * 빈파일에 첨부된 파일의 스트림을 주입한다. log.debug("\u001B[41m" + "insertBoard boardFile f : "
-		 * + f + "\u001B[0m"); log.debug("\u001B[41m" +
-		 * "insertBoard boardFile f.getAbsolutePath() : " + f.getAbsolutePath() +
-		 * "\u001B[0m"); try { mf.transferTo(f); } catch(IllegalStateException |
-		 * IOException e) { // 트랜잭션 작동을 위해 예외 발생이 필요 e.printStackTrace(); // 트랜잭션 작동을 위해
-		 * 예외(try catch 강요하지 않는 예외 ex) RuntimeException) 발생 필요 throw new
-		 * RuntimeException(); } } } }
-		 */
+		log.debug("\u001B[41m" + "modifyBoard board row : " + row + "\u001B[0m");		
+		List<MultipartFile> fileList = board.getMultipartFile();
+		log.debug("\u001B[41m" + "modifyBoard board fileList : " + fileList + "\u001B[0m");		
+		
+		if(row == 1 && fileList != null && fileList.size() > 0) {
+			for(MultipartFile mf : fileList) { // 첨부 파일 개수만큼 반복
+				if(mf.getSize() > 0) {
+					BoardFile bf = new BoardFile();
+					bf.setBoardNo(boardNo); // 부모키값
+					bf.setOriginFilename(mf.getOriginalFilename()); // 파일원본이름
+					bf.setFileCatCd("02");
+					bf.setFiletype(mf.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
+					bf.setPath(path);
+					
+					// 저장될 파일 이름
+					// 확장자
+					int lastIdx = mf.getOriginalFilename().lastIndexOf(".");
+					String ext = mf.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
+					//log.debug("\u001B[41m" + "insertBoard boardFile lastIdx : " + lastIdx + "\u001B[0m");
+					//log.debug("\u001B[41m" + "insertBoard boardFile ext : " + ext + "\u001B[0m");
+					// 새로운 이름 + 확장자
+					bf.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
+					
+					// 테이블에 저장
+					boardfileMapper.insertBoardfile(bf);
+					// 파일저장(저장위치필요 > path변수 필요)
+					// path 위치에 저장파일이름으로 빈파일을 생성
+					File f = new File(path+bf.getSaveFilename());
+					// 빈파일에 첨부된 파일의 스트림을 주입한다.
+					log.debug("\u001B[41m" + "insertBoard boardFile f : " + f + "\u001B[0m");
+					log.debug("\u001B[41m" + "insertBoard boardFile f.getAbsolutePath() : " + f.getAbsolutePath() + "\u001B[0m");
+					try {
+						mf.transferTo(f);
+					} catch(IllegalStateException | IOException e) {
+						// 트랜잭션 작동을 위해 예외 발생이 필요
+						e.printStackTrace();
+						// 트랜잭션 작동을 위해 예외(try catch 강요하지 않는 예외 ex) RuntimeException) 발생 필요
+						throw new RuntimeException();
+					}
+				}
+			}
+		}
 		return row;
 	}
+	
+	// 게시글 - 첨부파일 수정
+    public boolean deleteFiles(int boardNo, List<Integer> boardFileNos,String path) {
+        try {
+        	// 삭제 대상 첨부파일 선택
+            List<BoardFile> filesToDelete = boardfileMapper.selectBoardFileNos(boardFileNos);
+            //log.debug("\u001B[41m" + "boardService deleteFiles filesToDelete : " + filesToDelete + "\u001B[0m");
+            // 실제 파일 먼저 삭제
+            for(BoardFile bf : filesToDelete) {
+    			File f = new File(path+bf.getSaveFilename());
+    			log.debug("\u001B[41m" + "boardService deleteFiles f : " + f + "\u001B[0m");
+    			if(f.exists()) {
+    				f.delete();
+    			}
+    		}
+            // 파일 삭제 후 DB에서 삭제
+            int rowsAffected = boardfileMapper.deleteModifyFile(boardNo, boardFileNos);
+            //log.debug("\u001B[41m" + "boardService deleteFiles rowsAffected : " + rowsAffected + "\u001B[0m");
+            return rowsAffected == boardFileNos.size(); // 모든 파일이 삭제되었을 때만 true 반환
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            return false;
+        }
+    }
 	
 	// 게시글 삭제
 	public int deleteBoard(Board board, String path) {

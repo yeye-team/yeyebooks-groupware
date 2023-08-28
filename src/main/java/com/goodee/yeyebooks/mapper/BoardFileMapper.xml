@@ -33,11 +33,32 @@
 			board_no = #{boardNo}
 	</delete>
 	
+	<!-- 게시물 수정시 삭제하는 기존 파일 -->
 	<delete id="deleteModifyFile">
-	DELETE FROM board_file
+		DELETE FROM board_file
 		WHERE
-			board_no = #{boardNo}
-		AND
-			board_file_no != #{boardFileNo}
+		    board_no = #{boardNo}
+		    AND board_file_no IN (
+		        <foreach collection="boardFileNos" item="fileNo" separator=",">
+		            #{fileNo}
+		        </foreach>
+		    );
 	</delete>
+	
+	<!-- 실제 파일을 삭제하기 위한 파일 select -->
+	<select id="selectBoardFileNos" parameterType="java.util.List">
+	    SELECT 
+	    	board_file_no boardFileNo,
+			board_no boardNo,
+			file_cat_cd fileCatCd,
+			origin_filename originFilename,
+			save_filename saveFilename,
+			filetype,
+			path
+	    FROM board_file 
+	    WHERE board_file_no IN
+	    <foreach collection="boardFileNos" item="boardFileNo" open="(" separator="," close=")">
+	        #{boardFileNo}
+	    </foreach>
+	</select>
 </mapper>

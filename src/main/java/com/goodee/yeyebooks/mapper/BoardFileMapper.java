@@ -4,6 +4,7 @@ package com.goodee.yeyebooks.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.goodee.yeyebooks.vo.BoardFile;
 
@@ -18,5 +19,9 @@ public interface BoardFileMapper {
 	// 첨부파일 삭제
 	int deleteBoardfile(int boardNo);
 	
-	int deleteModifyFile(int boardNo, int boardFileNo);
+	// 게시물 수정시 삭제되는 기존 파일
+	int deleteModifyFile(int boardNo, List<Integer> boardFileNos);
+	
+	// 게시물 수정시 삭제되는 실제 파일 정보
+	List<BoardFile> selectBoardFileNos(@Param("boardFileNos") List<Integer> boardFileNos);
 }
