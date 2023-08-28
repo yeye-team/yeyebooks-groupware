@@ -22,33 +22,44 @@
 			
 			// 게시물 삭제 비동기 처리
 			$(".deleteBoardBtn").click(function(){
-				var deleteBoardCk = confirm("게시물을 삭제하시겠습니까?");
-				if(deleteBoardCk){
-					var boardNo = $(this).data("boardno");
-		            var boardCatCd = $(this).data("boardcatcd");
-					
-					$.ajax({
-						type: "POST",
-						url: "${pageContext.request.contextPath}/board/deleteBoard",
-						data: {
-							boardNo: boardNo,
-							boardCatCd: boardCatCd
-						},
-						success: function(response) {
-							Swal.fire({
-				                icon: 'success',
-				                title: '성공',
-				                text: '게시글이 삭제되었습니다.',
-				                onClose: function() {
-				                    window.location.href = "${pageContext.request.contextPath}/board/boardList?boardCatCd=" + boardCatCd;
-				                }
-				            });
-						},
-						error: function() {
-							alert("게시글 삭제 실패");
-						}
-					});
-				}
+				//var deleteBoardCk = confirm("게시물을 삭제하시겠습니까?");
+				Swal.fire({
+                    title: '경고',
+                    text: "게시물을 삭제하시겠습니까?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '삭제',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+						var boardNo = $(this).data("boardno");
+			            var boardCatCd = $(this).data("boardcatcd");
+						
+						$.ajax({
+							type: "POST",
+							url: "${pageContext.request.contextPath}/board/deleteBoard",
+							data: {
+								boardNo: boardNo,
+								boardCatCd: boardCatCd
+							},
+							success: function(response) {
+								Swal.fire({
+					                icon: 'success',
+					                title: '성공',
+					                text: '게시글이 삭제되었습니다.',
+					                onClose: function() {
+					                    window.location.href = "${pageContext.request.contextPath}/board/boardList?boardCatCd=" + boardCatCd;
+					                }
+					            });
+							},
+							error: function() {
+								alert("게시글 삭제 실패");
+							}
+						});
+					}
+                })
 			});
 		
 			// 댓글 수정
@@ -115,32 +126,42 @@
 		    // 댓글 삭제 비동기처리
 			$(".deleteCommentBtn").click(function() {
 				// 삭제 alert
-				var deleteCk = confirm("댓글을 삭제하시겠습니까?");
-				if (deleteCk) {
-					var deleteRow = $(this).closest(".commentRow");
-					var boardNo = deleteRow.find("[name='boardNo']").val();
-					var cmntNo = deleteRow.find("[name='cmntNo']").val();
-					
-					$.ajax({
-						type: "POST",
-						url: "${pageContext.request.contextPath}/board/deleteComment",
-						data: {
-							boardNo: boardNo,
-							cmntNo: cmntNo
-						},
-						success: function(response) {
-							deleteRow.remove();
-							Swal.fire({
-				                icon: 'success',
-				                title: '성공',
-				                text: '댓글이 삭제되었습니다.',
-							});
-						},
-						error: function() {
-							alert("댓글 삭제 실패");
-						}
-					});
-				}
+                Swal.fire({
+                    title: '경고',
+                    text: "댓글을 삭제하시겠습니까?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '삭제',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    	var deleteRow = $(this).closest(".commentRow");
+    					var boardNo = deleteRow.find("[name='boardNo']").val();
+    					var cmntNo = deleteRow.find("[name='cmntNo']").val();
+    					
+    					$.ajax({
+    						type: "POST",
+    						url: "${pageContext.request.contextPath}/board/deleteComment",
+    						data: {
+    							boardNo: boardNo,
+    							cmntNo: cmntNo
+    						},
+    						success: function(response) {
+    							deleteRow.remove();
+    							Swal.fire({
+    				                icon: 'success',
+    				                title: '성공',
+    				                text: '댓글이 삭제되었습니다.',
+    							});
+    						},
+    						error: function() {
+    							alert("댓글 삭제 실패");
+    						}
+    					});
+                    }
+                })
 			});
 		    
 		    // 댓글 등록 비동기처리
