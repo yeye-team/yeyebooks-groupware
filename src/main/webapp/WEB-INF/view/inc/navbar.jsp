@@ -70,7 +70,7 @@
 			          </div>
 			          <div class="flex-grow-1">
 			            <span class="fw-semibold d-block">${sessionScope.userNm }</span>
-			            <small class="text-muted">${sessionScope.userRank ? sessionScope.userRank : '-'}</small>
+			            <small class="text-muted">${sessionScope.userRank != null ? sessionScope.userRank : '-'}</small>
 			          </div>
 			        </div>
 			      </a>
