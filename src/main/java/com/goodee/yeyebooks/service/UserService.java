@@ -3,6 +3,8 @@ package com.goodee.yeyebooks.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +16,14 @@ import org.springframework.stereotype.Service;
 
 import com.goodee.yeyebooks.mapper.UserFileMapper;
 import com.goodee.yeyebooks.mapper.UserMapper;
+import com.goodee.yeyebooks.vo.Report;
 import com.goodee.yeyebooks.vo.User;
 import com.goodee.yeyebooks.vo.UserFile;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserService {
 	@Autowired
 	UserMapper userMapper;
@@ -99,5 +105,44 @@ public class UserService {
 	}
 	public int updateUserPw(String userId, String userPw) {
 		return userMapper.updateUserPw(userId, userPw);
+	}
+	
+	// 최근 6개월 입/퇴사자 수
+	public Map<String, Object> selectRecentJoinLeaveCnt(){
+		int startMonth = LocalDate.now().getMonthValue() - 6;
+		Map<String, Object> recentJoinLeaveInfo = new HashMap<>();
+		List<Integer> joinCntResult = new ArrayList<>(List.of(0, 0, 0, 0, 0, 0));
+		List<Integer> leaveCntResult = new ArrayList<>(List.of(0, 0, 0, 0, 0, 0));
+		List<String> monthNames = new ArrayList<>();
+		List<Report> joinCnt = userMapper.selectRecentJoinCnt();
+		List<Report> leaveCnt = userMapper.selectRecentLeaveCnt();
+		
+		for(Report joinInfo : joinCnt){
+			int month = joinInfo.getMonth();
+			joinCntResult.set(month-startMonth, joinInfo.getCnt());
+		}
+		for(Report leaveInfo : leaveCnt) {
+			int month = leaveInfo.getMonth();
+			leaveCntResult.set(month-startMonth, leaveInfo.getCnt());
+		}
+		for(int i = startMonth; i < startMonth + 6; i++) {
+			monthNames.add(i + "월");
+		}
+		recentJoinLeaveInfo.put("joinCnt", joinCntResult);
+		recentJoinLeaveInfo.put("leaveCnt", leaveCntResult);
+		recentJoinLeaveInfo.put("monthNames", monthNames);
+		
+		return recentJoinLeaveInfo;
+	}
+	// 직원 남여 성비
+	public Map<String, Object> selectFMCnt(){
+		List<Report> fmResult = userMapper.selectFMCnt();
+		Map<String, Object> fmCnt = new HashMap<>();
+		fmCnt.put(fmResult.get(0).getGenderNm(), fmResult.get(0).getCnt());
+		if(fmResult.size() > 1) {
+			fmCnt.put(fmResult.get(1).getGenderNm(), fmResult.get(1).getCnt());
+		}
+		
+		return fmCnt;
 	}
 }

@@ -23,6 +23,9 @@
 					  <li class="nav-item">
 					    <a class="nav-link" href="javascript:void(0)">시설/비품관리</a>
 					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" href="javascript:void(0)">매점매출관리</a>
+					  </li>
 					</ul>
 				</c:when>
 				<c:otherwise>

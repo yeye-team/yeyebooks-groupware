@@ -31,4 +31,25 @@
 		UPDATE USER SET user_pw = PASSWORD(#{userPw})
 		WHERE user_id = #{userId}
 	</update>
+	<select id="selectRecentJoinCnt" resultType="com.goodee.yeyebooks.vo.Report">
+		SELECT MONTH(join_ymd) month, COUNT(*) cnt 
+		FROM user
+		WHERE join_ymd >= DATE_SUB(NOW(), INTERVAL 7 MONTH)
+		AND MONTH(join_ymd) != MONTH(NOW())
+		GROUP BY MONTH
+	</select>
+	<select id="selectRecentLeaveCnt" resultType="com.goodee.yeyebooks.vo.Report">
+		SELECT MONTH(leave_ymd) month, COUNT(*) cnt
+		FROM user
+		WHERE leave_ymd >= DATE_SUB(NOW(), INTERVAL 7 MONTH)
+		AND MONTH(leave_ymd) != MONTH(NOW())
+		GROUP BY MONTH
+	</select>
+	<select id="selectFMCnt" resultType="com.goodee.yeyebooks.vo.Report">
+		SELECT case gender when 1 then '남자' ELSE '여자' end as genderNm, COUNT(*) cnt
+		FROM user
+		WHERE gender IS NOT NULL
+		AND leave_ymd IS null
+		GROUP BY genderNm
+	</select>
 </mapper>

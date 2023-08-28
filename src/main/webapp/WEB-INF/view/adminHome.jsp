@@ -19,6 +19,14 @@
 	<title>Home</title>
 	
 	<jsp:include page="./inc/head.jsp"></jsp:include>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<style>
+		.card-header, .card-header a{
+  			color: #666;
+			font-weight: bold;
+			transition: all 0.2s linear;
+  		}
+	</style>
 </head>
 <body>
 	<!-- Layout wrapper -->
@@ -37,7 +45,35 @@
 		
 		            <div class="container-xxl flex-grow-1 container-p-y">
 						<div class="row">
-							
+							<div class="col-lg">
+								<div class="card mb-4">
+									<h5 class="card-header">
+										최근 6개월간 입/퇴사자 수
+									</h5>
+									<div class="card-body">
+										<canvas id="joinLeaveChart"></canvas>
+									</div>
+								</div>
+								<div class="card mb-4">
+									<h5 class="card-header">
+										최근 6개월간 사원 수
+									</h5>
+									<div class="card-body">
+										<canvas id="joinLeaveChart"></canvas>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg">
+								<div class="card mb-4">
+									<h5 class="card-header">
+										직원 남/여 성비
+									</h5>
+									<div class="card-body">
+										<canvas id="fmChart"></canvas>
+									</div>
+								</div>
+								
+							</div>
 						</div>
 					</div>
 				</div>
@@ -46,7 +82,55 @@
 			</div>
 		</div>
 	</div>
-	
+	<script>
+		const monthNames = [<c:forEach var="month" items="${monthNames}">'${month}',</c:forEach>]
+	 	
+		
+		const joinLeaveData = {
+				  labels: monthNames,
+				  datasets: [{
+				    type: 'bar',
+				    label: '입사자수',
+				    data: ${joinCnt},
+				    borderColor: 'rgb(255, 99, 132)',
+				    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+				  }, {
+				    type: 'bar',
+				    label: '퇴사자수',
+				    data: ${leaveCnt},
+				    fill: false,
+				    borderColor: 'rgb(54, 162, 235)'
+				  }]
+			};
+		const fmData = {
+				labels: ['남자', '여자'],
+				datasets: [{
+				    label: '직원 남/여 성비',
+				    data: [${mCnt}, ${fCnt}],
+				    backgroundColor: [
+				    	'rgb(54, 162, 235)',
+				      	'rgb(255, 99, 132)'
+				    ]
+				  }]
+		}
+		const joinLeaveCtx = document.getElementById('joinLeaveChart').getContext('2d');
+		const joinLeaveChart = new Chart(joinLeaveCtx, {
+			type: 'bar',
+			  data: joinLeaveData,
+			  options: {
+			    scales: {
+			    	y : {
+			    		max: 10	
+			    	},
+			    }
+			}
+		})
+		const fmCtx = document.getElementById('fmChart').getContext('2d');
+		const fmChart = new Chart(fmCtx, {
+			type: 'doughnut',
+			data: fmData,
+		})
+	</script>
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="${pageContext.request.contextPath}/assets/vendor/libs/jquery/jquery.js"></script>
