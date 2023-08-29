@@ -82,11 +82,14 @@ public class HomeController {
 		if(loginId.equals("admin")) {
 			Map<String, Object> joinLeaveCnt = userService.selectRecentJoinLeaveCnt();
 			Map<String, Object> fmCnt = userService.selectFMCnt();
+			Map<String, Object> totalUserCnt = userService.selectRecentTotalUserCnt();
 			model.addAttribute("joinCnt", joinLeaveCnt.get("joinCnt"));
 			model.addAttribute("leaveCnt", joinLeaveCnt.get("leaveCnt"));
 			model.addAttribute("monthNames", joinLeaveCnt.get("monthNames"));
 			model.addAttribute("mCnt", (fmCnt.get("남자") != null ? fmCnt.get("남자") : 0));
 			model.addAttribute("fCnt", (fmCnt.get("여자") != null ? fmCnt.get("여자") : 0));
+			model.addAttribute("yearMonthList", totalUserCnt.get("yearMonthList"));
+			model.addAttribute("totalUserCnt", totalUserCnt.get("totalUserCnt"));
 			return "adminHome";
 		}
 		

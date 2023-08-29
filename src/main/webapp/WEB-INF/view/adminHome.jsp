@@ -59,7 +59,7 @@
 										최근 6개월간 사원 수
 									</h5>
 									<div class="card-body">
-										<canvas id="joinLeaveChart"></canvas>
+										<canvas id="totalUserChart"></canvas>
 									</div>
 								</div>
 							</div>
@@ -84,7 +84,7 @@
 	</div>
 	<script>
 		const monthNames = [<c:forEach var="month" items="${monthNames}">'${month}',</c:forEach>]
-	 	
+	 	const yearMonthList = [<c:forEach var="yearMonth" items="${yearMonthList}">'${yearMonth}',</c:forEach>]
 		
 		const joinLeaveData = {
 				  labels: monthNames,
@@ -113,14 +113,25 @@
 				    ]
 				  }]
 		}
+		const totalUserData = {
+				labels: yearMonthList,
+				datasets: [{
+					type: 'bar',
+					label: '사원수',
+				    data: ${totalUserCnt},
+				    borderColor: 'lightblue',
+				    backgroundColor: 'blue'
+				}]
+		}
 		const joinLeaveCtx = document.getElementById('joinLeaveChart').getContext('2d');
 		const joinLeaveChart = new Chart(joinLeaveCtx, {
 			type: 'bar',
 			  data: joinLeaveData,
 			  options: {
+				responsive: true,
 			    scales: {
 			    	y : {
-			    		max: 10	
+			    		max: 10
 			    	},
 			    }
 			}
@@ -129,6 +140,22 @@
 		const fmChart = new Chart(fmCtx, {
 			type: 'doughnut',
 			data: fmData,
+			options: {
+				responsive: true,
+			}
+		})
+		const totalUserCtx = document.getElementById('totalUserChart').getContext('2d');
+		const totalUserChart = new Chart(totalUserCtx, {
+			type: 'bar',
+			  data: totalUserData,
+			  options: {
+				responsive: true,
+			    scales: {
+			    	y : {
+			    		max: 100	
+			    	},
+			    }
+			}
 		})
 	</script>
     <!-- Core JS -->

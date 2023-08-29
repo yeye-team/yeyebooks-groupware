@@ -109,7 +109,8 @@ public class UserService {
 	
 	// 최근 6개월 입/퇴사자 수
 	public Map<String, Object> selectRecentJoinLeaveCnt(){
-		int startMonth = LocalDate.now().getMonthValue() - 6;
+		int[] monthList = {1,2,3,4,5,6,7,8,9,10,11,12}; 
+		int startMonthIdx = (LocalDate.now().getMonthValue() + 5) % 12;
 		Map<String, Object> recentJoinLeaveInfo = new HashMap<>();
 		List<Integer> joinCntResult = new ArrayList<>(List.of(0, 0, 0, 0, 0, 0));
 		List<Integer> leaveCntResult = new ArrayList<>(List.of(0, 0, 0, 0, 0, 0));
@@ -119,14 +120,15 @@ public class UserService {
 		
 		for(Report joinInfo : joinCnt){
 			int month = joinInfo.getMonth();
-			joinCntResult.set(month-startMonth, joinInfo.getCnt());
+			joinCntResult.set(month-monthList[startMonthIdx], joinInfo.getCnt());
 		}
 		for(Report leaveInfo : leaveCnt) {
 			int month = leaveInfo.getMonth();
-			leaveCntResult.set(month-startMonth, leaveInfo.getCnt());
+			leaveCntResult.set(month-monthList[startMonthIdx], leaveInfo.getCnt());
 		}
-		for(int i = startMonth; i < startMonth + 6; i++) {
-			monthNames.add(i + "월");
+		for(int i = 0; i < 6; i++) {
+			int nowMonthIdx = (startMonthIdx + i) % 12;
+			monthNames.add(monthList[nowMonthIdx] + "월");
 		}
 		recentJoinLeaveInfo.put("joinCnt", joinCntResult);
 		recentJoinLeaveInfo.put("leaveCnt", leaveCntResult);
@@ -144,5 +146,22 @@ public class UserService {
 		}
 		
 		return fmCnt;
+	}
+	public Map<String, Object> selectRecentTotalUserCnt(){
+		Map<String, Object> recentTotalUserInfo = new HashMap<>();
+		List<String> yearMonthList = new ArrayList<>();
+		List<Integer> totalUserCnt = new ArrayList<>();
+		LocalDate today = LocalDate.now();
+		for(int i = 5; i >=0; i--) {
+			LocalDate targetDate = today.minusMonths(i);
+			LocalDate displayDate = targetDate.minusMonths(1);
+			yearMonthList.add(displayDate.getYear() + "년" + displayDate.getMonthValue() + "월");
+			int targetMonthCnt = userMapper.selectTotalUserCntBeforeMonth(targetDate.getYear(), targetDate.getMonthValue());
+			totalUserCnt.add(targetMonthCnt);
+		}
+		
+		recentTotalUserInfo.put("yearMonthList", yearMonthList);
+		recentTotalUserInfo.put("totalUserCnt", totalUserCnt);
+		return recentTotalUserInfo;
 	}
 }

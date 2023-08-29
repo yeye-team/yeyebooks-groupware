@@ -52,4 +52,10 @@
 		AND leave_ymd IS null
 		GROUP BY genderNm
 	</select>
+	<select id="selectTotalUserCntBeforeMonth" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM user
+		WHERE (YEAR(join_ymd) &lt; #{year} OR (YEAR(join_ymd) = #{year} AND MONTH(join_ymd) &lt; #{month}))
+		AND (leave_ymd IS NULL OR leave_ymd >= CONCAT(#{year}, '-', #{month}, '-01'))
+	</select>
 </mapper>

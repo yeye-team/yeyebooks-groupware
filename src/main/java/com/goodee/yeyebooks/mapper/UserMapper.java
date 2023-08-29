@@ -17,4 +17,5 @@ public interface UserMapper {
 	List<Report> selectRecentJoinCnt();
 	List<Report> selectRecentLeaveCnt();
 	List<Report> selectFMCnt();
+	int selectTotalUserCntBeforeMonth(int year, int month);
 }
