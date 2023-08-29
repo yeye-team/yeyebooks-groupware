@@ -65,7 +65,7 @@ public class ApprovalService {
                     
                     approvalMapper.insertApprovalFile(approvalFile);
                     
-                    String filePath = "your_file_path_here"; // 파일 경로 설정
+                    String filePath = ""; // 파일 경로 설정
                     File file = new File(filePath + approvalFile.getSaveFilename());
                     
                     approvalFile.getPath();
@@ -84,12 +84,12 @@ public class ApprovalService {
         return row;
     }
     
-    // 문서번호 생성 로직
+    // 문서번호 생성
     private String generateApprovalNumber(Approval approval) {
         String prefix = ""; // "A" or "N" depending on document type
-        if (approval.getDocCatCd().equals("지출결의서")) {
+        if (approval.getDocCatCd().equals("01")) {
             prefix = "A";
-        } else if (approval.getDocCatCd().equals("일반문서")) {
+        } else if (approval.getDocCatCd().equals("03")) {
             prefix = "N";
         }
         
