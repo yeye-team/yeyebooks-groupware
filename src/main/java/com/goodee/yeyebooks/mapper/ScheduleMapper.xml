@@ -21,6 +21,60 @@
 		ORDER BY skdStartTime
 	</select>
 	
+	<!-- 아이디 별 선택한 달의 전체 일정조회(선택값에 따라 회사/부서/개인 일정 조회) -->
+	<select id="selectMonthSchedule">
+		SELECT 
+			skd_no skdNo,
+			user_id userId,
+			skd_cat_cd skdCatCd,
+			skd_start_ymd skdStartYmd,
+			skd_title skdTitle
+		FROM schedule
+		WHERE 
+			skd_cat_cd = '00' or
+			(user_id = #{userId} AND skd_cat_cd = '99') or
+			skd_cat_cd = (SELECT code FROM common_code WHERE group_code = 'D001' AND code = (SELECT dept_cd FROM user WHERE user_id = #{userId}))
+	</select>
+	
+	<!-- 아이디별 각각 선택 일정 조회 -->
+	<!-- 회사일정 -->
+	<select id="selectAdminSchedule">
+		SELECT 
+				skd_no skdNo,
+				user_id userId,
+				skd_cat_cd skdCatCd,
+				skd_start_ymd skdStartYmd,
+				skd_title skdTitle
+		FROM schedule
+		WHERE 
+			skd_cat_cd = '00'
+	</select>
+	<!-- 개인일정 -->
+	<select id="selectPersonalSchedule">
+		SELECT 
+			skd_no skdNo,
+			user_id userId,
+			skd_cat_cd skdCatCd,
+			skd_start_ymd skdStartYmd,
+			skd_title skdTitle
+		FROM schedule
+		WHERE 
+			skd_cat_cd = '99'
+		AND user_id = #{userId}
+	</select>
+	<!-- 부서일정 -->
+	<select id="selectDeptSchedule">
+		SELECT 
+			skd_no skdNo,
+			user_id userId,
+			skd_cat_cd skdCatCd,
+			skd_start_ymd skdStartYmd,
+			skd_title skdTitle
+		FROM schedule
+		WHERE 
+			skd_cat_cd = (SELECT code FROM common_code WHERE group_code = 'D001' AND code = (SELECT dept_cd FROM user WHERE user_id = #{userId}))
+	</select>
+	
 	<!-- 선택날짜 일정상세 -->
 	<select id="selectDateSchedule">
 		SELECT 
@@ -38,6 +92,9 @@
 		FROM schedule
 		WHERE 
 			#{targetDate} BETWEEN skd_start_ymd AND skd_end_ymd
+		<if test="skd_cat_cd != null">
+			AND skd_cat_cd = #{skdCatCd}
+		</if>
 	</select>
 	
 	<!-- 일정등록 -->
