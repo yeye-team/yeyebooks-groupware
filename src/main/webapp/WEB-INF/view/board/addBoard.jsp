@@ -49,6 +49,7 @@
 						});
 		            }
 		        } else {
+		            $('.boardFiles').last().prev().remove();
 		            $('.boardFiles').last().remove();
 		        }
 		    });
