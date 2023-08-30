@@ -60,8 +60,8 @@ public class ApprovalService {
             for (ApprovalFile approvalFile : fileList) {
                 if (approvalFile.getAprvFileNo() > 0) {
                 	approvalFile.setAprvNo(aprvNo);
-                    String extension = getFileExtension(approvalFile.getOrginFilename());
-                    approvalFile.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + extension);
+                    String ext = getFileExtension(approvalFile.getOrginFilename());
+                    approvalFile.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext);
                     
                     approvalMapper.insertApprovalFile(approvalFile);
                     
@@ -82,22 +82,6 @@ public class ApprovalService {
         }
         
         return row;
-    }
-    
-    // 문서번호 생성
-    private String generateApprovalNumber(Approval approval) {
-        String prefix = ""; // "A" or "N" depending on document type
-        if (approval.getDocCatCd().equals("01")) {
-            prefix = "A";
-        } else if (approval.getDocCatCd().equals("03")) {
-            prefix = "N";
-        }
-        
-        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        int sequence = approvalMapper.selectDocumentSequence(prefix + date) + 1;
-        
-        String documentNumber = prefix + date + String.format("%02d", sequence);
-        return documentNumber;
     }
     
     // 파일 확장자 얻는 메서드

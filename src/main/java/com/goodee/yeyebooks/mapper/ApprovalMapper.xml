@@ -13,7 +13,7 @@
 	    	)
 	    VALUES (
 		    #{user_id},
-			#{doc_cat_cd},
+			#{doc_cat_cd}, 
 			#{aprc_title},
 			#{aprv_contents},
 			#{aprv_ymd},
@@ -56,6 +56,29 @@
         )
 
     </insert>
+    
+    <!-- 결재선 불러오기 -->
+    <!-- <select id="selectUserInformation" parameterType="java.util.Map">
+    	SELECT 
+    		u.user_id, u.user_nm, 
+    		u.dept_cd, u.rank_cd, 
+		    cc_dept.code_nm AS dept_name, 
+		    cc_rank.code_nm AS rank_name
+		FROM user u
+		LEFT JOIN common_code cc_dept ON u.dept_cd = cc_dept.code AND cc_dept.group_code = 'D001'
+		LEFT JOIN common_code cc_rank ON u.rank_cd = cc_rank.code AND cc_rank.group_code = 'R001'
+		ORDER BY cc_dept.comment, cc_rank.code;
+    </select> -->
+    
+    <!-- 개인정보 불러오기 -->
+   <!--  <select id="selectUserByLoginId" resultMap="com.goodee.yeyebooks.vo.User">
+	    SELECT u.user_id, u.user_nm, u.dept_cd, u.rank_cd, 
+	        cc_dept.code_nm AS dept_name, cc_rank.code_nm AS rank_name
+	    FROM user u
+	    LEFT JOIN common_code cc_dept ON u.dept_cd = cc_dept.code AND cc_dept.group_code = 'D001'
+	    LEFT JOIN common_code cc_rank ON u.rank_cd = cc_rank.code AND cc_rank.group_code = 'R001'
+	    WHERE u.user_id = #{loginId}
+	</select> -->
 	
 	
 	<!-- 내 문서함 -->

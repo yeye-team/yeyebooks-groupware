@@ -32,6 +32,4 @@ public interface ApprovalMapper {
 	
 	//승인대기건수
 	int selectApproveWaitingCnt(String userId);
-	// 임시 추가 수정예정
-	public int selectDocumentSequence(String string);
 }

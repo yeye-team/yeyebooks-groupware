@@ -241,7 +241,7 @@
 								</div>
 				             		<!-- 작성버튼 구분 -->
 									<div class="addBtn">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/approval/addBoard?boardCatCd=99'">문서 작성</button>
+										<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/approval/addApproval'">문서 작성</button>
 									</div>
 									<!-- / 작성버튼 -->
 			                </div>
