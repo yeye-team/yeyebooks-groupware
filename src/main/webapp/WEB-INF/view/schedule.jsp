@@ -25,7 +25,6 @@
 		document.addEventListener('DOMContentLoaded', function() {	
         	const calendarEl = document.getElementById('calendar');
         	const userId = "${userId}";
-        	
         	// 헤더툴바 출력버튼
         	const headerToolbarBtn = {
         	        left: 'today prev,next',
@@ -96,7 +95,7 @@
 			function selectAllSchedule(skdCatCd) {
 			    // 'skdCatCd' 값을 서버로 전송하여 일정 목록을 가져오는 ajax 요청
 			    $.ajax({
-			        url: '${pageContext.request.contextPath}/events/scheduleOne',
+			        url: '${pageContext.request.contextPath}/events/everySchedule',
 			        type: 'GET',
 			        data: {
 	        			skdCatCd: skdCatCd 
@@ -138,13 +137,22 @@
 		                
 		             	// response 객체에서 일정 정보를 읽어와서 selectedEvent 객체 생성
 		                var selectedEvent = {
-		                    id: response.skdNo,
+		                    skdNo: response.skdNo,
 		                    skdTitle: response.skdTitle,
 		                    skdContents: response.skdContents,
 		                    skdStartYmd: response.skdStartYmd,
 		                    skdEndYmd: response.skdEndYmd,
+		                    skdStartTime: response.skdStartTime,
+		                    skdEndTime: response.skdEndTime,
+		                    skdCatCd: response.skdCatCd,
+		                    skdUserId: response.userId
 		                };
-		                
+		             	console.log(selectedEvent);
+		                if(selectedEvent.skdUserId != userId){
+		                	$('#deleteScheduleBtn').display('hide');
+		                	$('#editScheduleBtn').display('hide');
+		                }
+		             	
 		             	// 기존의 click 이벤트 핸들러를 제거
 		                $('#deleteScheduleBtn').off('click');
 		                
@@ -241,9 +249,13 @@
 										            </div>
 										            <div class="modal-body">
 										            	<div class="row">
-										            		<div class="col mb-6">
+										            		<div class="row mb-3">
 							                                	<label for="titleLarge" class="form-label">제목</label>
 							                                	<span id="titleLarge" class="form-control skdTitle"></span>
+							                                </div>
+								                            <div class="row mb-3">
+							                                	<label for="contentLarge" class="form-label">내용</label>
+							                                	<span id="contentLarge" class="form-control skdContents"></span>
 							                                </div>
 							                                <div class="row g-1">
 								                                <div class="col mb-0">
@@ -255,16 +267,12 @@
 								                                    <span id="skdEndY" class="form-control skdEndYmd"></span>
 																</div>
 								                            </div>
-								                            <div class="col mb-3">
-							                                	<label for="contentLarge" class="form-label">내용</label>
-							                                	<span id="contentLarge" class="form-control skdContents"></span>
-							                                </div>
 										                </div>
 										            </div>
 										            <div class="modal-footer">
-											            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
 						                                <button type="button" class="btn btn-primary" id="editScheduleBtn">수정</button>
 						                                <button type="button" class="btn btn-primary" id="deleteScheduleBtn">삭제</button>
+											            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
 										            </div>
 										        </div>
 										    </div>

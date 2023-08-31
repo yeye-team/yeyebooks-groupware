@@ -49,4 +49,9 @@ public class ScheduleService {
 	public Schedule selectDateSchedule(int skdNo){
 		return scheduleMapper.selectDateSchedule(skdNo);
 	}
+	
+	// 일정 삭제
+	public int deleteSchedule(int skdNo) {
+		return scheduleMapper.deleteSchedule(skdNo);
+	}
 }

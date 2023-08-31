@@ -19,9 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.goodee.yeyebooks.controller.ScheduleController;
 import com.goodee.yeyebooks.service.ScheduleService;
@@ -30,28 +32,29 @@ import com.goodee.yeyebooks.vo.Schedule;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/events")
 public class ScheduleRestController {
 	@Autowired
     private ScheduleService scheduleService;
 
+	// 일정 조회
     @GetMapping("/everySchedule")
-    @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getEvents(HttpSession session, @RequestParam(required = false) String skdCatCd) {
     	String userId = (String)session.getAttribute("userId");
-    	log.debug("\u001B[41m" + "RestAPI getEvents skdCatCd : " + skdCatCd + "\u001B[0m");
+    	//log.debug("\u001B[41m" + "RestAPI getEvents skdCatCd : " + skdCatCd + "\u001B[0m");
     	
+    	// 카테고리별로 일정 조회 구분
     	List <Schedule> schedules = null;
     	if(skdCatCd == null) {
     		schedules = scheduleService.selectMonthSchedule(userId);
-    		log.debug("\u001B[41m" + "RestAPI getEvents all : " + schedules + "\u001B[0m");
+    		//log.debug("\u001B[41m" + "RestAPI getEvents all : " + schedules + "\u001B[0m");
     	} else if (userId == "admin") {
     		schedules = scheduleService.selectAdminSchedule();
-    		log.debug("\u001B[41m" + "RestAPI getEvents admin : " + schedules + "\u001B[0m");
+    		//log.debug("\u001B[41m" + "RestAPI getEvents admin : " + schedules + "\u001B[0m");
     	} else {
     		schedules = scheduleService.selectFilteredMonthSchedule(userId,skdCatCd);
-    		log.debug("\u001B[41m" + "RestAPI getEvents other : " + schedules + "\u001B[0m");
+    		//log.debug("\u001B[41m" + "RestAPI getEvents other : " + schedules + "\u001B[0m");
     	}
     	
     	List<Map<String, Object>> monthScheduleList = new ArrayList<>();
@@ -86,13 +89,13 @@ public class ScheduleRestController {
             monthScheduleList.add(eventData);
     	}
     	
-    	log.debug("\u001B[41m" + "RestAPI getEvents monthScheduleList : " + monthScheduleList + "\u001B[0m");
+    	//log.debug("\u001B[41m" + "RestAPI getEvents monthScheduleList : " + monthScheduleList + "\u001B[0m");
     	
     	return new ResponseEntity<>(monthScheduleList, HttpStatus.OK);
     }
 	
+    // 일정 상세
     @GetMapping("/scheduleOne") // skdNo에 해당하는 일정 상세 정보 가져오기
-    @ResponseBody
     public ResponseEntity<Schedule> scheduleOne(@RequestParam int skdNo) {
     	log.debug("\u001B[41m" + "RestAPI scheduleOne skdNo : " + skdNo + "\u001B[0m");
         Schedule scheduleOne = scheduleService.selectDateSchedule(skdNo);
@@ -123,6 +126,11 @@ public class ScheduleRestController {
         scheduleOne.setSkdTitle(modifiedTitle);
         
         log.debug("\u001B[41m" + "RestAPI scheduleOne scheduleOne : " + scheduleOne + "\u001B[0m");
+        
         return new ResponseEntity<>(scheduleOne, HttpStatus.OK);
     }
+    
+	/*
+	 * @PostMapping("/deleteSchedule") public int
+	 */
 }
