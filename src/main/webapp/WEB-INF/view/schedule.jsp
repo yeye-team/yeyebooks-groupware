@@ -26,142 +26,148 @@
         	const calendarEl = document.getElementById('calendar');
         	const userId = "${userId}";
         	
+        	// 헤더툴바 출력버튼
+        	const headerToolbarBtn = {
+        	        left: 'today prev,next',
+        	        center: 'title',
+        	        right: '회사 부서 개인 초기화'
+        	    };
+        	
+        	// 관리자 로그인시 회사 일정만 보이게
+        	if (userId === "admin") {
+        		headerToolbarBtn.right = '';
+            };
+        	
+        	// 캘린더 설정
         	const calendar = new FullCalendar.Calendar(calendarEl, {
-        		aspectRatio: 1.35,
-        		headerToolbar: {
-                    //left: 'dayGridMonth,dayGridWeek,dayGridDay', 월/주/일별로 보기
-                    left: 'today prev,next',
-                    center: 'title',
-                    right: '회사 부서 개인 초기화 dayGridMonth'
-                },
-                customButtons: {
-                    회사: {
-                        text: '회사',
-                        click: function() {
-                            fetchEventsByCategory('00'); // '회사' 버튼을 클릭하면 '00' 값을 넘김
-                        }
-                    },
-                    개인: {
-                        text: '개인',
-                        click: function() {
-                            fetchEventsByCategory('99'); // '개인' 버튼을 클릭하면 '99' 값을 넘김
-                        }
-                    },
-                    부서: {
-                        text: '부서',
-                        click: function() {
-                        	fetchEventsByCategory('user');
-                        }
-                    },
-                    초기화 : {
-                    	text: '초기화',
-                    	click: function(){
-                    		fetchInitialEvents();
-                    	}
-                    }
-                },
-                locale: 'ko',
-                selectable: true, // 날짜를 드래그를 통해 영역지정
-                selectMirror: true,
-                navLinks: true, // 날짜 클릭시 세부스케줄 확인
-                editable: false, // 스케줄 위치 옮길수있게
-                events: function(info, successCallback, failureCallback) { // 모든 일정
-                	fetchEvents(successCallback, failureCallback);
-                },
-                googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw', // Google API 키 입력
+        		googleCalendarApiKey: 'AIzaSyDZTRgjuENE0svix_V-Fzl6EKEOttucbHw',
                 eventSources: [
                     {
                         googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
                         color: 'red',
                         textColor: 'white'
                     }
-                ]
+                ],
+                
+        		aspectRatio: 1.35,
+        		headerToolbar: headerToolbarBtn,
+        		initialView: "dayGridMonth",
+                locale: 'ko',
+                selectable: false, // 날짜를 드래그를 통해 영역지정
+                events: '${pageContext.request.contextPath}/events/everySchedule',
+                eventClick: function(info) {
+                	info.jsEvent.preventDefault();
+                   
+                	var event = info.event;
+    	            selectedEvent = event; // 선택한 일정 변수에 저장 : 상세보기/수정
+    	            openEventModal(event); // 상세보기
+                }
 	        });
         	
-        	calendar.render();
-		
-        	// 최초 실행 함수
-        	function fetchEvents(successCallback, failureCallback) {
-		        $.ajax({
-		            url: '${pageContext.request.contextPath}/events',
-		            dataType: 'json',
-		            success: function(data) {
-		                const events = data.map(item => ({
-		                    title: item.skdTitle,
-		                    start: item.skdStartYmd,
-		                    color: getColorByCategory(item.skdCatCd)
-		                }));
-		                successCallback(events);
-		            },
-		            error: function() {
-		                failureCallback();
-		            }
-		        });
-		    }
+        	const customButtons = {
+        		    회사: {
+        		        text: '회사',
+        		        click: clickCatCd('00') // 클릭 핸들러 함수 생성 및 할당
+        		    },
+        		    개인: {
+        		        text: '개인',
+        		        click: clickCatCd('99') // 클릭 핸들러 함수 생성 및 할당
+        		    },
+        		    부서: {
+        		        text: '부서',
+        		        click: clickCatCd('user') // 클릭 핸들러 함수 생성 및 할당
+        		    },
+        		    초기화 : {
+        		        text: '초기화',
+        		        click: clickCatCd()
+        		    }
+        		};
+        	// 버튼 옵션 추가
+			calendar.setOption('customButtons', customButtons);
         	
+        	// 카테고리 버튼을 눌렀을때 카테고리 값을 버튼에 부여하여 함수실행
+        	function clickCatCd(skdCatCd) {
+    		    return function() {
+    		        selectAllSchedule(skdCatCd);
+    		    };
+    		};
+
 			// 화사/개인/일정 버튼 누를때마다 값을 바꿈
-			function fetchEventsByCategory(category) {
+			function selectAllSchedule(skdCatCd) {
+			    // 'skdCatCd' 값을 서버로 전송하여 일정 목록을 가져오는 ajax 요청
+			    $.ajax({
+			        url: '${pageContext.request.contextPath}/events/scheduleOne',
+			        type: 'GET',
+			        data: {
+	        			skdCatCd: skdCatCd 
+		        	},
+			        dataType: 'json',
+			        success: function(data) {
+			            const events = data.map(item => ({
+			                id: item.id,
+			                title: item.title,
+			                start: item.start,
+			                end: item.end
+			            }));
+			            
+			            calendar.removeAllEvents(); // 기존의 모든 이벤트 제거
+			            calendar.addEventSource(events); // 새로운 이벤트 소스 추가
+			            calendar.render(); // 캘린더 다시 그리기
+			        },
+			        error: function() {
+			            console.error('조회 실패');
+			        }
+			    });
+			}
+			
+			// 상세보기
+		    function openEventModal(event) {
+		        // 일정 상세 정보를 가져오는 Ajax 요청
 		        $.ajax({
-		            url: '${pageContext.request.contextPath}/events',
-		            data: { category: category }, // 선택된 카테고리 값을 파라미터로 전달
-		            dataType: 'json',
-		            success: function(data) {
-		                const events = data.map(item => ({
-		                    title: item.skdTitle,
-		                    start: item.skdStartYmd,
-		                    color: getColorByCategory(item.skdCatCd)
-		                }));
-		                const googleCalendarEvents = {
-                                googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
-                                color: 'red',
-                                textColor: 'white'
-                        };
-		                calendar.getEvents().forEach(event => event.remove()); // 일정 제거
-		                calendar.addEventSource(events);
-		                calendar.addEventSource(googleCalendarEvents);
+		            type: 'GET',
+		            url: '${pageContext.request.contextPath}/events/scheduleOne',
+		            data: {
+		            	skdNo: event.id 
+		            }, // 해당 일정의 id 값을 전달
+		            success: function(response) {
+		                $('#scheduleOneModal').modal('show');
+		                $('.skdTitle').text(response.skdTitle);
+		                $('.skdContents').text(response.skdContents);
+		                $('.skdStartYmd').text(response.skdStartYmd);
+		                $('.skdEndYmd').text(response.skdEndYmd);
+		                
+		             	// response 객체에서 일정 정보를 읽어와서 selectedEvent 객체 생성
+		                var selectedEvent = {
+		                    id: response.skdNo,
+		                    skdTitle: response.skdTitle,
+		                    skdContents: response.skdContents,
+		                    skdStartYmd: response.skdStartYmd,
+		                    skdEndYmd: response.skdEndYmd,
+		                };
+		                
+		             	// 기존의 click 이벤트 핸들러를 제거
+		                $('#deleteScheduleBtn').off('click');
+		                
+		             	// 일정상세에서 '삭제' 버튼 클릭 -> '확인' 클릭시 삭제 
+		                $('#deleteScheduleBtn').on('click', function() {
+		                    if (confirm('진짜 삭제하시겠습니까?')) {
+		                        deleteSchedule(event.id);
+		                    }
+		                });
+		    	        
+		    	     	// 수정 버튼 클릭
+		    	        $('#editScheduleBtn').on('click', function() {
+		    	        	openEditModal(selectedEvent);
+		    	        });
+		             
 		            },
 		            error: function() {
-		                alert('조회 실패');
+		                console.error('상세 조회 실패');
 		            }
 		        });
 		    }
 			
-			// 초기화 함수
-			function fetchInitialEvents() {
-				$.ajax({
-                    url: '${pageContext.request.contextPath}/events',
-                    dataType: 'json',
-                    success: function(data) {
-                        const events = data.map(item => ({
-                            title: item.skdTitle,
-                            start: item.skdStartYmd,
-                            color: getColorByCategory(item.skdCatCd)
-                        }));
-                        const googleCalendarEvents = {
-                                googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
-                                color: 'red',
-                                textColor: 'white'
-                        };
-                        calendar.removeAllEvents();
-                        calendar.addEventSource(events);
-                        calendar.addEventSource(googleCalendarEvents);
-                    },
-                    error: function() {
-                        alert('초기화 실패');
-                    }
-                });
-		    }
-	    	
-			// 각 일정마다 다르게 색 부여
-			function getColorByCategory(category) {
-			   if(category === '00'){ // 전체
-				   return 'purple';
-			   } else if(category === '99'){ // 개인
-				   return 'blue';
-			   } else { // 부서
-				   return 'green'
-			   }
-			}
+			calendar.render();
 		});
     </script>
     <style>
@@ -225,6 +231,44 @@
 											</c:forEach>
 										</div> --%>
 										<div id="calendar"></div>
+										<!-- 상세보기 모달창 -->
+										<div class="modal fade" id="scheduleOneModal" tabindex="-1" aria-hidden="true">
+										    <div class="modal-dialog modal-lg" role="document">
+										        <div class="modal-content">
+										            <div class="modal-header">
+										                <h5 class="modal-title" id="exampleModalLabel3">일정 상세보기</h5>
+										                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										            </div>
+										            <div class="modal-body">
+										            	<div class="row">
+										            		<div class="col mb-6">
+							                                	<label for="titleLarge" class="form-label">제목</label>
+							                                	<span id="titleLarge" class="form-control skdTitle"></span>
+							                                </div>
+							                                <div class="row g-1">
+								                                <div class="col mb-0">
+								                                	<label for="skdStartY" class="form-label">시작일</label>
+								                                	<span id="skdStartY" class="form-control skdStartYmd"></span>
+								                                </div>
+								                                <div class="col mb-0">
+								                                    <label for="skdEndY" class="form-label">종료일</label>
+								                                    <span id="skdEndY" class="form-control skdEndYmd"></span>
+																</div>
+								                            </div>
+								                            <div class="col mb-3">
+							                                	<label for="contentLarge" class="form-label">내용</label>
+							                                	<span id="contentLarge" class="form-control skdContents"></span>
+							                                </div>
+										                </div>
+										            </div>
+										            <div class="modal-footer">
+											            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+						                                <button type="button" class="btn btn-primary" id="editScheduleBtn">수정</button>
+						                                <button type="button" class="btn btn-primary" id="deleteScheduleBtn">삭제</button>
+										            </div>
+										        </div>
+										    </div>
+										</div>
 									</div>
 								</div>
 							</div>

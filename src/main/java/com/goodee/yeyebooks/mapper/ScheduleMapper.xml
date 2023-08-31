@@ -28,7 +28,13 @@
 			user_id userId,
 			skd_cat_cd skdCatCd,
 			skd_start_ymd skdStartYmd,
-			skd_title skdTitle
+			skd_title skdTitle,
+			skd_end_ymd skdEndYmd,
+			skd_start_time skdStartTime,
+			skd_end_time skdEndTime,
+			skd_contents skdContents,
+			c_date cDate,
+			u_date uDate
 		FROM schedule
 		WHERE 
 			skd_cat_cd = '00' or
@@ -40,11 +46,17 @@
 	<!-- 회사일정 -->
 	<select id="selectAdminSchedule">
 		SELECT 
-				skd_no skdNo,
-				user_id userId,
-				skd_cat_cd skdCatCd,
-				skd_start_ymd skdStartYmd,
-				skd_title skdTitle
+			skd_no skdNo,
+			user_id userId,
+			skd_cat_cd skdCatCd,
+			skd_start_ymd skdStartYmd,
+			skd_title skdTitle,
+			skd_end_ymd skdEndYmd,
+			skd_start_time skdStartTime,
+			skd_end_time skdEndTime,
+			skd_contents skdContents,
+			c_date cDate,
+			u_date uDate
 		FROM schedule
 		WHERE 
 			skd_cat_cd = '00'
@@ -56,7 +68,13 @@
 			user_id userId,
 			skd_cat_cd skdCatCd,
 			skd_start_ymd skdStartYmd,
-			skd_title skdTitle
+			skd_title skdTitle,
+			skd_end_ymd skdEndYmd,
+			skd_start_time skdStartTime,
+			skd_end_time skdEndTime,
+			skd_contents skdContents,
+			c_date cDate,
+			u_date uDate
 		FROM schedule
 		WHERE 
 			skd_cat_cd = '99'
@@ -69,7 +87,13 @@
 			user_id userId,
 			skd_cat_cd skdCatCd,
 			skd_start_ymd skdStartYmd,
-			skd_title skdTitle
+			skd_title skdTitle,
+			skd_end_ymd skdEndYmd,
+			skd_start_time skdStartTime,
+			skd_end_time skdEndTime,
+			skd_contents skdContents,
+			c_date cDate,
+			u_date uDate
 		FROM schedule
 		WHERE 
 			skd_cat_cd = (SELECT code FROM common_code WHERE group_code = 'D001' AND code = (SELECT dept_cd FROM user WHERE user_id = #{userId}))
@@ -90,11 +114,8 @@
 			c_date cDate,
 			u_date uDate
 		FROM schedule
-		WHERE 
-			#{targetDate} BETWEEN skd_start_ymd AND skd_end_ymd
-		<if test="skd_cat_cd != null">
-			AND skd_cat_cd = #{skdCatCd}
-		</if>
+		WHERE
+			skd_no = #{skdNo}
 	</select>
 	
 	<!-- 일정등록 -->

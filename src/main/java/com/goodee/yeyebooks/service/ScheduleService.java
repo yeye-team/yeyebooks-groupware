@@ -1,6 +1,5 @@
 package com.goodee.yeyebooks.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.time.*;
@@ -23,12 +22,12 @@ public class ScheduleService {
 	}
 	
 	// 해당 달의 일정 목록 조회
-	public ArrayList<Map<String, Object>> selectMonthSchedule(String userId){
+	public List<Schedule>  selectMonthSchedule(String userId){
 		return scheduleMapper.selectMonthSchedule(userId);
 	}
 	
 	// 회사/부서/개인 일정
-	public ArrayList<Map<String, Object>> selectFilteredMonthSchedule(String userId, String category) {
+	public List<Schedule> selectFilteredMonthSchedule(String userId, String category) {
 		// 회사 일정 조회
 	    if ("00".equals(category)) {
 	        return scheduleMapper.selectAdminSchedule();
@@ -42,12 +41,12 @@ public class ScheduleService {
 	}
 	
 	// 관리자 일정만
-	public ArrayList<Map<String, Object>> selectAdminSchedule() {
+	public List<Schedule>  selectAdminSchedule() {
 		return scheduleMapper.selectAdminSchedule();
 	}
 	
-	// 선택한 날짜의 일정 조회
-	public List<Schedule> selectDateSchedule(String targetDate){
-		return scheduleMapper.selectDateSchedule(targetDate);
+	// 선택한 일정 조회
+	public Schedule selectDateSchedule(int skdNo){
+		return scheduleMapper.selectDateSchedule(skdNo);
 	}
 }

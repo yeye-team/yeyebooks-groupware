@@ -14,19 +14,19 @@ public interface ScheduleMapper {
 	List<Schedule> selectTodaySchedule(String userId, String todayYmd);
 	
 	// 선택달의 일정보여주기
-	ArrayList<Map<String, Object>> selectMonthSchedule(String userId);
+	List<Schedule> selectMonthSchedule(String userId);
 	
 	// 회사일정
-	ArrayList<Map<String, Object>> selectAdminSchedule();
+	List<Schedule> selectAdminSchedule();
 	
 	// 개인일정
-	ArrayList<Map<String, Object>> selectPersonalSchedule(String userId);
+	List<Schedule> selectPersonalSchedule(String userId);
 	
 	// 부서일정
-	ArrayList<Map<String, Object>> selectDeptSchedule(String userId);
+	List<Schedule> selectDeptSchedule(String userId);
 	
 	// 해당 날짜의 일정상세 보여주기
-	List<Schedule> selectDateSchedule(String targetDate);
+	Schedule selectDateSchedule(int skdNo);
 	
 	// 일정 등록
 	int insertSchedule(Schedule schedule);

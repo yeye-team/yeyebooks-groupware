@@ -27,13 +27,14 @@ public class ScheduleController {
 	@GetMapping("/schedule")
 	// 일정 메인 조회(홈)
 	public String scheduleList(Model model,HttpSession session) {
-		String loginId = (String)session.getAttribute("userId");
-		log.debug("\u001B[41m" + "로그인아이디 : " + loginId + "\u001B[0m");
+		String userId = (String)session.getAttribute("userId");
+		log.debug("\u001B[41m" + "로그인아이디 : " + userId + "\u001B[0m");
 		
 		// 오늘의 일정 리스트 모델에 셋팅
-		List<Schedule> scheduleList = scheduleService.selectTodaySchedule(loginId);
+		List<Schedule> scheduleList = scheduleService.selectTodaySchedule(userId);
 		
 		model.addAttribute("scheduleList", scheduleList);
+		model.addAttribute("userId", userId);
 		
 		return "/schedule";
 	}
