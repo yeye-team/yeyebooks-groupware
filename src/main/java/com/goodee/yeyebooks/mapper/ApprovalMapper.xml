@@ -71,7 +71,7 @@
     </select> -->
     
     <!-- 개인정보 불러오기 -->
-   <!--  <select id="selectUserByLoginId" resultMap="com.goodee.yeyebooks.vo.User">
+    <!-- <select id="selectUserByLoginId" resultMap="com.goodee.yeyebooks.vo.User">
 	    SELECT u.user_id, u.user_nm, u.dept_cd, u.rank_cd, 
 	        cc_dept.code_nm AS dept_name, cc_rank.code_nm AS rank_name
 	    FROM user u

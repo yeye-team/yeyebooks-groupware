@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>addApproval</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 추가 -->
 <script>
@@ -100,6 +101,7 @@
         $('#documentType').trigger('change');
     });
 </script>
+
 <script>
     $(document).ready(function() {
         var selectedApprovers = []; // 선택한 결재자 목록을 저장할 배열
@@ -132,6 +134,7 @@
         });
     });
 </script>
+
 </head>
 <body>
     <h1>문서작성</h1>
@@ -149,23 +152,7 @@
                 <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
             </div>
             
-            <div>
-			    <label for="approverSelect">결재자 선택:</label>
-			    <select id="approverSelect">
-			        <c:forEach items="${approverList}" var="approver">
-			            <option value="${approver.user_id}">${approver.user_nm}</option>
-			        </c:forEach>
-			    </select>
-			    <button type="button" id="addApprover">결재자 추가</button>
-			</div>
-			<div id="approverList">
-			    <h3>결재자 목록:</h3>
-			    <ul>
-			        <c:forEach items="${selectedApprovers}" var="approver">
-			            <li>${approver.user_nm} <input type="hidden" name="approvalLine" value="${approver.user_id}"></li>
-			        </c:forEach>
-			    </ul>
-			</div>
+            <button type="button" id="addApprovalList">결재자 선택</button>
 			            
             <label for="documentType">문서 종류 선택:</label>
 	        <select id="documentType" name="documentType">
