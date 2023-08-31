@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>addApproval</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 추가 -->
 <script>
@@ -104,33 +103,45 @@
 
 <script>
     $(document).ready(function() {
-        var selectedApprovers = []; // 선택한 결재자 목록을 저장할 배열
+        $('#openApproverPopup').click(function() {
+            // 새 창 열기
+            var newWindow = window.open('', 'approversWindow', 'width=400,height=400');
+            newWindow.document.write('<html><head><title>결재선 추가</title></head><body>');
+            newWindow.document.write('<h2>결재선 추가</h2>');
+            
+            // 사용자 리스트를 동적으로 생성하여 새 창에 표시
+            var userList = [
+                { userId: 'user1', userName: '사용자1' },
+                { userId: 'user2', userName: '사용자2' },
+                { userId: 'user3', userName: '사용자3' },
+                // 사용자 데이터 추가
+            ];
 
-        $('#addApprover').click(function() {
-            var selectedUserId = $('#approverSelect').val();
-            var selectedUserName = $('#approverSelect option:selected').text();
-
-            if (selectedUserId && !selectedApprovers.some(approver => approver.user_id === selectedUserId)) {
-                selectedApprovers.push({ user_id: selectedUserId, user_nm: selectedUserName });
-                updateApproverList();
-            }
-        });
-
-        function updateApproverList() {
-            $('#approverList ul').empty();
-            $.each(selectedApprovers, function(index, approver) {
-                var listItem = '<li>' + approver.user_nm +
-                               '<input type="hidden" name="approvalLine" value="' + approver.user_id + '">' +
-                               '<button type="button" class="removeApprover">제거</button></li>';
-                $('#approverList ul').append(listItem);
+            userList.forEach(function(user) {
+                newWindow.document.write('<label><input type="checkbox" class="approverCheckbox" value="' + user.userId + '"> ' + user.userName + '</label><br>');
             });
-        }
+            
+            newWindow.document.write('<button type="button" id="addApprovers">추가</button>');
+            newWindow.document.write('</body></html>');
+            
+            newWindow.document.close();
 
-        // 동적으로 추가된 결재자 목록에서 결재자 제거 기능
-        $(document).on('click', '.removeApprover', function() {
-            var userIdToRemove = $(this).siblings('input[name="approvalLine"]').val();
-            selectedApprovers = selectedApprovers.filter(approver => approver.user_id !== userIdToRemove);
-            updateApproverList();
+            // 새 창 내부에서 버튼 클릭 시 처리
+            newWindow.document.getElementById('addApprovers').addEventListener('click', function() {
+                var selectedApprovers = [];
+                var checkboxes = newWindow.document.getElementsByClassName('approverCheckbox');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        selectedApprovers.push(checkboxes[i].value);
+                    }
+                }
+
+                // TODO: 선택된 결재자들을 어떻게 처리할지 구현
+                console.log('선택된 결재자들:', selectedApprovers);
+
+                // 새 창 닫기
+                newWindow.close();
+            });
         });
     });
 </script>
@@ -152,8 +163,9 @@
                 <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
             </div>
             
-            <button type="button" id="addApprovalList">결재자 선택</button>
-			            
+            <!-- 버튼 클릭 시 모달 열기 -->
+			<button type="button" class="btn btn-secondary" id="openApproverPopup">결재선 추가</button>
+			
             <label for="documentType">문서 종류 선택:</label>
 	        <select id="documentType" name="documentType">
 	            <option value="normal">일반 문서</option>
