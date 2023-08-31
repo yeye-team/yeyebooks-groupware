@@ -7,7 +7,6 @@ public class Schedule {
 	private int skdNo;
 	private String userId;
 	private String skdCatCd;
-	private String skdCategory;
 	private String skdTitle;
 	private String skdStartYmd;
 	private String skdEndYmd;
