@@ -376,12 +376,14 @@
 										            <div class="modal-body">
 										            	<div class="row">
 										            		<div class="row mb-3">
-							                                	<label for="titleLarge" class="form-label">제목</label>
-							                                	<span id="titleLarge" class="form-control skdTitle">제목</span>
+							                                	<label class="form-label">제목
+							                                		<span class="form-control skdTitle">제목</span>
+							                                	</label>
 							                                </div>
 								                            <div class="row mb-3">
-							                                	<label for="contentLarge" class="form-label">내용</label>
-							                                	<span id="contentLarge" class="form-control skdContents"></span>
+							                                	<label class="form-label">내용
+								                                	<span class="form-control skdContents"></span>
+							                                	</label>
 							                                </div>
 							                                <div class="row g-1">
 								                                <div class="col mb-0">
@@ -426,12 +428,14 @@
 								                                </div>
 										            		</c:if>
 										            		<div class="row mb-3">
-							                                	<label for="titleLarge" class="form-label">제목</label>
-							                                	<input type="text" id="titleLarge" class="form-control modifyTitle" placeholder="제목을 입력하세요">
+							                                	<label class="form-label">제목
+							                                		<input type="text" class="form-control modifyTitle" placeholder="제목을 입력하세요">
+							                                	</label>
 							                                </div>
 								                            <div class="row mb-3">
-							                                	<label for="contentLarge" class="form-label">내용</label>
-							                                	<input type="text" id="contentLarge" class="form-control modifyContents" placeholder="내용을 입력하세요">
+							                                	<label class="form-label">내용
+								                                	<input type="text" class="form-control modifyContents" placeholder="내용을 입력하세요">
+							                                	</label>
 							                                </div>
 							                                <div class="row g-1">
 								                                <div class="col mb-0 row g-1">
