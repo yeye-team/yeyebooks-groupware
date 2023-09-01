@@ -127,7 +127,7 @@
 	</insert>
 	
 	<!-- 일정수정 -->
-	<update id="updateSchedule">
+	<update id="modifySchedule">
 		UPDATE schedule
 		SET
 			skd_cat_cd = #{skdCatCd}, skd_title = #{skdTitle}, skd_start_ymd = #{skdStartYmd}, skd_end_ymd = #{skdEndYmd}, skd_start_time = #{skdStartTime}, skd_end_time = #{skdEndTime}, skd_contents = #{skdContents}, u_date = NOW()

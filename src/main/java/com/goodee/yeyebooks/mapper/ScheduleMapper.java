@@ -32,7 +32,7 @@ public interface ScheduleMapper {
 	int insertSchedule(Schedule schedule);
 	
 	// 일정 수정
-	int updateSchedule(Schedule schedule);
+	int modifySchedule(Schedule schedule);
 	
 	// 일정 삭제
 	int deleteSchedule(int skdNo);

@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,19 +43,19 @@ public class ScheduleRestController {
     @GetMapping("/everySchedule")
     public ResponseEntity<List<Map<String, Object>>> getEvents(HttpSession session, @RequestParam(required = false) String skdCatCd) {
     	String userId = (String)session.getAttribute("userId");
-    	//log.debug("\u001B[41m" + "RestAPI getEvents skdCatCd : " + skdCatCd + "\u001B[0m");
+    	log.debug("\u001B[41m" + "RestAPI getEvents skdCatCd : " + skdCatCd + "\u001B[0m");
     	
     	// 카테고리별로 일정 조회 구분
     	List <Schedule> schedules = null;
     	if(skdCatCd == null) {
     		schedules = scheduleService.selectMonthSchedule(userId);
-    		//log.debug("\u001B[41m" + "RestAPI getEvents all : " + schedules + "\u001B[0m");
+    		log.debug("\u001B[41m" + "RestAPI getEvents all : " + schedules + "\u001B[0m");
     	} else if (userId == "admin") {
     		schedules = scheduleService.selectAdminSchedule();
-    		//log.debug("\u001B[41m" + "RestAPI getEvents admin : " + schedules + "\u001B[0m");
+    		log.debug("\u001B[41m" + "RestAPI getEvents admin : " + schedules + "\u001B[0m");
     	} else {
     		schedules = scheduleService.selectFilteredMonthSchedule(userId,skdCatCd);
-    		//log.debug("\u001B[41m" + "RestAPI getEvents other : " + schedules + "\u001B[0m");
+    		log.debug("\u001B[41m" + "RestAPI getEvents other : " + schedules + "\u001B[0m");
     	}
     	
     	List<Map<String, Object>> monthScheduleList = new ArrayList<>();
@@ -129,8 +130,52 @@ public class ScheduleRestController {
         
         return new ResponseEntity<>(scheduleOne, HttpStatus.OK);
     }
+
+    // 일정 수정
+    @PostMapping("/modifySchedule")
+    public ResponseEntity<Map<String, Object>> modifySchedule(@RequestBody Schedule schedule) {
+    	log.debug("\u001B[41m" + "RestAPI modifySchedule schedule : " + schedule + "\u001B[0m");
+    	
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            int row = scheduleService.modifySchedule(schedule);
+            if (row == 1) {
+                response.put("success", true);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("success", false);
+                response.put("message", "수정 실패");
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "수정 오류");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     
-	/*
-	 * @PostMapping("/deleteSchedule") public int
-	 */
+    // 일정 삭제
+    @PostMapping("/deleteSchedule")
+    public ResponseEntity<Map<String, Object>> deleteSchedule(int skdNo) {
+	    Map<String, Object> response = new HashMap<>();
+
+	    try {
+	        int row = scheduleService.deleteSchedule(skdNo);
+	        if (row == 1) {
+	            response.put("success", true);
+	            return new ResponseEntity<>(response, HttpStatus.OK);
+	        } else {
+	            response.put("success", false);
+	            response.put("message", "삭제실패");
+	            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.put("success", false);
+	        response.put("message", "삭제오류");
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 }
