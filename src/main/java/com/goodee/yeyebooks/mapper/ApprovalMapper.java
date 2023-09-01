@@ -1,6 +1,7 @@
 package com.goodee.yeyebooks.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,6 +23,12 @@ public interface ApprovalMapper {
 	List<Approval> selectApprovalByStatus(String loginId, String status);
 	// 문서 상세보기
 	List<Approval> selectApprovalOne(String aprvNo);
+	
+	List<Map<String, Object>> selectUserListByDept();
+	
+	List<Map<String, Object>> selectUserCntByDept();
+	
+	List<Map<String, Object>> selectUserCntByDeptAndAll();
 	
 	public int updateApprovalProcessed(Approval approval);
 	

@@ -27,6 +27,21 @@ public class ApprovalService {
 	
 	@Autowired 
 	private ApprovalMapper approvalMapper;
+	
+	public List<Map<String, Object>> getUserCntByDept(){
+		List<Map<String, Object>> list = approvalMapper.selectUserCntByDept();
+		return list;
+	}
+	
+	public List<Map<String, Object>> getUserListByDept(){
+		List<Map<String, Object>> list = approvalMapper.selectUserListByDept();
+		return list;
+	}
+	
+	public List<Map<String, Object>> getUserCntByDeptAndAll(){
+		List<Map<String, Object>> list = approvalMapper.selectUserCntByDeptAndAll();
+		return list;
+	}
 
 	
 	// 내 문서함 리스트

@@ -57,29 +57,46 @@
 
     </insert>
     
-    <!-- 결재선 불러오기 -->
-    <!-- <select id="selectUserInformation" parameterType="java.util.Map">
-    	SELECT 
-    		u.user_id, u.user_nm, 
-    		u.dept_cd, u.rank_cd, 
-		    cc_dept.code_nm AS dept_name, 
-		    cc_rank.code_nm AS rank_name
-		FROM user u
-		LEFT JOIN common_code cc_dept ON u.dept_cd = cc_dept.code AND cc_dept.group_code = 'D001'
-		LEFT JOIN common_code cc_rank ON u.rank_cd = cc_rank.code AND cc_rank.group_code = 'R001'
-		ORDER BY cc_dept.comment, cc_rank.code;
-    </select> -->
-    
-    <!-- 개인정보 불러오기 -->
-    <!-- <select id="selectUserByLoginId" resultMap="com.goodee.yeyebooks.vo.User">
-	    SELECT u.user_id, u.user_nm, u.dept_cd, u.rank_cd, 
-	        cc_dept.code_nm AS dept_name, cc_rank.code_nm AS rank_name
-	    FROM user u
-	    LEFT JOIN common_code cc_dept ON u.dept_cd = cc_dept.code AND cc_dept.group_code = 'D001'
-	    LEFT JOIN common_code cc_rank ON u.rank_cd = cc_rank.code AND cc_rank.group_code = 'R001'
-	    WHERE u.user_id = #{loginId}
-	</select> -->
+	<select id="selectUserCntByDept" resultType="java.util.Map">
+		SELECT c2.code deptCd, c2.code_nm deptNm, COALESCE(COUNT(u.user_id),0) cnt FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)         
+		RIGHT OUTER JOIN 
+		(SELECT code, code_nm
+				FROM common_code 
+				WHERE group_code = 'D001') c2 ON u.dept_cd = c2.code
+		GROUP BY c2.code
+		ORDER BY deptCd ASC
+	</select>
 	
+	<select id="selectUserListByDept" resultType="java.util.Map">
+		SELECT 
+			u.user_id userId, 
+			u.user_nm userNm, 
+			u.rank_cd rankCd, 
+			u.dept_cd deptCd, 
+			c1.code_nm rankNm, 
+			c2.code_nm deptNm, 
+			uf.save_filename userImg 
+		FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
+		LEFT OUTER JOIN user_file uf ON (u.user_id = uf.user_id AND uf.file_cat_cd = '02')
+	</select>
+	
+	<select id="selectUserCntByDeptAndAll" resultType="java.util.Map">
+		SELECT u.dept_cd deptCd, c2.code_nm deptNm, COUNT(*) cnt FROM user u      
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
+		UNION ALL
+		SELECT c2.code deptCd, c2.code_nm deptNm, COALESCE(COUNT(u.user_id),0) cnt FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)         
+		RIGHT OUTER JOIN 
+		(SELECT code, code_nm
+				FROM common_code 
+				WHERE group_code = 'D001') c2 ON u.dept_cd = c2.code
+		GROUP BY c2.code
+		ORDER BY deptCd ASC
+	</select>
 	
 	<!-- 내 문서함 -->
 	<select id="selectMyApproval" parameterType="java.util.Map" resultType="com.goodee.yeyebooks.vo.Approval">

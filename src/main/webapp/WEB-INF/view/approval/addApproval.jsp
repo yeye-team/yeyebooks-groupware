@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>addApproval</title>
+<jsp:include page="../inc/head.jsp"></jsp:include>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 추가 -->
 <script>
@@ -99,55 +100,113 @@
         // 최초 로딩 시 select의 값을 확인하여 초기 폼 설정
         $('#documentType').trigger('change');
     });
+    
+    
+    
+    /* $('#open').click(function() {
+    	console.log("버튼이 클릭되었습니다");
+    	$('.modal').fadeIn();
+    });
+    $('#close').click(function() {
+    	$('.modal').fadeOut();
+    });
+    $('.modal').click(function() {
+    	$('.modal').fadeOut();
+    });
+    $('.modal_content').click(function(event) {
+    	event.stopPropagation(); // 이벤트 전파 중단
+    });
+ */
+    // ul li 숨기고 보이는 기능  ------------------------------------
+    $('.toggle-link').click(function(e) {
+    	e.preventDefault();
+
+    	// 클릭한 요소의 하위 ul 요소를 활성화/비활성화합니다.
+    	$(this).next('ul').toggleClass('active');
+
+    	// 아이콘 방향을 변경합니다.
+    	$(this).toggleClass('active');
+    });
+
+    // 체크박스 관련 기능
+    let selectedCheckbox = null; // 선택된 체크박스를 추적하는 변수
+
+    // 체크박스 클릭 이벤트
+    $('.member-checkbox').click(function() {
+    	// 다른 체크박스 선택 해제
+    	$('.member-checkbox').not(this).prop('checked', false);
+
+    	// 클릭한 체크박스 선택
+    	$(this).prop('checked', true);
+
+    	selectedCheckbox = this; // 선택된 체크박스 저장
+    });
+
+ // 오른쪽 화살표 첫번째 버튼 동작 구현
+    $('#rightArrowButtonFirst').click(function() {
+        if (selectedCheckbox !== null) {
+            const memberIdInputFirst = $('.memberIdInputFirst');
+            const memberNameInputFirst = $('.memberNameInputFirst');
+            const memberId = $(selectedCheckbox).val();
+            const memberName = $(selectedCheckbox).parent().text().trim();
+            
+            // user 객체 찾기
+            const selectedUser = userList.find(user => user.userId === memberId);
+            
+            memberIdInputFirst.val(selectedUser.userId);
+            memberNameInputFirst.val(selectedUser.userNm);
+        }
+    });
+
+    // 오른쪽 화살표 두번째 버튼 동작 구현
+    $('#rightArrowButtonSecond').click(function() {
+        if (selectedCheckbox !== null) {
+            const memberIdInputSecond = $('.memberIdInputSecond');
+            const memberNameInputSecond = $('.memberNameInputSecond');
+            const memberId = $(selectedCheckbox).val();
+            const memberName = $(selectedCheckbox).parent().text().trim();
+            
+            // user 객체 찾기
+            const selectedUser = userList.find(user => user.userId === memberId);
+            
+            memberIdInputSecond.val(selectedUser.userId);
+            memberNameInputSecond.val(selectedUser.userNm);
+        }
+    });
+
+    // 오른쪽 화살표 세번째 버튼 동작 구현
+    $('#rightArrowButtonThird').click(function() {
+        if (selectedCheckbox !== null) {
+            const memberIdInputThird = $('.memberIdInputThird');
+            const memberNameInputThird = $('.memberNameInputThird');
+            const memberId = $(selectedCheckbox).val();
+            const memberName = $(selectedCheckbox).parent().text().trim();
+            
+            // user 객체 찾기
+            const selectedUser = userList.find(user => user.userId === memberId);
+            
+            memberIdInputThird.val(selectedUser.userId);
+            memberNameInputThird.val(selectedUser.userNm);
+        }
+    });
 </script>
 
 <script>
-    $(document).ready(function() {
-        $('#openApproverPopup').click(function() {
-            // 새 창 열기
-            var newWindow = window.open('', 'approversWindow', 'width=400,height=400');
-            newWindow.document.write('<html><head><title>결재선 추가</title></head><body>');
-            newWindow.document.write('<h2>결재선 추가</h2>');
-            
-            // 사용자 리스트를 동적으로 생성하여 새 창에 표시
-            var userList = [
-                { userId: 'user1', userName: '사용자1' },
-                { userId: 'user2', userName: '사용자2' },
-                { userId: 'user3', userName: '사용자3' },
-                // 사용자 데이터 추가
-            ];
+document.addEventListener("DOMContentLoaded", function() {
+  const toggleButtons = document.querySelectorAll(".toggle-users");
 
-            userList.forEach(function(user) {
-                newWindow.document.write('<label><input type="checkbox" class="approverCheckbox" value="' + user.userId + '"> ' + user.userName + '</label><br>');
-            });
-            
-            newWindow.document.write('<button type="button" id="addApprovers">추가</button>');
-            newWindow.document.write('</body></html>');
-            
-            newWindow.document.close();
-
-            // 새 창 내부에서 버튼 클릭 시 처리
-            newWindow.document.getElementById('addApprovers').addEventListener('click', function() {
-                var selectedApprovers = [];
-                var checkboxes = newWindow.document.getElementsByClassName('approverCheckbox');
-                for (var i = 0; i < checkboxes.length; i++) {
-                    if (checkboxes[i].checked) {
-                        selectedApprovers.push(checkboxes[i].value);
-                    }
-                }
-
-                // TODO: 선택된 결재자들을 어떻게 처리할지 구현
-                console.log('선택된 결재자들:', selectedApprovers);
-
-                // 새 창 닫기
-                newWindow.close();
-            });
-        });
+  toggleButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const userList = button.nextElementSibling;
+      userList.style.display = userList.style.display === "none" ? "block" : "none";
     });
+  });
+});
 </script>
 
 </head>
 <body>
+
     <h1>문서작성</h1>
         <form action="${pageContext.request.contextPath}/approval/addApproval" method="post" enctype="multipart/form-data">
             <label for="aprvTitle">문서 제목:</label>
@@ -162,9 +221,7 @@
             <div id="files">
                 <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
             </div>
-            
-            <!-- 버튼 클릭 시 모달 열기 -->
-			<button type="button" class="btn btn-secondary" id="openApproverPopup">결재선 추가</button>
+              
 			
             <label for="documentType">문서 종류 선택:</label>
 	        <select id="documentType" name="documentType">
@@ -193,5 +250,133 @@
     
             <input type="submit" value="문서 작성">
         </form>
+        <button class='btn btn-primary modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2">결재선</button>
+		<!-- Modal -->
+<div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle2"></h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
+        <div class="modal-body pb-0 card" style="box-shadow: none;">
+          <div class="row card-body vertical-scroll">
+            <div class="col-lg-6" style="overflow-y: auto; height: 400px;">
+              <!-- 왼쪽 컨텐츠 내용 -->
+              <h3>부서 목록</h3>
+              <ul>
+                <!-- 부서와 사용자 목록을 나열 -->
+                <c:forEach var="uc" items="${userCnt}">
+                  <li>
+                    <label class="deptNm2 toggle-users">${uc.deptNm == null ? 'YeYeBooks' : uc.deptNm} (${uc.cnt})</label>
+                    <div class="user-list" style="display: none;">
+                      <ul>
+                        <!-- 해당 부서의 사용자 목록 -->
+                        <c:forEach var="u" items="${userList}">
+                          <c:if test="${uc.deptCd == u.deptCd}">
+                            <li>
+                              <input type="checkbox" class="userCheckbox" id="user_${u.userId}" value="${u.userId}">
+                              <label for="user_${u.userId}">
+                                <div class="col-md-3">
+                                  <c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
+                                  <c:if test="${u.userImg != null}">
+                                    <c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+                                  </c:if>
+                                  <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
+                                </div>
+                                <div class="col-md-9">
+                                  <h5 class="mb-0">${u.userNm}</h5>
+                                  <h6><small class="text-muted">${u.rankNm}</small></h6>
+                                </div>
+                              </label>
+                            </li>
+                          </c:if>
+                        </c:forEach>
+                      </ul>
+                    </div>
+                  </li>
+                </c:forEach>
+              </ul>
+            </div>
+            <div class="col-lg-6">
+              <!-- 오른쪽 컨텐츠 내용 -->
+              <h3>선택된 결재자</h3>
+              <form>
+                <table>
+                  <!-- 선택된 결재자 목록 -->
+                  <tr>
+                    <td rowspan="2"><button type="button" id="rightArrowButtonFirst">&rarr;</button></td>
+                    <td>첫 번째 결재자</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="hidden" value="" name="memberId" class="memberIdInputFirst">
+                      <input type="text" value="" name="memberName" class="memberNameInputFirst" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2"><button type="button" id="rightArrowButtonSecond">&rarr;</button></td>
+                    <td>두 번째 결재자</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="hidden" value="" name="memberId" class="memberIdInputSecond">
+                      <input type="text" value="" name="memberName" class="memberNameInputSecond" readonly>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2"><button type="button" id="rightArrowButtonThird">&rarr;</button></td>
+                    <td>세 번째 결재자</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="hidden" value="" name="memberId" class="memberIdInputThird">
+                      <input type="text" value="" name="memberName" class="memberNameInputThird" readonly>
+                    </td>
+                  </tr>
+                </table>
+                <button id="close" type="button">선택완료</button>
+                <button type="reset">초기화</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            취소
+          </button>
+          <button type="submit" class="btn btn-secondary">추가</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+	<!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
+    <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <script src="../assets/vendor/js/menu.js"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+
+    <!-- Main JS -->
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Page JS -->
+    <script src="../assets/js/ui-modals.js"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
