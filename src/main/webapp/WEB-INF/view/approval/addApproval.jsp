@@ -101,23 +101,7 @@
         $('#documentType').trigger('change');
     });
     
-    
-    
-    /* $('#open').click(function() {
-    	console.log("버튼이 클릭되었습니다");
-    	$('.modal').fadeIn();
-    });
-    $('#close').click(function() {
-    	$('.modal').fadeOut();
-    });
-    $('.modal').click(function() {
-    	$('.modal').fadeOut();
-    });
-    $('.modal_content').click(function(event) {
-    	event.stopPropagation(); // 이벤트 전파 중단
-    });
- */
-    // ul li 숨기고 보이는 기능  ------------------------------------
+/*     // ul li 숨기고 보이는 기능  ------------------------------------
     $('.toggle-link').click(function(e) {
     	e.preventDefault();
 
@@ -127,8 +111,8 @@
     	// 아이콘 방향을 변경합니다.
     	$(this).toggleClass('active');
     });
-
-    // 체크박스 관련 기능
+ */
+/*     // 체크박스 관련 기능
     let selectedCheckbox = null; // 선택된 체크박스를 추적하는 변수
 
     // 체크박스 클릭 이벤트
@@ -188,6 +172,66 @@
             memberIdInputThird.val(selectedUser.userId);
             memberNameInputThird.val(selectedUser.userNm);
         }
+    }); */
+    
+    
+</script>
+
+
+<script>
+    // 문서가 완전히 로드된 후에 스크립트 실행
+    $(document).ready(function() {
+        let selectedCheckbox = null; // 선택된 체크박스를 추적하는 변수
+
+        // 체크박스 클릭 이벤트
+        $('.userCheckbox').click(function() {
+            // 다른 체크박스 선택 해제
+            $('.userCheckbox').not(this).prop('checked', false);
+
+            // 클릭한 체크박스 선택
+            $(this).prop('checked', true);
+
+            selectedCheckbox = this; // 선택된 체크박스 저장
+        });
+
+        // 오른쪽 화살표 첫번째 버튼 동작 구현
+        $('#rightArrowButtonFirst').click(function() {
+            if (selectedCheckbox !== null) {
+                const memberIdInputFirst = $('.memberIdInputFirst');
+                const memberNameInputFirst = $('.memberNameInputFirst');
+                const memberId = $(selectedCheckbox).val();
+                const memberName = $(selectedCheckbox).data('username');
+
+                memberIdInputFirst.val(memberId);
+                memberNameInputFirst.val(memberName);
+            }
+        });
+
+        // 오른쪽 화살표 두번째 버튼 동작 구현
+        $('#rightArrowButtonSecond').click(function() {
+            if (selectedCheckbox !== null) {
+                const memberIdInputSecond = $('.memberIdInputSecond');
+                const memberNameInputSecond = $('.memberNameInputSecond');
+                const memberId = $(selectedCheckbox).val();
+                const memberName = $(selectedCheckbox).data('username');
+
+                memberIdInputSecond.val(memberId);
+                memberNameInputSecond.val(memberName);
+            }
+        });
+
+        // 오른쪽 화살표 세번째 버튼 동작 구현
+        $('#rightArrowButtonThird').click(function() {
+            if (selectedCheckbox !== null) {
+                const memberIdInputThird = $('.memberIdInputThird');
+                const memberNameInputThird = $('.memberNameInputThird');
+                const memberId = $(selectedCheckbox).val();
+                const memberName = $(selectedCheckbox).data('username');
+
+                memberIdInputThird.val(memberId);
+                memberNameInputThird.val(memberName);
+            }
+        });
     });
 </script>
 
@@ -203,6 +247,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 </script>
+
+
 
 </head>
 <body>
@@ -252,111 +298,110 @@ document.addEventListener("DOMContentLoaded", function() {
         </form>
         <button class='btn btn-primary modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2">결재선</button>
 		<!-- Modal -->
-<div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle2"></h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
-        <div class="modal-body pb-0 card" style="box-shadow: none;">
-          <div class="row card-body vertical-scroll">
-            <div class="col-lg-6" style="overflow-y: auto; height: 400px;">
-              <!-- 왼쪽 컨텐츠 내용 -->
-              <h3>부서 목록</h3>
-              <ul>
-                <!-- 부서와 사용자 목록을 나열 -->
-                <c:forEach var="uc" items="${userCnt}">
-                  <li>
-                    <label class="deptNm2 toggle-users">${uc.deptNm == null ? 'YeYeBooks' : uc.deptNm} (${uc.cnt})</label>
-                    <div class="user-list" style="display: none;">
-                      <ul>
-                        <!-- 해당 부서의 사용자 목록 -->
-                        <c:forEach var="u" items="${userList}">
-                          <c:if test="${uc.deptCd == u.deptCd}">
-                            <li>
-                              <input type="checkbox" class="userCheckbox" id="user_${u.userId}" value="${u.userId}">
-                              <label for="user_${u.userId}">
-                                <div class="col-md-3">
-                                  <c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
-                                  <c:if test="${u.userImg != null}">
-                                    <c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
-                                  </c:if>
-                                  <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
-                                </div>
-                                <div class="col-md-9">
-                                  <h5 class="mb-0">${u.userNm}</h5>
-                                  <h6><small class="text-muted">${u.rankNm}</small></h6>
-                                </div>
-                              </label>
-                            </li>
-                          </c:if>
-                        </c:forEach>
-                      </ul>
-                    </div>
-                  </li>
-                </c:forEach>
-              </ul>
-            </div>
-            <div class="col-lg-6">
-              <!-- 오른쪽 컨텐츠 내용 -->
-              <h3>선택된 결재자</h3>
-              <form>
-                <table>
-                  <!-- 선택된 결재자 목록 -->
-                  <tr>
-                    <td rowspan="2"><button type="button" id="rightArrowButtonFirst">&rarr;</button></td>
-                    <td>첫 번째 결재자</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="hidden" value="" name="memberId" class="memberIdInputFirst">
-                      <input type="text" value="" name="memberName" class="memberNameInputFirst" readonly>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td rowspan="2"><button type="button" id="rightArrowButtonSecond">&rarr;</button></td>
-                    <td>두 번째 결재자</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="hidden" value="" name="memberId" class="memberIdInputSecond">
-                      <input type="text" value="" name="memberName" class="memberNameInputSecond" readonly>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td rowspan="2"><button type="button" id="rightArrowButtonThird">&rarr;</button></td>
-                    <td>세 번째 결재자</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="hidden" value="" name="memberId" class="memberIdInputThird">
-                      <input type="text" value="" name="memberName" class="memberNameInputThird" readonly>
-                    </td>
-                  </tr>
-                </table>
-                <button id="close" type="button">선택완료</button>
-                <button type="reset">초기화</button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            취소
-          </button>
-          <button type="submit" class="btn btn-secondary">추가</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+		<div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="modalTitle2"></h5>
+		        <button
+		          type="button"
+		          class="btn-close"
+		          data-bs-dismiss="modal"
+		          aria-label="Close"
+		        ></button>
+		      </div>
+		      <form action="${pageContext.request.contextPath}/modifyUserDept" method="post">
+		        <div class="modal-body pb-0 card" style="box-shadow: none;">
+		          <div class="row card-body vertical-scroll">
+		            <div class="col-lg-6" style="overflow-y: auto; height: 400px;">
+		              <!-- 왼쪽 컨텐츠 내용 -->
+		              <h3>부서 목록</h3>
+		              <ul>
+		                <!-- 부서와 사용자 목록을 나열 -->
+		                <c:forEach var="uc" items="${userCnt}">
+		                  <li>
+		                    <label class="deptNm2 toggle-users">${uc.deptNm == null ? 'YeYeBooks' : uc.deptNm} (${uc.cnt})</label>
+		                    <div class="user-list" style="display: none;">
+		                      <ul>
+		                        <!-- 해당 부서의 사용자 목록 -->
+		                        <c:forEach var="u" items="${userList}">
+		                          <c:if test="${uc.deptCd == u.deptCd}">
+		                            <li>
+		                              <input type="checkbox" class="userCheckbox" id="user_${u.userId}" value="${u.userId}" data-username="${u.userNm}">
+		                              <label for="user_${u.userId}">
+		                                <div class="col-md-3">
+		                                  <c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
+		                                  <c:if test="${u.userImg != null}">
+		                                    <c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+		                                  </c:if>
+		                                  <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
+		                                </div>
+		                                <div class="col-md-9">
+		                                  <h5 class="mb-0">${u.userNm}</h5>
+		                                  <h6><small class="text-muted">${u.rankNm}</small></h6>
+		                                </div>
+		                              </label>
+		                            </li>
+		                          </c:if>
+		                        </c:forEach>
+		                      </ul> 
+		                    </div>
+		                  </li>
+		                </c:forEach>
+		              </ul>
+		            </div>
+		            <div class="col-lg-6">
+		              <!-- 오른쪽 컨텐츠 내용 -->
+		              <h3>선택된 결재자</h3>
+		              <form>
+		                <table>
+		                  <!-- 선택된 결재자 목록 -->
+		                  <tr>
+		                    <td rowspan="2"><button type="button" id="rightArrowButtonFirst">&rarr;</button></td>
+		                    <td>첫 번째 결재자</td>
+		                  </tr>
+		                  <tr>
+		                    <td>
+		                      <input type="hidden" value="" name="memberId" class="memberIdInputFirst">
+		                      <input type="text" value="" name="memberName" class="memberNameInputFirst" readonly>
+		                    </td>
+		                  </tr>
+		                  <tr>
+		                    <td rowspan="2"><button type="button" id="rightArrowButtonSecond">&rarr;</button></td>
+		                    <td>두 번째 결재자</td>
+		                  </tr>
+		                  <tr>
+		                    <td>
+		                      <input type="hidden" value="" name="memberId" class="memberIdInputSecond">
+		                      <input type="text" value="" name="memberName" class="memberNameInputSecond" readonly>
+		                    </td>
+		                  </tr>
+		                  <tr>
+		                    <td rowspan="2"><button type="button" id="rightArrowButtonThird">&rarr;</button></td>
+		                    <td>세 번째 결재자</td>
+		                  </tr>
+		                  <tr>
+		                    <td>
+		                      <input type="hidden" value="" name="memberId" class="memberIdInputThird">
+		                      <input type="text" value="" name="memberName" class="memberNameInputThird" readonly>
+		                    </td>
+		                  </tr>
+		                </table>
+		                <button type="reset">초기화</button>
+		              </form>
+		            </div>
+		          </div>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+		            취소
+		          </button>
+		          <button type="submit" class="btn btn-secondary">추가</button>
+		        </div>
+		      </form>
+		    </div>
+		  </div>
+		</div>
 
 	<!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
