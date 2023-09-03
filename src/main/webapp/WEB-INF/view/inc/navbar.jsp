@@ -43,7 +43,7 @@
 					    <a class="nav-link" href="javascript:void(0)">일정</a>
 					  </li>
 					  <li class="nav-item">
-					    <a class="nav-link" href="javascript:void(0)">예약</a>
+					    <a class="nav-link" href="/yeyebooks/booking/myBooking">예약</a>
 					  </li>
 					</ul>
 				</c:otherwise>
