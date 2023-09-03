@@ -468,6 +468,70 @@
 										    </div>
 										</div>
 										
+										<!-- 작성하기 모달창 -->
+										<form>
+											<div class="modal fade" id="insertScheduleModal" tabindex="-1" aria-hidden="true">
+											    <div class="modal-dialog modal-lg" role="document">
+											        <div class="modal-content">
+											            <div class="modal-header">
+											                <h3 class="modal-title" id="exampleModalLabel3"><strong>일정 작성</strong></h3>
+											                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											            </div>
+											            <div class="modal-body">
+											            	<div class="row">
+											            		<c:if test="${userId != 'admin'}">
+												            		<div class="row mb-3">
+									                                	<label for="titleSm" class="form-label">카테고리</label>
+									                                	<div class="col mb-0">
+										                                	<input type="radio" id="titleSm" name="insertCd" value="user">부서
+										                                </div>	
+										                                <div class="col mb-0">
+									                                		<input type="radio" id="titleSm" name="insertCd" value="99">개인
+									                                	</div>
+									                                </div>
+											            		</c:if>
+											            		<div class="row mb-3">
+								                                	<label class="form-label">제목
+								                                		<input type="text" class="form-control" placeholder="제목을 입력하세요">
+								                                	</label>
+								                                </div>
+									                            <div class="row mb-3">
+								                                	<label class="form-label">내용
+									                                	<input type="text" class="form-control" placeholder="내용을 입력하세요">
+								                                	</label>
+								                                </div>
+								                                <div class="row g-1">
+									                                <div class="col mb-0 row g-1">
+									                                	<label for="skdStartY" class="form-label">시작일</label>
+									                                	<div class="col mb-5">
+										                                	<input type="date" id="skdStartY" name="skdStartYmd" class="form-control">
+										                                </div>	
+										                                <div class="col mb-0">
+										                                	<input type="time" name="skdStartTime" class="form-control">
+									                                	</div>
+									                                </div>
+									                                <div class="col mb-0 row g-1">
+									                                    <label for="skdEndY" class="form-label">종료일</label>
+								                                		<div class="col mb-5">
+										                                	<input type="date" id="skdEndY" name="skdEndYmd" class="form-control">
+							                                			</div>
+								                                		<div class="col mb-0">
+										                                	<input type="time" name="skdEndTime" class="form-control">
+							                                			</div>
+																	</div>
+									                            </div>
+											                </div>
+											            </div>
+											            <div class="modal-footer">
+							                                <button type="button" class="btn btn-primary" id="insertScdBtn">등록</button>
+							                                <button type="button" class="btn btn-primary" id="cancelInsertBtn">취소</button>
+												            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+											            </div>
+											        </div>
+											    </div>
+											</div>
+										</form>
+										
 									</div>
 								</div>
 							</div>

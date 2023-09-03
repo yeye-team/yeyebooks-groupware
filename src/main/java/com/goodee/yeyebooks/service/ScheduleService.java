@@ -53,6 +53,11 @@ public class ScheduleService {
 		return scheduleMapper.selectDateSchedule(skdNo);
 	}
 	
+	// 일정 등록
+	public int insertSchedule(Schedule schedule) {
+		return scheduleMapper.insertSchedule(schedule);
+	}
+	
 	// 일정 수정
 	public int modifySchedule(Schedule schdule) {
 		log.debug("\u001B[41m" + "service modifySchedule schdule : " + schdule + "\u001B[0m");
