@@ -20,19 +20,26 @@ import com.goodee.yeyebooks.vo.Booking;
 public class BookingController {
 	@Autowired
 	BookingService bookingService;
+	Map<String, String> convertString = new HashMap<>() {{
+	    put("예약완료", "isBooking");
+	    put("이용중", "isUsing");
+	    put("이용완료", "isUsed");
+	    put("예약취소", "isCanceled");
+	}};
 	
 	@GetMapping("/booking/myBooking")
 	public String myBooking(Model model,
 							HttpSession session,
-							@RequestParam(required = false) List<String> status ) {
-		Map<String, String> convertString = new HashMap<>();
-		convertString.put("예약완료", "isBooking");
-		convertString.put("이용중", "isUsing");
-		convertString.put("이용완료", "isUsed");
-		convertString.put("예약취소", "isCanceled");
+							 @RequestParam(value = "status[]", required=false) List<String> status,
+							 @RequestParam(required=false) String searchCat,
+							 @RequestParam(required=false) String searchNm,
+							 @RequestParam(defaultValue="1") int currentPage) {
 		
-		List<String> selectedStatus = status;
-		if(selectedStatus == null) {
+		List<String> selectedStatus;
+		if(status != null) {
+			System.out.println("BookingController status : " + status);
+			selectedStatus = status;
+		}else {
 			selectedStatus = new ArrayList<>();
 			selectedStatus.add("예약완료");
 			selectedStatus.add("이용중");
@@ -41,7 +48,7 @@ public class BookingController {
 			model.addAttribute(convertString.get(stat), "checked");
 		}
 		String userId = (String)session.getAttribute("userId");
-		List<Booking> myBookingList = bookingService.selectMyBooking(selectedStatus, userId);
+		List<Booking> myBookingList = bookingService.selectMyBooking(selectedStatus, userId, searchCat, searchNm);
 		model.addAttribute("myBookingList", myBookingList);
 		return "booking/myBooking";
 	}

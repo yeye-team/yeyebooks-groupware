@@ -8,6 +8,7 @@ public class Booking {
 	private String userId;
 	private int trgtNo;
 	private String trgtNm;
+	private String trgtCatNm;
 	private String bkgStartYmd;
 	private String bkgEndYmd;
 	private String bkgStartTime;

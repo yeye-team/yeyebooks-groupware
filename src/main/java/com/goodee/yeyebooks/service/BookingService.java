@@ -13,7 +13,7 @@ public class BookingService {
 	@Autowired
 	BookingMapper bookingMapper;
 	
-	public List<Booking> selectMyBooking(List<String> status, String userId){
-		return bookingMapper.selectMyBooking(status, userId);
+	public List<Booking> selectMyBooking(List<String> status, String userId, String searchCat, String searchNm){
+		return bookingMapper.selectMyBooking(status, userId, searchCat, searchNm);
 	}
 }

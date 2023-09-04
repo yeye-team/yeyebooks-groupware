@@ -53,6 +53,38 @@
     		cursor: pointer;
     	}
     </style>
+    <script>
+    	let labelTexts = [];
+    	let searchCat = '';
+    	let searchNm = '';
+    	$(document).ready(function() {
+    	  $('input[type="checkbox"]').on('change', function() {
+    	    $('input[type="checkbox"]:checked').each(function() {
+    	     	const labelText = $("label[for='" + $(this).attr('name') + "']").text();
+    	      labelTexts.push(labelText);
+    	    });
+			if(labelTexts.length == 0){
+				$('#bookingList').html('');
+				return;
+			}
+			updateBookingList();
+    	  });
+    	});
+    	function updateBookingList(){
+    		$.ajax({
+     		   type: 'get',
+     		   url: '/yeyebooks/booking/myBooking',
+     		   data: {
+     			   status: labelTexts
+     		   },
+     		   success: function(response){
+     			   const bookingListChildren = $(response).find('#bookingList').children();
+     			   $('#bookingList').html(bookingListChildren);
+     			  	labelTexts.length = 0;
+     		   }
+     	   })
+    	}
+    </script>
   </head>
 
   <body>
@@ -104,6 +136,10 @@
 	            	<div class="container-xxl flex-grow-1 container-p-y">
 		            	<h2 class="fw-bold py-3 mb-4">나의 예약목록</h2>
 						<form class="d-flex align-items-center justify-content-end mb-2">
+							<div class="px-3">
+								<label for="searchNm">예약대상명 : </label>
+								<input type="text" name="searchNm" class="form-input">
+							</div>
 							<div class="form-check px-3">
 								<input type="checkbox" name="isBooking" class="form-check-input" ${isBooking}>
 								<label for="isBooking">예약완료</label>
@@ -132,7 +168,7 @@
 									<th>예약상태</th>
 				                </tr>
 				              </thead>
-				              <tbody class="table-border-bottom-0">
+				              <tbody class="table-border-bottom-0" id="bookingList">
 								<c:forEach var="b" items="${myBookingList}">
 									<tr onclick="location.href='${pageContext.request.contextPath}/booking/bookingOne?bkgNo=${b.bkgNo}'">
 										<td>${b.trgtNm}</td>
