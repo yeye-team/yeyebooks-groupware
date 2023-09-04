@@ -18,7 +18,7 @@
 					    <a class="nav-link" href="/yeyebooks/board/boardList">게시판관리</a>
 					  </li>
 					  <li class="nav-item">
-					    <a class="nav-link" href="/yeyebooks/board/schedule">회사일정관리</a>
+					    <a class="nav-link" href="/yeyebooks/schedule">회사일정관리</a>
 					  </li>
 					  <li class="nav-item">
 					    <a class="nav-link" href="javascript:void(0)">시설/비품관리</a>
@@ -40,7 +40,7 @@
 					    <a class="nav-link" href="/yeyebooks/board/boardList">게시판</a>
 					  </li>
 					  <li class="nav-item">
-					    <a class="nav-link" href="/yeyebooks/board/schedule">일정</a>
+					    <a class="nav-link" href="/yeyebooks/schedule">일정</a>
 					  </li>
 					  <li class="nav-item">
 					    <a class="nav-link" href="/yeyebooks/booking/myBooking">예약</a>
