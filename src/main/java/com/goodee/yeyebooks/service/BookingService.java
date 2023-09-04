@@ -16,4 +16,8 @@ public class BookingService {
 	public List<Booking> selectMyBooking(List<String> status, String userId, String searchCat, String searchNm){
 		return bookingMapper.selectMyBooking(status, userId, searchCat, searchNm);
 	}
+	
+	public List<String> selectBookingCategory(){
+		return bookingMapper.selectBookingCategory();
+	}
 }

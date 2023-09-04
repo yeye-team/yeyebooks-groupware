@@ -52,6 +52,10 @@
     	.form-check-input{
     		cursor: pointer;
     	}
+    	#searchBtn{
+    		margin-right: 2rem;
+		    margin-left: 0.5rem;
+		}
     </style>
     <script>
     	let labelTexts = [];
@@ -69,13 +73,21 @@
 			}
 			updateBookingList();
     	  });
+    	  
+    	  $('#searchBtn').click(function(){
+    		  searchCat = $('#searchCat').val();
+    		  searchNm = $('input[name="searchNm"]').val();
+    		  updateBookingList();
+    	  })
     	});
     	function updateBookingList(){
     		$.ajax({
      		   type: 'get',
      		   url: '/yeyebooks/booking/myBooking',
      		   data: {
-     			   status: labelTexts
+     			   status: labelTexts,
+     			   searchCat: searchCat,
+     			   searchNm: searchNm
      		   },
      		   success: function(response){
      			   const bookingListChildren = $(response).find('#bookingList').children();
@@ -136,9 +148,19 @@
 	            	<div class="container-xxl flex-grow-1 container-p-y">
 		            	<h2 class="fw-bold py-3 mb-4">나의 예약목록</h2>
 						<form class="d-flex align-items-center justify-content-end mb-2">
-							<div class="px-3">
-								<label for="searchNm">예약대상명 : </label>
-								<input type="text" name="searchNm" class="form-input">
+							<div class="px-1">
+								<select id="searchCat" class="form-select">
+									<option value="">분류선택</option>
+									<c:forEach var="cat" items="${bookingCategory}">
+										<option>${cat }</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="px-1">
+								<input type="text" name="searchNm" class="form-control" placeholder="예약대상">
+							</div>
+							<div>
+								<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
 							</div>
 							<div class="form-check px-3">
 								<input type="checkbox" name="isBooking" class="form-check-input" ${isBooking}>
@@ -163,7 +185,8 @@
 				            <table class="table">
 				              <thead>
 				                <tr>
-									<th>예약대상</th>
+				                	<th>예약대상분류</th>
+									<th>예약대상명</th>
 									<th>예약일시</th>
 									<th>예약상태</th>
 				                </tr>
@@ -171,6 +194,7 @@
 				              <tbody class="table-border-bottom-0" id="bookingList">
 								<c:forEach var="b" items="${myBookingList}">
 									<tr onclick="location.href='${pageContext.request.contextPath}/booking/bookingOne?bkgNo=${b.bkgNo}'">
+										<td>${b.trgtCatNm }</td>
 										<td>${b.trgtNm}</td>
 										<td>${b.bkgStartYmd}, ${b.bkgStartTime}&nbsp;~&nbsp;${b.bkgEndYmd}, ${b.bkgEndTime}</td>
 										<td>${b.bkgStatus}</td>

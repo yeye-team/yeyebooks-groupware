@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,11 @@ public class BookingController {
 	@GetMapping("/booking/myBooking")
 	public String myBooking(Model model,
 							HttpSession session,
+							HttpServletRequest request,
 							 @RequestParam(value = "status[]", required=false) List<String> status,
 							 @RequestParam(required=false) String searchCat,
 							 @RequestParam(required=false) String searchNm,
 							 @RequestParam(defaultValue="1") int currentPage) {
-		
 		List<String> selectedStatus;
 		if(status != null) {
 			System.out.println("BookingController status : " + status);
@@ -49,6 +50,8 @@ public class BookingController {
 		}
 		String userId = (String)session.getAttribute("userId");
 		List<Booking> myBookingList = bookingService.selectMyBooking(selectedStatus, userId, searchCat, searchNm);
+		List<String> bookingCategory = bookingService.selectBookingCategory();
+		model.addAttribute("bookingCategory", bookingCategory);
 		model.addAttribute("myBookingList", myBookingList);
 		return "booking/myBooking";
 	}

@@ -16,12 +16,17 @@
 		    </foreach>
 		    )
 		</if>
-		<if test="searchCat != null">
+		<if test="searchCat != null and searchNm != ''">
 			AND trgt_cat_cd = (SELECT code FROM common_code WHERE group_code = 'B102' AND code_nm = #{searchCat})
 		</if>
-		<if test="searchNm != null">
-			AND trgt_nm like CONCAT('%', '#{searchNm}', '%')
+		<if test="searchNm != null and searchNm != ''">
+			AND trgt_nm like CONCAT('%', #{searchNm}, '%')
 		</if>
 		ORDER BY booking.c_date
+	</select>
+	<select id="selectBookingCategory">
+		SELECT code_nm
+		FROM common_code
+		WHERE group_code = 'B102'
 	</select>
 </mapper>
