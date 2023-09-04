@@ -233,6 +233,97 @@
             }
         });
     });
+    
+
+</script>
+
+<script>
+    $(document).ready(function() {
+        let selectedUsers = []; // 선택된 사용자 정보를 저장하는 배열
+
+        // 체크박스 클릭 이벤트
+        $('.userCheckbox').click(function() {
+            // 다른 체크박스 선택 해제
+            $('.userCheckbox').not(this).prop('checked', false);
+
+            if ($(this).prop('checked')) {
+                const memberId = $(this).val();
+                const memberName = $(this).data('username');
+
+                // 선택된 사용자 정보를 배열에 추가
+                selectedUsers.push({ memberId, memberName });
+            } else {
+                // 선택 해제된 경우 배열에서 제거
+                const memberId = $(this).val();
+                const indexToRemove = selectedUsers.findIndex(user => user.memberId === memberId);
+                if (indexToRemove !== -1) {
+                    selectedUsers.splice(indexToRemove, 1);
+                }
+            }
+        });
+
+        // 모달 추가 버튼 클릭 시
+        $('.modalAddUserToDeptBtn').click(function() {
+            // 선택된 사용자 정보를 확인하기 위해 콘솔에 출력
+            console.log(selectedUsers);
+
+            // 선택된 사용자 정보를 HTML 요소에 표시
+            displaySelectedApprovers(selectedUsers);
+
+            // 선택된 사용자 정보 배열 초기화
+            selectedUsers = [];
+
+            // 모달을 닫습니다.
+            $('#modal2').modal('hide');
+        });
+
+        // 선택된 결재자 정보를 HTML 요소에 표시하는 함수
+        function displaySelectedApprovers(users) {
+            const firstApproverName = $('#firstApproverName');
+            const secondApproverName = $('#secondApproverName');
+            const thirdApproverName = $('#thirdApproverName');
+
+            if (users.length >= 1) {
+                firstApproverName.text(users[0].memberName);
+            } else {
+                firstApproverName.text("");
+            }
+
+            if (users.length >= 2) {
+                secondApproverName.text(users[1].memberName);
+            } else {
+                secondApproverName.text("");
+            }
+
+            if (users.length >= 3) {
+                thirdApproverName.text(users[2].memberName);
+            } else {
+                thirdApproverName.text("");
+            }
+        }
+    });
+ // 모달 닫힘 이벤트를 감지하여 선택된 값 초기화
+    $('#modal2').on('hidden.bs.modal', function () {
+        // 선택된 체크박스 초기화
+        $('.userCheckbox').prop('checked', false);
+
+        // 선택된 결재자 정보를 HTML 요소에 초기화
+        $('#firstApproverName').text("");
+        $('#secondApproverName').text("");
+        $('#thirdApproverName').text("");
+
+        // 선택된 결재자 정보를 입력한 input 요소 초기화
+        $('.memberIdInputFirst').val("");
+        $('.memberNameInputFirst').val("");
+        $('.memberIdInputSecond').val("");
+        $('.memberNameInputSecond').val("");
+        $('.memberIdInputThird').val("");
+        $('.memberNameInputThird').val("");
+
+        // 선택된 사용자 정보 배열 초기화
+        selectedUsers = [];
+    });
+
 </script>
 
 <script>
@@ -396,11 +487,18 @@ document.addEventListener("DOMContentLoaded", function() {
 		          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
 		            취소
 		          </button>
-		          <button type="submit" class="btn btn-secondary">추가</button>
+		          <button type="submit" class="btn btn-secondary modalAddUserToDeptBtn">추가</button>
 		        </div>
 		      </form>
 		    </div>
 		  </div>
+		</div>
+		
+		<!-- 선택된 결재자 정보를 표시할 HTML 요소 -->
+		<div id="selectedApprovers">
+		    <p>첫 번째 결재자: <span id="firstApproverName"></span></p>
+		    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
+		    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
 		</div>
 
 	<!-- Core JS -->
