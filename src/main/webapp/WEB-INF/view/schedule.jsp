@@ -27,7 +27,7 @@
         	const userId = "${userId}";
         	// 헤더툴바 출력버튼
         	const headerToolbarBtn = {
-        	        left: 'today prev,next',
+        	        left: '오늘 이전,다음',
         	        center: 'title',
         	        right: '회사 부서 개인 초기화'
        	    };
@@ -60,43 +60,118 @@
                 	var event = info.event;
     	            selectedEvent = event; // 선택한 일정 변수에 저장 : 상세보기/수정
     	            openEventModal(event); // 상세보기
-                }
+                },
+                dateClick: function(info) {
+                    // 클릭된 날짜 정보
+                    const clickedDate = info.date;
+                    
+				    // 모달 열기
+				    $('#insertScheduleModal').modal('show');
+				
+				    var insertStartYInput = document.getElementById('insertSkdStartY');
+				    var insertEndYInput = document.getElementById('insertSkdEndY');
+				
+				    // 클릭된 날짜에 하루를 더해 시작일과 종료일로 설정
+				    const startDate = new Date(clickedDate);
+				    const endDate = new Date(clickedDate);
+				    startDate.setDate(startDate.getDate() + 1);
+				    endDate.setDate(endDate.getDate() + 1);
+				
+				    insertStartYInput.value = startDate.toISOString().split('T')[0];
+				    insertEndYInput.value = endDate.toISOString().split('T')[0];
+                },
 	        });
         	
         	const customButtons = {
         		    회사: {
         		        text: '회사',
-        		        click: clickCatCd('00') // 클릭 핸들러 함수 생성 및 할당
+        		        click: clickCatCd('00')
         		    },
         		    개인: {
         		        text: '개인',
-        		        click: clickCatCd('99') // 클릭 핸들러 함수 생성 및 할당
+        		        click: clickCatCd('99')
         		    },
         		    부서: {
         		        text: '부서',
-        		        click: clickCatCd('user') // 클릭 핸들러 함수 생성 및 할당
+        		        click: clickCatCd('user')
         		    },
         		    초기화 : {
         		        text: '초기화',
         		        click: clickCatCd()
-        		    }
+        		    },
+        		    이전 : {
+        		    	text: '이전',
+        		    	click: prevHandler
+        		    },
+        		    다음 : {
+        		    	text: '다음',
+        		    	click: nextHandler
+        		    },
+        		   	오늘 : {
+        		   		text: '오늘',
+        		   		click: todayButtonClick
+        		   	}
        		};
         	
         	// 버튼 옵션 추가
 			calendar.setOption('customButtons', customButtons);
         	
+			function todayButtonClick() {
+			    // FullCalendar에서 모든 이벤트를 제거
+			    calendar.removeAllEvents();
+
+			    // 오늘 날짜로 이동
+			    calendar.gotoDate(new Date());
+			}
+			
+			$('.fc-customButton-today').click(todayButtonClick);
+			
+        	// 이전/다음버튼에 값을 부여, 버튼을 누르고 이동시 해당 버튼값 전달
+			let selectedCategory = null;
+			
+			function prevHandler() {
+		        // 이전 버튼 동작
+		        calendar.prev();
+				if (selectedCategory !== null) {
+			        // FullCalendar의 gotoDate 메소드를 호출한 후에 getEvents 호출
+			        selectAllSchedule(selectedCategory);
+			    }
+			};
+			
+			function nextHandler() {
+		        // 다음 버튼 동작
+		        calendar.next();
+				if (selectedCategory !== null) {
+			        // FullCalendar의 gotoDate 메소드를 호출한 후에 getEvents 호출
+			        selectAllSchedule(selectedCategory);
+			    }
+			};
+			
         	// 카테고리 버튼을 눌렀을때 카테고리 값을 버튼에 부여하여 함수실행
         	function clickCatCd(skdCatCd) {
     		    return function() {
+    		    	selectedCategory = skdCatCd;
     		        selectAllSchedule(skdCatCd);
     		    };
     		};
 
 			// 화사/개인/일정 버튼 누를때마다 값을 바꿈
 			function selectAllSchedule(skdCatCd) {
+				let eventSourceUrl = '';
+				
+				// skdCatCd에 따라 다른 이벤트 소스 URL 선택
+			    if (skdCatCd === '00') {
+			        eventSourceUrl = '${pageContext.request.contextPath}/events/adminSchedule';
+			    } else if (skdCatCd === '99') {
+			        eventSourceUrl = '${pageContext.request.contextPath}/events/personalSchedule';
+			    } else if (skdCatCd === 'user') {
+			        eventSourceUrl = '${pageContext.request.contextPath}/events/deptSchedule';
+			    } else {
+			        eventSourceUrl = '${pageContext.request.contextPath}/events/everySchedule';
+			    }
 			    // 'skdCatCd' 값을 서버로 전송하여 일정 목록을 가져오는 ajax 요청
 			    $.ajax({
-			        url: '${pageContext.request.contextPath}/events/everySchedule',
+			        url: eventSourceUrl,
 			        type: 'GET',
 			        data: {
 	        			skdCatCd: skdCatCd 
@@ -135,7 +210,6 @@
 		                $('.skdStartYmd').text(response.skdStartYmd);
 		                $('.skdEndYmd').text(response.skdEndYmd);
 		                
-		                console.log(response);
 		             	// response 객체에서 일정 정보를 읽어와서 selectedEvent 객체 생성
 		                var selectedEvent = {
 		                    skdNo: response.skdNo,
@@ -148,7 +222,7 @@
 		                    skdCatCd: response.skdCatCd,
 		                    skdUserId: response.userId
 		                };
-		             	//console.log(selectedEvent);
+		             	console.log(selectedEvent);
 		             	
 		             	// 작성자가 일치하지 않으면 수정/삭제 버튼을 숨김
 		             	if(userId !== selectedEvent.skdUserId) {
@@ -160,9 +234,9 @@
 		                }
 		             	
 		    	     	// 수정 버튼 클릭
-		    	        $('#editScheduleBtn').on('click', function() {
-		    	        	openEditModal(selectedEvent);
-		    	        });
+		    	        $('#editScheduleBtn').off('click').on('click', function() {
+						    openModifyModal(selectedEvent);
+						});
 		    	     	
 		             	// 일정상세에서 '삭제' 버튼 클릭 -> '확인' 클릭시 삭제 
 		                $('#deleteScheduleBtn').on('click', function() {
@@ -189,18 +263,63 @@
 		        });
 		    }
 
+			// 일정 등록
+			// insertScdBtn 버튼 클릭 시
+			$('#insertScdBtn').on('click', function() {
+			    // 일정 정보 가져오기
+			    var insertScheduleData = {
+			        skdCatCd: $('input[name="insertCd"]:checked').val(),
+			        skdTitle: $('input[name="skdTitle"]').val(),
+			        skdContents: $('input[name="skdContents"]').val(),
+			        skdStartYmd: $('input[name="skdStartYmd"]').val(),
+			        skdStartTime: $('input[name="skdStartTime"]').val(),
+			        skdEndYmd: $('input[name="skdEndYmd"]').val(),
+			        skdEndTime: $('input[name="skdEndTime"]').val()
+			    };
+			
+			    // AJAX를 이용해 일정 등록 요청 보내기
+			    $.ajax({
+			        type: 'POST',
+			        url: '${pageContext.request.contextPath}/events/insertSchedule',
+			        data: JSON.stringify(insertScheduleData), // 데이터를 JSON 형식으로 변환하여 전송
+			        contentType: 'application/json', // 전송 데이터 타입 설정
+			        dataType: 'json',
+			        success: function(response) {
+			            if (response.success) {
+			                // 성공한 경우, 모달 닫기
+			                $('#insertScheduleModal').modal('hide');
+			                // 달력 갱신
+			                calendar.refetchEvents();
+			                // 성공 메시지 표시
+			                Swal.fire({
+			                    icon: 'success',
+			                    title: '등록 성공',
+			                    text: '일정이 등록되었습니다.'
+			                });
+			            } else {
+			                console.error('등록 실패');
+			            }
+			        },
+			        error: function() {
+			            console.error('등록 실패');
+			        }
+			    });
+			});
+			
 		    // 일정수정
-			function openEditModal(selectedEvent) {
+			function openModifyModal(selectedEvent) {
+		    	console.log(selectedEvent);
+		    	
 				$('#scheduleOneModal').modal('hide');
 			    $('#modifyScheduleModal').modal('show');
 			    
 			    // 카테고리 설정
 			    var catCd = selectedEvent.skdCatCd;
-		    	// 수정대상이 개인일경우 99 check	
-			    if(catCd == 99){
-			    	$('.modifyCatCd[value="99"]').prop('checked', true);
+			    
+			    if (catCd == 99) {
+			        $('#modifyCd2').prop('checked', true);
 			    } else {
-			    	$('.modifyCatCd[value="user"]').prop('checked', true);
+			        $('#modifyCd1').prop('checked', true);
 			    }
 			    
 			    // 제목에서 카테고리 제외
@@ -210,35 +329,57 @@
 				var skdStartYmd = selectedEvent.skdStartYmd.substring(0, 10);
 				var skdEndYmd = selectedEvent.skdEndYmd.substring(0, 10); 
 				
-			    // 수정 모달에 일정 정보 채우기
-			    $('.modifyTitle').val(titleWithoutCat);
-			    $('.modifyContents').val(selectedEvent.skdContents);
-			    $('.modifyStartYmd').val(skdStartYmd);
-			    $('.modifyStartTime').val(selectedEvent.skdStartTime);
-			    $('.modifyEndYmd').val(skdEndYmd);
-			    $('.modifyEndTime').val(selectedEvent.skdEndTime);
+				// 상세정보 값 설정
+				$('#modifyTitle').val(titleWithoutCat);
+			    $('#modifyContents').val(selectedEvent.skdContents);
+			    $('#modifyStartYmd').val(skdStartYmd);
+			    $('#modifyStartTime').val(selectedEvent.skdStartTime);
+			    $('#modifyEndYmd').val(skdEndYmd);
+			    $('#modifyEndTime').val(selectedEvent.skdEndTime);
 			
+			    $('#modifyScdBtn').off('click');
+		        // 수정 버튼 클릭 시 값 담기
 			    $('#modifyScdBtn').on('click', function () {
-			        // 수정 버튼 클릭 시 값 담기
-			        var modifiedEvent = {
-			            skdNo: selectedEvent.skdNo,
-			           	userId: selectedEvent.skdUserId,
-			            skdCatCd: $('.modifyCatCd:checked').val(),
-			            skdTitle: $('.modifyTitle').val(), 
-			            skdContents: $('.modifyContents').val(),
-			            skdStartYmd: $('.modifyStartYmd').val(),
-			            skdStartTime: $('.modifyStartTime').val(),
-			            skdEndYmd: $('.modifyEndYmd').val(),
-			            skdEndTime: $('.modifyEndTime').val(),
-			        };
+					var skdNo = selectedEvent.skdNo;
+					var userId = selectedEvent.skdUserId;
+					var skdCatCd = $('input[name="modifyCd"]:checked').val();
+					var skdTitle = $('#modifyTitle').val();
+					var skdContents = $('#modifyContents').val();
+					var skdStartYmd = $('#modifyStartYmd').val();
+					var skdStartTime = $('#modifyStartTime').val();
+					var skdEndYmd = $('#modifyEndYmd').val();
+					var skdEndTime = $('#modifyEndTime').val();
 
-			     	// 라디오 버튼 부서로 설정 시 사용자의 부서번호를 value로 설정
-			        if (modifiedEvent.skdCatCd == "user") {
-			            modifiedEvent.skdCatCd = selectedEvent.skdCatCd;
-			        }
-			     	console.log(modifiedEvent);
 			        // 수정 실행
-			        modifySchedule(modifiedEvent);
+				    $.ajax({
+				        type: 'POST',
+				        url: '${pageContext.request.contextPath}/events/modifySchedule',
+				        contentType: 'application/json', // 전송 데이터 타입 설정
+				        data: JSON.stringify({
+				        	skdNo : skdNo,
+				        	userId : userId,
+				        	skdTitle : skdTitle,
+				        	skdCatCd : skdCatCd,
+				        	skdContents : skdContents,
+				        	skdStartYmd : skdStartYmd,
+				        	skdStartTime : skdStartTime,
+				        	skdEndYmd : skdEndYmd,
+				        	skdEndTime : skdEndTime
+				        }), // 데이터를 JSON 형식으로 변환하여 전송
+				        success: function(response) {
+				        	$('#modifyScheduleModal').modal('hide');
+				            Swal.fire({
+				                title: '수정 완료',
+				                text: '일정이 수정되었습니다.',
+				                icon: 'success'
+				            });
+				            // 캘린더 새로고침
+		                	calendar.refetchEvents();
+				        },
+				        error: function() {
+				            console.error('일정 수정 실패');
+				        }
+					});
 			    });
 			
 			    $('#cancelModifyBtn').on('click', function () {
@@ -247,34 +388,6 @@
 			        $('#scheduleOneModal').modal('show');
 			    });
 			}
-		    
-		    // 수정 실행
-		    function modifySchedule(modifiedEvent) {
-			    $.ajax({
-			        type: 'POST',
-			        url: '${pageContext.request.contextPath}/events/modifySchedule',
-			        data: JSON.stringify(modifiedEvent), // 데이터를 JSON 형식으로 변환하여 전송
-			        contentType: 'application/json', // 전송 데이터 타입 설정
-			        dataType: 'json',
-			        success: function(response) {
-			            Swal.fire({
-			                title: '수정 완료',
-			                text: '일정이 수정되었습니다.',
-			                icon: 'success',
-			                confirmButtonColor: '#3085d6',
-			                confirmButtonText: '확인'
-			            }).then((result) => {
-			                if (result.isConfirmed) {
-			                	$('#modifyScheduleModal').modal('hide');
-			                	openEventModal({ id: modifiedEvent.skdNo });
-			                }
-			            });
-			        },
-			        error: function() {
-			            console.error('일정 수정 실패');
-			        }
-			    });
-		    };
 		    
 			// 일정삭제
 		    function deleteSchedule(skdNo) {
@@ -322,9 +435,77 @@
 		  text-decoration: none;
 		}
     </style>
-  </head>
+    <script>
+	$(document).ready(function() {
+		// 공통 정규식
+	    var titleRegex = /^[A-Za-z0-9가-힣!@#$%^&*()_+{}\[\]:;<>,.?~\\s]{1,10}$/;
+	    var contentsRegex = /^[A-Za-z0-9가-힣!@#$%^&*()_+{}\[\]:;<>,.?~\\s]{1,50}$/;
+	    var dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+	    var timeRegex = /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/;
+        
+	 	// 제목 입력란 blur 함수
+	    $("#modifyTitle, input[name='skdTitle']").blur(function() {
+	        var input = $(this);
+	        var value = input.val();
+	        
+	        if (!titleRegex.test(value)) {
+	        	Swal.fire({
+	        		title: '경고',
+	                text: '제목은 10자 이내의 한글, 영문, 숫자, 특수문자로 입력하세요.',
+	                icon: 'warning',
+	        	});
+	            input.val("");
+	        }
+	    });
 
-  <body>
+	    // 내용 입력란 blur 함수
+	    $("#modifyContents, input[name='skdContents']").blur(function() {
+	        var input = $(this);
+	        var value = input.val();
+
+	        if (!contentsRegex.test(value)) {
+	        	Swal.fire({
+	        		title: '경고',
+	                text: '내용은 50자 이내의 한글, 영문, 숫자, 특수문자로 입력하세요.',
+	                icon: 'warning',
+	        	});
+	            input.val("");
+	        }
+	    });
+	    
+	    $("#insertScdBtn, #modifyScdBtn").click(function() {
+	        // 모든 입력란의 값을 가져옵니다.
+	        var titleInput = $("#modifyTitle, input[name='skdTitle']");
+	        var contentsInput = $("#modifyContents, input[name='skdContents']");
+	        var startYmdInput = $("#modifyStartYmd, input[name='skdStartYmd']");
+	        var endYmdInput = $("#modifyEndYmd, input[name='skdEndYmd']");
+	        var startTimeInput = $("#modifyStartTime, input[name='skdStartTime']");
+	        var endTimeInput = $("#modifyEndTime, input[name='skdEndTime']");
+
+	        // 입력값이 빈 값인지 확인합니다.
+	        var isEmpty = titleInput.val().trim() === "" ||
+	                      contentsInput.val().trim() === "" ||
+	                      startYmdInput.val().trim() === "" ||
+	                      endYmdInput.val().trim() === "" ||
+	                      startTimeInput.val().trim() === "" ||
+	                      endTimeInput.val().trim() === "";
+
+	        // 빈 값이 있다면 경고 메시지를 표시하고 함수를 종료합니다.
+	        if (isEmpty) {
+	            Swal.fire({
+	                title: '경고',
+	                text: '빈 입력창이 있습니다',
+	                icon: 'warning'
+	            });
+	            return false;
+	        }
+	    });
+	});
+	</script>
+    
+	</head>
+
+	<body>
 	<!-- Layout wrapper -->
 	<div class="layout-wrapper layout-content-navbar layout-without-menu">
 		<div class="layout-container">
@@ -416,45 +597,51 @@
 										            </div>
 										            <div class="modal-body">
 										            	<div class="row">
-										            		<c:if test="${userId != 'admin'}">
-											            		<div class="row mb-3">
-								                                	<label for="titleSm" class="form-label">카테고리</label>
-								                                	<div class="col mb-0">
-									                                	<input type="radio" id="titleSm" name="modifyCd" class="modifyCatCd" value="user">부서
-									                                </div>	
-									                                <div class="col mb-0">
-								                                		<input type="radio" id="titleSm" name="modifyCd" class="modifyCatCd" value="99">개인
-								                                	</div>
-								                                </div>
-										            		</c:if>
+										            		<c:choose>
+										            			<c:when test="${userId == 'admin'}">
+										            				<label class="form-label">카테고리
+									                                	<input type="radio" id="modifyCd" name="modifyCd" value="00" checked="checked">회사
+										            				</label>
+										            			</c:when>
+										            			<c:otherwise>
+												            		<div class="row mb-3">
+									                                	<label class="form-label">카테고리
+										                                	<input type="radio" id="modifyCd1" name="modifyCd" value="user">부서
+									                                		<input type="radio" id="modifyCd2" name="modifyCd" value="99">개인
+									                                	</label>
+									                                </div>
+										            			</c:otherwise>
+										            		</c:choose>
 										            		<div class="row mb-3">
 							                                	<label class="form-label">제목
-							                                		<input type="text" class="form-control modifyTitle" placeholder="제목을 입력하세요">
+							                                		<input type="text" class="form-control" id="modifyTitle" name="modifyTitle" placeholder="제목을 입력하세요" required="required">
 							                                	</label>
 							                                </div>
 								                            <div class="row mb-3">
 							                                	<label class="form-label">내용
-								                                	<input type="text" class="form-control modifyContents" placeholder="내용을 입력하세요">
+								                                	<input type="text" class="form-control" id="modifyContents" name="modifyContents" placeholder="내용을 입력하세요" required="required">
 							                                	</label>
 							                                </div>
 							                                <div class="row g-1">
 								                                <div class="col mb-0 row g-1">
-								                                	<label for="skdStartY" class="form-label">시작일</label>
-								                                	<div class="col mb-5">
-									                                	<input type="date" id="skdStartY" class="form-control modifyStartYmd">
-									                                </div>	
-									                                <div class="col mb-0">
-									                                	<input type="time" class="form-control modifyStartTime">
-								                                	</div>
+								                                	<label class="form-label">시작일
+									                                	<div class="col mb-1">
+										                                	<input type="date" id="modifyStartYmd" class="form-control" required="required">
+										                                </div>	
+										                                <div class="col mb-0">
+										                                	<input type="time" id="modifyStartTime" class="form-control" required="required">
+									                                	</div>
+								                                	</label>
 								                                </div>
 								                                <div class="col mb-0 row g-1">
-								                                    <label for="skdEndY" class="form-label">종료일</label>
-							                                		<div class="col mb-5">
-									                                	<input type="date" id="skdEndY" class="form-control modifyEndYmd">
-						                                			</div>
-							                                		<div class="col mb-0">
-									                                	<input type="time" class="form-control modifyEndTime">
-						                                			</div>
+								                                    <label class="form-label">종료일
+								                                		<div class="col mb-1">
+										                                	<input type="date" id="modifyEndYmd" class="form-control" required="required">
+							                                			</div>
+								                                		<div class="col mb-0">
+										                                	<input type="time" id="modifyEndTime"class="form-control" required="required">
+							                                			</div>
+								                                    </label>
 																</div>
 								                            </div>
 										                </div>
@@ -469,68 +656,74 @@
 										</div>
 										
 										<!-- 작성하기 모달창 -->
-										<form>
-											<div class="modal fade" id="insertScheduleModal" tabindex="-1" aria-hidden="true">
-											    <div class="modal-dialog modal-lg" role="document">
-											        <div class="modal-content">
-											            <div class="modal-header">
-											                <h3 class="modal-title" id="exampleModalLabel3"><strong>일정 작성</strong></h3>
-											                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-											            </div>
-											            <div class="modal-body">
-											            	<div class="row">
-											            		<c:if test="${userId != 'admin'}">
+										<div class="modal fade" id="insertScheduleModal" tabindex="-1" aria-hidden="true">
+										    <div class="modal-dialog modal-lg" role="document">
+										        <div class="modal-content">
+										            <div class="modal-header">
+										                <h3 class="modal-title" id="exampleModalLabel3"><strong>일정 추가</strong></h3>
+										                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										            </div>
+										            <div class="modal-body">
+										            	<div class="row">
+										            		<c:choose>
+										            			<c:when test="${userId == 'admin'}">
+										            				<label for="titleSm" class="form-label">카테고리</label>
+								                                	<div class="col mb-0">
+									                                	<input type="radio" id="titleSm" name="insertCd" class="insertCatCd" value="00" checked="checked">회사
+									                                </div>	
+										            			</c:when>
+										            			<c:otherwise>
 												            		<div class="row mb-3">
 									                                	<label for="titleSm" class="form-label">카테고리</label>
 									                                	<div class="col mb-0">
-										                                	<input type="radio" id="titleSm" name="insertCd" value="user">부서
+										                                	<input type="radio" id="titleSm" name="insertCd" class="insertCatCd" value="user">부서
 										                                </div>	
 										                                <div class="col mb-0">
-									                                		<input type="radio" id="titleSm" name="insertCd" value="99">개인
+									                                		<input type="radio" id="titleSm" name="insertCd" class="insertCatCd" value="99">개인
 									                                	</div>
 									                                </div>
-											            		</c:if>
-											            		<div class="row mb-3">
-								                                	<label class="form-label">제목
-								                                		<input type="text" class="form-control" placeholder="제목을 입력하세요">
-								                                	</label>
+										            			</c:otherwise>
+										            		</c:choose>
+										            		<div class="row mb-3">
+							                                	<label class="form-label">제목
+							                                		<input type="text" class="form-control" name="skdTitle" placeholder="제목을 입력하세요" required="required">
+							                                	</label>
+							                                </div>
+								                            <div class="row mb-3">
+							                                	<label class="form-label">내용
+								                                	<input type="text" class="form-control" name="skdContents"placeholder="내용을 입력하세요" required="required">
+							                                	</label>
+							                                </div>
+							                                <div class="row g-1">
+								                                <div class="col mb-0 row g-1">
+								                                	<label for="skdStartY" class="form-label">시작일</label>
+								                                	<div class="col mb-5">
+									                                	<input type="date" id="insertSkdStartY" name="skdStartYmd" class="form-control" required="required">
+									                                </div>	
+									                                <div class="col mb-0">
+									                                	<input type="time" name="skdStartTime" class="form-control" required="required">
+								                                	</div>
 								                                </div>
-									                            <div class="row mb-3">
-								                                	<label class="form-label">내용
-									                                	<input type="text" class="form-control" placeholder="내용을 입력하세요">
-								                                	</label>
-								                                </div>
-								                                <div class="row g-1">
-									                                <div class="col mb-0 row g-1">
-									                                	<label for="skdStartY" class="form-label">시작일</label>
-									                                	<div class="col mb-5">
-										                                	<input type="date" id="skdStartY" name="skdStartYmd" class="form-control">
-										                                </div>	
-										                                <div class="col mb-0">
-										                                	<input type="time" name="skdStartTime" class="form-control">
-									                                	</div>
-									                                </div>
-									                                <div class="col mb-0 row g-1">
-									                                    <label for="skdEndY" class="form-label">종료일</label>
-								                                		<div class="col mb-5">
-										                                	<input type="date" id="skdEndY" name="skdEndYmd" class="form-control">
-							                                			</div>
-								                                		<div class="col mb-0">
-										                                	<input type="time" name="skdEndTime" class="form-control">
-							                                			</div>
-																	</div>
-									                            </div>
-											                </div>
-											            </div>
-											            <div class="modal-footer">
-							                                <button type="button" class="btn btn-primary" id="insertScdBtn">등록</button>
-							                                <button type="button" class="btn btn-primary" id="cancelInsertBtn">취소</button>
-												            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
-											            </div>
-											        </div>
-											    </div>
-											</div>
-										</form>
+								                                <div class="col mb-0 row g-1">
+								                                    <label for="skdEndY" class="form-label">종료일</label>
+							                                		<div class="col mb-5">
+									                                	<input type="date" id="insertSkdEndY" name="skdEndYmd" class="form-control" required="required">
+						                                			</div>
+							                                		<div class="col mb-0">
+									                                	<input type="time" name="skdEndTime" class="form-control" required="required">
+						                                			</div>
+																</div>
+								                            </div>
+										                </div>
+										            </div>
+										            <div class="modal-footer">
+						                                <button type="button" class="btn btn-primary" id="insertScdBtn">등록</button>
+						                                <button type="button" class="btn btn-primary" id="cancelInsertBtn">취소</button>
+											            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+										            </div>
+										        </div>
+										    </div>
+										</div>
 										
 									</div>
 								</div>

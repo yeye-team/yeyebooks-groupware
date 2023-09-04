@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class ScheduleRestController {
 	@Autowired
     private ScheduleService scheduleService;
 
-	// 일정 조회
+	// 일정 전체조회
     @GetMapping("/everySchedule")
     public ResponseEntity<List<Map<String, Object>>> getEvents(HttpSession session, @RequestParam(required = false) String skdCatCd) {
     	String userId = (String)session.getAttribute("userId");
@@ -53,9 +54,6 @@ public class ScheduleRestController {
     	} else if (userId == "admin") {
     		schedules = scheduleService.selectAdminSchedule();
     		log.debug("\u001B[41m" + "RestAPI getEvents admin : " + schedules + "\u001B[0m");
-    	} else {
-    		schedules = scheduleService.selectFilteredMonthSchedule(userId,skdCatCd);
-    		log.debug("\u001B[41m" + "RestAPI getEvents other : " + schedules + "\u001B[0m");
     	}
     	
     	List<Map<String, Object>> monthScheduleList = new ArrayList<>();
@@ -95,10 +93,139 @@ public class ScheduleRestController {
     	return new ResponseEntity<>(monthScheduleList, HttpStatus.OK);
     }
 	
+    // 회사 일정 조회
+    @GetMapping("/adminSchedule")
+    public ResponseEntity<List<Map<String, Object>>> getAdminEvents(HttpSession session, @RequestParam(required = false) String skdCatCd) {
+    	String userId = (String)session.getAttribute("userId");
+    	//log.debug("\u001B[41m" + "RestAPI getAdminEvents skdCatCd : " + skdCatCd + "\u001B[0m");
+    	
+    	// 카테고리별로 일정 조회 구분
+    	List <Schedule> schedules = null;
+    	if (userId == "admin") {
+    		schedules = scheduleService.selectAdminSchedule();
+    		//log.debug("\u001B[41m" + "RestAPI getAdminEvents admin : " + schedules + "\u001B[0m");
+    	} else {
+    		schedules = scheduleService.selectFilteredMonthSchedule(userId,skdCatCd);
+    		//log.debug("\u001B[41m" + "RestAPI getAdminEvents other : " + schedules + "\u001B[0m");
+    	}
+    	
+    	List<Map<String, Object>> monthScheduleList = new ArrayList<>();
+    	for(Schedule schedule : schedules) {
+    		Map<String, Object> eventData = new HashMap<>();
+    		// 일정시작시간
+    		LocalDate startDate = LocalDate.parse(schedule.getSkdStartYmd());
+    		LocalTime startTime = LocalTime.parse(schedule.getSkdStartTime());
+    		LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
+    		// 일정종료시간
+    		LocalDate endDate = LocalDate.parse(schedule.getSkdEndYmd());
+    		LocalTime endTime = LocalTime.parse(schedule.getSkdEndTime());
+    		LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
+    		
+    		String catCd = "회사";
+    		String title = "[" + catCd + "] " + schedule.getSkdTitle();
+    		
+            // FullCalendar 표시데이터
+            eventData.put("id", schedule.getSkdNo());
+            eventData.put("title", title);
+            eventData.put("start", startDateTime.toString());
+            eventData.put("end", endDateTime.toString());
+            monthScheduleList.add(eventData);
+    	}
+    	
+    	//log.debug("\u001B[41m" + "RestAPI getAdminEvents monthScheduleList : " + monthScheduleList + "\u001B[0m");
+    	
+    	return new ResponseEntity<>(monthScheduleList, HttpStatus.OK);
+    }
+    // 부서 일정 조회
+    @GetMapping("/deptSchedule")
+    public ResponseEntity<List<Map<String, Object>>> getDeptEvents(HttpSession session, @RequestParam(required = false) String skdCatCd) {
+    	String userId = (String)session.getAttribute("userId");
+    	//log.debug("\u001B[41m" + "RestAPI getDeptEvents skdCatCd : " + skdCatCd + "\u001B[0m");
+    	
+    	// 카테고리별로 일정 조회 구분
+    	List <Schedule> schedules = null;
+    	if (userId == "admin") {
+    		schedules = scheduleService.selectAdminSchedule();
+    		//log.debug("\u001B[41m" + "RestAPI getDeptEvents admin : " + schedules + "\u001B[0m");
+    	} else {
+    		schedules = scheduleService.selectFilteredMonthSchedule(userId,skdCatCd);
+    		//log.debug("\u001B[41m" + "RestAPI getDeptEvents other : " + schedules + "\u001B[0m");
+    	}
+    	
+    	List<Map<String, Object>> monthScheduleList = new ArrayList<>();
+    	for(Schedule schedule : schedules) {
+    		Map<String, Object> eventData = new HashMap<>();
+    		// 일정시작시간
+    		LocalDate startDate = LocalDate.parse(schedule.getSkdStartYmd());
+    		LocalTime startTime = LocalTime.parse(schedule.getSkdStartTime());
+    		LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
+    		// 일정종료시간
+    		LocalDate endDate = LocalDate.parse(schedule.getSkdEndYmd());
+    		LocalTime endTime = LocalTime.parse(schedule.getSkdEndTime());
+    		LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
+    		
+    		String catCd = "부서";
+    		String title = "[" + catCd + "] " + schedule.getSkdTitle();
+    		
+            // FullCalendar 표시데이터
+            eventData.put("id", schedule.getSkdNo());
+            eventData.put("title", title);
+            eventData.put("start", startDateTime.toString());
+            eventData.put("end", endDateTime.toString());
+            monthScheduleList.add(eventData);
+    	}
+    	
+    	//log.debug("\u001B[41m" + "RestAPI getDeptEvents monthScheduleList : " + monthScheduleList + "\u001B[0m");
+    	
+    	return new ResponseEntity<>(monthScheduleList, HttpStatus.OK);
+    }
+    // 개인 일정 조회
+    @GetMapping("/personalSchedule")
+    public ResponseEntity<List<Map<String, Object>>> getPersonalEvents(HttpSession session, @RequestParam(required = false) String skdCatCd) {
+    	String userId = (String)session.getAttribute("userId");
+    	//log.debug("\u001B[41m" + "RestAPI getPersonalEvents skdCatCd : " + skdCatCd + "\u001B[0m");
+    	
+    	// 카테고리별로 일정 조회 구분
+    	List <Schedule> schedules = null;
+    	if (userId == "admin") {
+    		schedules = scheduleService.selectAdminSchedule();
+    		//log.debug("\u001B[41m" + "RestAPI getPersonalEvents admin : " + schedules + "\u001B[0m");
+    	} else {
+    		schedules = scheduleService.selectFilteredMonthSchedule(userId,skdCatCd);
+    		//log.debug("\u001B[41m" + "RestAPI getPersonalEvents other : " + schedules + "\u001B[0m");
+    	}
+    	
+    	List<Map<String, Object>> monthScheduleList = new ArrayList<>();
+    	for(Schedule schedule : schedules) {
+    		Map<String, Object> eventData = new HashMap<>();
+    		// 일정시작시간
+    		LocalDate startDate = LocalDate.parse(schedule.getSkdStartYmd());
+    		LocalTime startTime = LocalTime.parse(schedule.getSkdStartTime());
+    		LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
+    		// 일정종료시간
+    		LocalDate endDate = LocalDate.parse(schedule.getSkdEndYmd());
+    		LocalTime endTime = LocalTime.parse(schedule.getSkdEndTime());
+    		LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
+    		
+    		String catCd = "개인";
+    		String title = "[" + catCd + "] " + schedule.getSkdTitle();
+    		
+            // FullCalendar 표시데이터
+            eventData.put("id", schedule.getSkdNo());
+            eventData.put("title", title);
+            eventData.put("start", startDateTime.toString());
+            eventData.put("end", endDateTime.toString());
+            monthScheduleList.add(eventData);
+    	}
+    	
+    	//log.debug("\u001B[41m" + "RestAPI getPersonalEvents monthScheduleList : " + monthScheduleList + "\u001B[0m");
+    	
+    	return new ResponseEntity<>(monthScheduleList, HttpStatus.OK);
+    }
     // 일정 상세
     @GetMapping("/scheduleOne") // skdNo에 해당하는 일정 상세 정보 가져오기
     public ResponseEntity<Schedule> scheduleOne(@RequestParam int skdNo) {
-    	log.debug("\u001B[41m" + "RestAPI scheduleOne skdNo : " + skdNo + "\u001B[0m");
+    	//log.debug("\u001B[41m" + "RestAPI scheduleOne skdNo : " + skdNo + "\u001B[0m");
         Schedule scheduleOne = scheduleService.selectDateSchedule(skdNo);
         
     	// 일정 시작 시간 및 종료 시간을 12시간 AM/PM 형식으로 변환
@@ -130,10 +257,52 @@ public class ScheduleRestController {
         
         return new ResponseEntity<>(scheduleOne, HttpStatus.OK);
     }
+    
+    // 일정 추가
+    @PostMapping("/insertSchedule")
+    public ResponseEntity<Map<String, Object>> insertSchedule(@RequestBody Schedule schedule, HttpSession session) {
+    	// 로그인아이디를 객체에 세팅
+    	String userId = (String)session.getAttribute("userId");
+    	schedule.setUserId(userId);
+    	
+    	if(schedule.getSkdCatCd().equals("user")) {
+    		String deptCd = scheduleService.setUserDept(userId);
+    		schedule.setSkdCatCd(deptCd);
+    	}
+    	
+	    Map<String, Object> response = new HashMap<>();
 
+	    try {
+	        int row = scheduleService.insertSchedule(schedule);
+	        if (row == 1) {
+	            response.put("success", true);
+	            return new ResponseEntity<>(response, HttpStatus.OK);
+	        } else {
+	            response.put("success", false);
+	            response.put("message", "추가실패");
+	            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.put("success", false);
+	        response.put("message", "추가오류오류");
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+    
     // 일정 수정
     @PostMapping("/modifySchedule")
-    public ResponseEntity<Map<String, Object>> modifySchedule(@RequestBody Schedule schedule) {
+    public ResponseEntity<Map<String, Object>> modifySchedule(@RequestBody Schedule schedule, HttpSession session) {
+    	
+    	// 로그인아이디를 객체에 세팅
+    	String userId = (String)session.getAttribute("userId");
+    	schedule.setUserId(userId);
+    	
+    	if(schedule.getSkdCatCd().equals("user")) {
+    		String deptCd = scheduleService.setUserDept(userId);
+    		schedule.setSkdCatCd(deptCd);
+    	}
+    	
     	log.debug("\u001B[41m" + "RestAPI modifySchedule schedule : " + schedule + "\u001B[0m");
     	
         Map<String, Object> response = new HashMap<>();
