@@ -28,7 +28,7 @@
 			<div class="menu-inner-shadow"></div>
 			
 			<ul class="menu-inner py-1">
-	            <!-- 부서관리 -->
+	            <!-- 인사정보 -->
 	            <li class="menu-item active">
 	              <a href="${pageContext.request.contextPath}/deptList" class="menu-link">
 	                <i class="menu-icon tf-icons bx bx-group"></i>
@@ -36,7 +36,7 @@
 	              </a>
 	            </li>
 
-	            <!-- 사용자관리 -->
+	            <!--  -->
 	            <li class="menu-item">
 					<a href="" class="menu-link">
 					  <i class="menu-icon tf-icons bx bx-user"></i>
@@ -58,7 +58,7 @@
 				<div class="card">
 					<div class="row">
 						<div class="col-md-8">
-							<h4 class="card-header"><strong>부서관리</strong></h4>
+							<h4 class="card-header"><strong>인사정보</strong></h4>
 						</div>
 						<div class="col-md-4" style="align-items: center">
 						</div>
