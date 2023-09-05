@@ -122,5 +122,12 @@ public class ApprovalService {
 		}
 		return row;
 	}
+	
+	public Map<String, Object> getApprovalWaitingCnt(String userId){
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("approvalCnt", approvalMapper.selectApprovalWaitingCnt(userId));
+		result.put("approveCnt", approvalMapper.selectApproveWaitingCnt(userId));
+		return result;
+	}
     
 }
