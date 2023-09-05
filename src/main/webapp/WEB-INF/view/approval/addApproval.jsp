@@ -516,6 +516,12 @@ document.addEventListener("DOMContentLoaded", function() {
 			    
 			    <label for="expenseDescription">지출 내용:</label>
 			    <textarea id="expenseDescription" name="expenseDescription" rows="4" cols="50"></textarea><br>
+			    
+			    <label>지출증빙</label>
+	        <select id="documentType" name="documentType">
+	            <option>현금영수증</option>
+	            <option>매출전표</option>
+	        </select>
 			</div>
     
         	<label for="files">첨부 파일:</label>

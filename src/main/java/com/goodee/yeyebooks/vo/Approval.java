@@ -1,5 +1,9 @@
 package com.goodee.yeyebooks.vo;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -20,4 +24,7 @@ public class Approval {
 	private String alUserId;
 	private String userName;
 	private String ulUserName;
+	
+	
+	private List<MultipartFile> multipartFile;
 }

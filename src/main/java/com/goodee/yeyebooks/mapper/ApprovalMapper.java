@@ -11,6 +11,7 @@ import com.goodee.yeyebooks.vo.ApprovalLine;
 
 @Mapper
 public interface ApprovalMapper {
+	List<Map<String, Object>> selectAll();
 	// 결재문서 추가
 	public int insertApproval(Approval approval);
 	// 결재문서 파일추가
