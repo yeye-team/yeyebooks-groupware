@@ -507,9 +507,30 @@
 
 	<body>
 	<!-- Layout wrapper -->
-	<div class="layout-wrapper layout-content-navbar layout-without-menu">
+	<div class="layout-wrapper layout-content-navbar">
+		<!-- Layout container -->
 		<div class="layout-container">
-			<!-- Layout container -->
+			<!-- Menu -->
+			<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+				<div class="app-brand demo">
+					<a href="${pageContext.request.contextPath}">
+						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+					</a>
+				</div>
+	
+				<div class="menu-inner-shadow"></div>
+				
+				<ul class="menu-inner py-1">
+		            <li class="menu-item active">
+		              <a class="menu-link">
+		                <i class='menu-icon tf-icons bx bx-calendar'></i>
+		                일정
+		              </a>
+		            </li>
+	          	</ul>
+	        </aside>
+	        <!-- / Menu -->
+	        
 			<div class="layout-page">
 				<!-- Navbar -->
 				<jsp:include page="./inc/navbar.jsp"></jsp:include>
