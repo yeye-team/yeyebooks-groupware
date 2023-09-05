@@ -181,27 +181,27 @@
 						<!-- Dashboard -->
 						<c:choose>
 							<c:when test="${boardCatCd=='00'}">
-								<li class="menu-item active">
+								<li class="menu-icon tf-icons menu-item active">
 							</c:when>
 							<c:otherwise>
-								<li class="menu-item">
+								<li class="menu-icon tf-icons menu-item">
 							</c:otherwise>
 						</c:choose>
 							<button type="submit" name="boardCatCd" value="00" class="menu-link">
-								<i class='bx bx-clipboard'></i>
+								<i class='menu-icon tf-icons bx bx-clipboard'></i>
 								<div data-i18n="Analytics">공지사항</div>
 							</button>
 						</li>
 						<c:choose>
 							<c:when test="${boardCatCd=='99'}">
-								<li class="menu-item active">
+								<li class="menu-icon tf-icons menu-item active">
 							</c:when>
 							<c:otherwise>
-								<li class="menu-item">
+								<li class="menu-icon tf-icons menu-item">
 							</c:otherwise>
 						</c:choose>
 							<button type="submit" name="boardCatCd" value="99" class="menu-link">
-								<i class='bx bx-clipboard'></i>
+								<i class='menu-icon tf-icons bx bx-clipboard'></i>
 								<div data-i18n="Analytics">전체 게시판</div>
 							</button>
 						</li>
@@ -210,14 +210,14 @@
 							<c:when test="${userId != 'admin'}">
 								<c:choose>
 									<c:when test="${boardCatCd != '00' && boardCatCd != '99'}">
-										<li class="menu-item active">
+										<li class="menu-icon tf-icons menu-item active">
 									</c:when>
 									<c:otherwise>
-										<li class="menu-item">
+										<li class="menu-icon tf-icons menu-item">
 									</c:otherwise>
 								</c:choose>
 									<button type="submit" name="boardCatCd" value="${ud.deptCd}" class="menu-link">
-										<i class='bx bx-clipboard'></i>
+										<i class='menu-icon tf-icons bx bx-clipboard'></i>
 										<div data-i18n="Analytics">${ud.deptNm} 게시판</div>
 									</button>
 								</li>
@@ -225,21 +225,21 @@
 							<c:otherwise>
 								<c:choose>
 									<c:when test="${boardCatCd != '00' && boardCatCd != '99'}">
-										<li class="menu-item active">
+										<li class="menu-icon tf-icons menu-item active">
 									</c:when>
 									<c:otherwise>
-										<li class="menu-item">
+										<li class="menu-icon tf-icons menu-item">
 									</c:otherwise>
 								</c:choose>
 									<a class="menu-link">
-										<i class='bx bx-clipboard'></i>
+										<i class='menu-icon tf-icons bx bx-clipboard'></i>
 										<div data-i18n="Analytics">부서 게시판</div>
 									</a>
 									<div class="card overflow-hidden" style="height: 250px;">
 						        		<div class="card-body" id="vertical-example">
 											<c:forEach var="s" items="${selectAllCatCode}">
 												<button type="submit" name="boardCatCd" value="${s.code}" class="menu-link">
-													<i class='bx bx-clipboard'></i>
+													<i class='menu-icon tf-icons bx bx-clipboard'></i>
 													<div data-i18n="Analytics">${s.codeNm} 게시판</div>
 												</button>
 											</c:forEach>
