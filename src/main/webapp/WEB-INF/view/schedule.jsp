@@ -438,8 +438,8 @@
     <script>
 	$(document).ready(function() {
 		// 공통 정규식
-	    var titleRegex = /^[A-Za-z0-9가-힣!@#$%^&*()_+{}\[\]:;<>,.?~\\s]{1,10}$/;
-	    var contentsRegex = /^[A-Za-z0-9가-힣!@#$%^&*()_+{}\[\]:;<>,.?~\\s]{1,50}$/;
+	    var titleRegex = /^[A-Za-z0-9가-힣!@#$%^&*()_+{}\[\]:;<>,.?~\s]{1,10}$/;
+	    var contentsRegex = /^[A-Za-z0-9가-힣!@#$%^&*()_+{}\[\]:;<>,.?~\s]{1,50}$/;
 	    var dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 	    var timeRegex = /^[0-9]{2}:[0-9]{2}:[0-9]{2}$/;
         
