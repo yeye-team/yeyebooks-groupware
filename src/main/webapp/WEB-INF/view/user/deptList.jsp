@@ -203,7 +203,7 @@
 				  	<hr class="m-0" />
 				  	<div class="card-body">
                       	<div class="mt-3">
-                        	<div class="row">
+                        	<div class="row row-bordered">
                           		<div class="col-md-3 col-12 mb-3 mb-md-0">
                             		<div class="list-group">
 			                           	<div
