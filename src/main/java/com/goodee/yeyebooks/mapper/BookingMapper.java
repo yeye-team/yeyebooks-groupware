@@ -8,5 +8,6 @@ import com.goodee.yeyebooks.vo.Booking;
 
 @Mapper
 public interface BookingMapper {
-	List<Booking> selectMyBooking(List<String> status, String userId);
+	List<Booking> selectMyBooking(List<String> status, String userId, String searchCat, String searchNm);
+	List<String> selectBookingCategory();
 }

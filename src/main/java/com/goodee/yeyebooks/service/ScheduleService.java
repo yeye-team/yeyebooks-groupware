@@ -58,6 +58,11 @@ public class ScheduleService {
 		return scheduleMapper.insertSchedule(schedule);
 	}
 	
+	// 등록시 사용자 부서 세팅
+	public String setUserDept(String userId){
+		return scheduleMapper.setUserDept(userId);
+	}
+	
 	// 일정 수정
 	public int modifySchedule(Schedule schdule) {
 		log.debug("\u001B[41m" + "service modifySchedule schdule : " + schdule + "\u001B[0m");

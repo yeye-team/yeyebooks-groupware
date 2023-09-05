@@ -126,11 +126,27 @@
 		(#{userId}, #{skdCatCd}, #{skdTitle}, #{skdStartYmd}, #{skdEndYmd}, #{skdStartTime}, #{skdEndTime}, #{skdContents}, NOW(), NOW())
 	</insert>
 	
+	<!-- 등록시 사용자 부서코드 설정 -->
+	<select id="setUserDept">
+		SELECT CODE
+		FROM common_code 
+		WHERE 
+			group_code = 'D001' 
+		AND CODE = (SELECT dept_cd FROM user WHERE user_id = #{userId})
+	</select>
+	
 	<!-- 일정수정 -->
 	<update id="modifySchedule">
 		UPDATE schedule
 		SET
-			skd_cat_cd = #{skdCatCd}, skd_title = #{skdTitle}, skd_start_ymd = #{skdStartYmd}, skd_end_ymd = #{skdEndYmd}, skd_start_time = #{skdStartTime}, skd_end_time = #{skdEndTime}, skd_contents = #{skdContents}, u_date = NOW()
+			skd_cat_cd = #{skdCatCd}, 
+			skd_title = #{skdTitle}, 
+			skd_start_ymd = #{skdStartYmd}, 
+			skd_end_ymd = #{skdEndYmd}, 
+			skd_start_time = #{skdStartTime}, 
+			skd_end_time = #{skdEndTime}, 
+			skd_contents = #{skdContents}, 
+			u_date = NOW()
 		WHERE 
 			skd_no = #{skdNo} 
 	</update>

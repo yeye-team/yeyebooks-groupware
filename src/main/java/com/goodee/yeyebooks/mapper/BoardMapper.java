@@ -14,7 +14,7 @@ public interface BoardMapper {
 	List<Map<String, Object>> selectBoard(Map<String, Object> map);
 	
 	// 게시판 별 게시물 전체 개수
-	int selectBoardCount(String boardCatCd);
+	int selectBoardCount(String boardCatCd, String searchOption, String searchKeyword);
 	
 	// 부서 게시판 조회를 위한 사용자 부서 코드,부서 이름 조회
 	Map<String, Object> selectUserDept (String userId);

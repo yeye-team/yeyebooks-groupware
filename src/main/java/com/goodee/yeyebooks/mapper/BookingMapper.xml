@@ -3,11 +3,12 @@
 <mapper namespace="com.goodee.yeyebooks.mapper.BookingMapper">
 	<select id="selectMyBooking" resultType="com.goodee.yeyebooks.vo.Booking">
 		SELECT bkg_no bkgNo, user_id userId, 
-		(select trgt_nm from booking_target where booking_target.trgt_no = booking.trgt_no) trgtNm,
-		bkg_start_ymd bkgStartYmd, bkg_end_ymd bkgEndYmd, substring(bkg_start_time, 1, 5) bkgStartTime, substring(bkg_end_time, 1, 5) bkgEndTime, 
+		(SELECT code_nm FROM common_code WHERE group_code = 'B102' AND CODE = booking_target.trgt_cat_cd) trgtCatNm,
+		trgt_nm trgtNm, bkg_start_ymd bkgStartYmd, bkg_end_ymd bkgEndYmd, substring(bkg_start_time, 1, 5) bkgStartTime, substring(bkg_end_time, 1, 5) bkgEndTime, 
 		(SELECT code_nm FROM common_code WHERE group_code = 'B101' AND code = bkg_stat_cd) bkgStatus
-		FROM booking
-		WHERE user_id = #{userId}
+		FROM booking, booking_target
+		WHERE booking_target.trgt_no = booking.trgt_no
+		AND user_id = #{userId}
 		<if test="status != null">
 		    AND bkg_stat_cd IN (SELECT code FROM common_code WHERE group_code = 'B101' AND code_nm in
 		    <foreach collection="status" item="item" open="(" separator="," close=")">
@@ -15,6 +16,17 @@
 		    </foreach>
 		    )
 		</if>
-		
+		<if test="searchCat != null and searchNm != ''">
+			AND trgt_cat_cd = (SELECT code FROM common_code WHERE group_code = 'B102' AND code_nm = #{searchCat})
+		</if>
+		<if test="searchNm != null and searchNm != ''">
+			AND trgt_nm like CONCAT('%', #{searchNm}, '%')
+		</if>
+		ORDER BY booking.c_date
+	</select>
+	<select id="selectBookingCategory">
+		SELECT code_nm
+		FROM common_code
+		WHERE group_code = 'B102'
 	</select>
 </mapper>

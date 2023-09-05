@@ -8,6 +8,7 @@
 <jsp:include page="../inc/head.jsp"></jsp:include>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 추가 -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/smartEditor/js/HuskyEZCreator.js"></script>
 <script>
     $(document).ready(function(){
         // 파일 개수 3개제한
@@ -233,6 +234,97 @@
             }
         });
     });
+    
+
+</script>
+
+<script>
+    $(document).ready(function() {
+        let selectedUsers = []; // 선택된 사용자 정보를 저장하는 배열
+
+        // 체크박스 클릭 이벤트
+        $('.userCheckbox').click(function() {
+            // 다른 체크박스 선택 해제
+            $('.userCheckbox').not(this).prop('checked', false);
+
+            if ($(this).prop('checked')) {
+                const memberId = $(this).val();
+                const memberName = $(this).data('username');
+
+                // 선택된 사용자 정보를 배열에 추가
+                selectedUsers.push({ memberId, memberName });
+            } else {
+                // 선택 해제된 경우 배열에서 제거
+                const memberId = $(this).val();
+                const indexToRemove = selectedUsers.findIndex(user => user.memberId === memberId);
+                if (indexToRemove !== -1) {
+                    selectedUsers.splice(indexToRemove, 1);
+                }
+            }
+        });
+
+        // 모달 추가 버튼 클릭 시
+        $('.modalAddUserToDeptBtn').click(function() {
+            // 선택된 사용자 정보를 확인하기 위해 콘솔에 출력
+            console.log(selectedUsers);
+
+            // 선택된 사용자 정보를 HTML 요소에 표시
+            displaySelectedApprovers(selectedUsers);
+
+            // 선택된 사용자 정보 배열 초기화
+            selectedUsers = [];
+
+            // 모달을 닫습니다.
+            $('#modal2').modal('hide');
+        });
+
+        // 선택된 결재자 정보를 HTML 요소에 표시하는 함수
+        function displaySelectedApprovers(users) {
+            const firstApproverName = $('#firstApproverName');
+            const secondApproverName = $('#secondApproverName');
+            const thirdApproverName = $('#thirdApproverName');
+
+            if (users.length >= 1) {
+                firstApproverName.text(users[0].memberName);
+            } else {
+                firstApproverName.text("");
+            }
+
+            if (users.length >= 2) {
+                secondApproverName.text(users[1].memberName);
+            } else {
+                secondApproverName.text("");
+            }
+
+            if (users.length >= 3) {
+                thirdApproverName.text(users[2].memberName);
+            } else {
+                thirdApproverName.text("");
+            }
+        }
+    });
+ // 모달 닫힘 이벤트를 감지하여 선택된 값 초기화
+    $('#modal2').on('hidden.bs.modal', function () {
+        // 선택된 체크박스 초기화
+        $('.userCheckbox').prop('checked', false);
+
+        // 선택된 결재자 정보를 HTML 요소에 초기화
+        $('#firstApproverName').text("");
+        $('#secondApproverName').text("");
+        $('#thirdApproverName').text("");
+
+        // 선택된 결재자 정보를 입력한 input 요소 초기화
+        $('.memberIdInputFirst').val("");
+        $('.memberNameInputFirst').val("");
+        $('.memberIdInputSecond').val("");
+        $('.memberNameInputSecond').val("");
+        $('.memberIdInputThird').val("");
+        $('.memberNameInputThird').val("");
+
+        // 선택된 사용자 정보 배열 초기화
+        selectedUsers = [];
+    });
+
 </script>
 
 <script>
@@ -254,49 +346,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <body>
 
     <h1>문서작성</h1>
-        <form action="${pageContext.request.contextPath}/approval/addApproval" method="post" enctype="multipart/form-data">
-            <label for="aprvTitle">문서 제목:</label>
-            <input type="text" id="aprvTitle" name="aprc_title" required><br>
     
-            <label for="aprvContents">문서 내용:</label><br>
-            <textarea id="aprvContents" name="aprv_contents" rows="4" cols="50" required></textarea><br>
-    
-            <label for="files">첨부 파일:</label>
-                <button type="button" id="addFile">추가</button>
-                <button type="button" id="removeFile">삭제</button>
-            <div id="files">
-                <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
-            </div>
-              
-			
-            <label for="documentType">문서 종류 선택:</label>
-	        <select id="documentType" name="documentType">
-	            <option value="normal">일반 문서</option>
-	            <option value="expense">지출 결의서</option>
-	        </select>
-    
-    		<div id="normalForm" style="margin-top: 20px;">
-			    <label for="normalField1">일반 문서 필드 1:</label>
-			    <input type="text" id="normalField1" name="normalField1"><br>
-			    
-			    <label for="normalField2">일반 문서 필드 2:</label>
-			    <textarea id="normalField2" name="normalField2" rows="4" cols="50"></textarea><br>
-			</div>
-			
-			<div id="expenseForm" style="display: none; margin-top: 20px;">
-			    <label for="expenseDate">지출 날짜:</label>
-			    <input type="date" id="expenseDate" name="expenseDate"><br>
-			    
-			    <label for="expenseAmount">지출 금액:</label>
-			    <input type="number" id="expenseAmount" name="expenseAmount"><br>
-			    
-			    <label for="expenseDescription">지출 내용:</label>
-			    <textarea id="expenseDescription" name="expenseDescription" rows="4" cols="50"></textarea><br>
-			</div>
-    
-            <input type="submit" value="문서 작성">
-        </form>
-        <button class='btn btn-primary modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2">결재선</button>
+            <button class='btn btn-primary modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2">결재선</button>
 		<!-- Modal -->
 		<div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" role="document">
@@ -396,12 +447,87 @@ document.addEventListener("DOMContentLoaded", function() {
 		          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
 		            취소
 		          </button>
-		          <button type="submit" class="btn btn-secondary">추가</button>
+		          <button type="submit" class="btn btn-secondary modalAddUserToDeptBtn">추가</button>
 		        </div>
 		      </form>
 		    </div>
 		  </div>
 		</div>
+		
+		<!-- 선택된 결재자 정보를 표시할 HTML 요소 -->
+		<div id="selectedApprovers">
+		    <p>첫 번째 결재자: <span id="firstApproverName"></span></p>
+		    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
+		    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
+		</div>
+        <form action="${pageContext.request.contextPath}/approval/addApproval" method="post" enctype="multipart/form-data">
+			
+            <label for="documentType">문서 종류 선택:</label>
+	        <select id="documentType" name="documentType">
+	            <option value="normal">일반 문서</option>
+	            <option value="expense">지출 결의서</option>
+	        </select>
+    
+    		<div id="normalForm" style="margin-top: 20px;">
+    			<!-- 제목 입력 -->
+                <div class="mb-3">
+	                <input type="hidden" name="userId" value="${userId}">
+	                <input type="text" name="boardTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+                </div>
+                <!-- 내용 입력 -->
+				<div class="mb-1">
+					<!-- 네이버 에디터 -->
+					<textarea name="boardContents"
+							  class="form-control"
+							  id="editor"
+							  placeholder="내용을 입력하세요"
+							  maxlength="2500" 
+							  style="
+							  	height: 380px;
+							  	width: 100%"
+                         	  ></textarea>
+					<script type="text/javascript">
+				        var oEditors = [];
+				        nhn.husky.EZCreator.createInIFrame({
+				            oAppRef: oEditors,
+				            elPlaceHolder: "editor",
+				            sSkinURI: "${pageContext.request.contextPath}/smartEditor/SmartEditor2Skin.html",  // 스킨 경로
+				            fCreator: "createSEditor2",
+				            htParams: {
+				            	bUseToolbar : true,
+				            	bUseVerticalResizer: false,
+				            	bUseModeChanger: false
+				            }
+				        });
+				        
+				        function submitContents(){
+				        	oEditors.getById["editor"].exec("UPDATE_CONTENTS_FIELD",[]);
+				        }
+				    </script>
+			  	</div>
+			</div>
+			
+			<div id="expenseForm" style="display: none; margin-top: 20px;">
+			    <label for="expenseDate">지출 날짜:</label>
+			    <input type="date" id="expenseDate" name="expenseDate"><br>
+			    
+			    <label for="expenseAmount">지출 금액:</label>
+			    <input type="number" id="expenseAmount" name="expenseAmount"><br>
+			    
+			    <label for="expenseDescription">지출 내용:</label>
+			    <textarea id="expenseDescription" name="expenseDescription" rows="4" cols="50"></textarea><br>
+			</div>
+    
+        	<label for="files">첨부 파일:</label>
+                <button type="button" id="addFile">추가</button>
+                <button type="button" id="removeFile">삭제</button>
+            <div id="files">
+                <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
+            </div>
+            
+            <input type="submit" value="문서 작성">
+        </form>
+
 
 	<!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->

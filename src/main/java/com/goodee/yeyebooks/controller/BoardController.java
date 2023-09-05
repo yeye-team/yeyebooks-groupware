@@ -39,9 +39,11 @@ public class BoardController {
 	public String boardList(Model model,HttpSession session,
 							@RequestParam(name = "currentPage", defaultValue = "1") int currentPage, 
 							@RequestParam(name = "rowPerPage", defaultValue = "10") int rowPerPage,
-							@RequestParam(name = "boardCatCd", defaultValue = "00") String boardCatCd) {
+							@RequestParam(name = "boardCatCd", defaultValue = "00") String boardCatCd,
+							@RequestParam(required = false) String searchOption,
+							@RequestParam(required = false) String searchKeyword) {
 		
-		Map<String,Object> resultMap = boardService.selectBoardList(session, currentPage, rowPerPage, boardCatCd);
+		Map<String,Object> resultMap = boardService.selectBoardList(session, currentPage, rowPerPage, boardCatCd, searchOption, searchKeyword);
 		//log.debug("\u001B[41m"+ resultMap + "< BoardController Get resultMap" + "\u001B[0m");	
 		
 		// 맵에 있는거 한번에 넘기기
@@ -66,9 +68,11 @@ public class BoardController {
 	public String chgBoardList(HttpServletRequest request, HttpSession session,
 								@RequestParam(name = "currentPage", defaultValue = "1") int currentPage, 
 								@RequestParam(name = "rowPerPage", defaultValue = "10") int rowPerPage,
-								@RequestParam(name = "boardCatCd") String boardCatCd) {
+								@RequestParam(name = "boardCatCd") String boardCatCd,
+								@RequestParam(required = false) String searchOption,
+								@RequestParam(required = false) String searchKeyword) {
 		
-		Map<String,Object> resultMap = boardService.selectBoardList(session, currentPage, rowPerPage, boardCatCd);
+		Map<String,Object> resultMap = boardService.selectBoardList(session, currentPage, rowPerPage, boardCatCd, searchOption, searchKeyword);
 		log.debug("\u001B[41m"+ resultMap + "< BoardController Post resultMap" + "\u001B[0m");
 		
 		return "redirect:/board/boardList?boardCatCd="+boardCatCd;

@@ -31,6 +31,9 @@ public interface ScheduleMapper {
 	// 일정 등록
 	int insertSchedule(Schedule schedule);
 	
+	// 등록 시 사용자 부서코드 설정
+	String setUserDept(String userId);
+	
 	// 일정 수정
 	int modifySchedule(Schedule schedule);
 	
