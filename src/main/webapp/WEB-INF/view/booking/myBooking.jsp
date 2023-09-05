@@ -61,11 +61,14 @@
     	let labelTexts = [];
     	let searchCat = '';
     	let searchNm = '';
+    	let currentPage;
+    	
     	$(document).ready(function() {
     	  $('input[type="checkbox"]').on('change', function() {
+    		  labelTexts.length = 0;
     	    $('input[type="checkbox"]:checked').each(function() {
     	     	const labelText = $("label[for='" + $(this).attr('name') + "']").text();
-    	      labelTexts.push(labelText);
+    	      	labelTexts.push(labelText);
     	    });
 			if(labelTexts.length == 0){
 				$('#bookingList').html('');
@@ -74,12 +77,22 @@
 			updateBookingList();
     	  });
     	  
-    	  $('#searchBtn').click(function(){
-    		  searchCat = $('#searchCat').val();
+    	  $('input[name="searchNm"]').on('change', function(){
     		  searchNm = $('input[name="searchNm"]').val();
+    	  });
+    	  
+    	  $('#searchCat').on('change', function(){
+    		  searchCat = $('#searchCat').val();
+    	  })
+    	  
+    	  $('#searchBtn').click(function(){
     		  updateBookingList();
     	  })
     	});
+    	function movePage(pageNum){
+    		currentPage = pageNum;
+    		updateBookingList();
+    	}
     	function updateBookingList(){
     		$.ajax({
      		   type: 'get',
@@ -87,12 +100,16 @@
      		   data: {
      			   status: labelTexts,
      			   searchCat: searchCat,
-     			   searchNm: searchNm
+     			   searchNm: searchNm,
+     			   currentPage: currentPage
      		   },
      		   success: function(response){
      			   const bookingListChildren = $(response).find('#bookingList').children();
      			   $('#bookingList').html(bookingListChildren);
-     			  	labelTexts.length = 0;
+     			   const paginationChildren = $(response).find('.pagination').children();
+     			   $('.pagination').html(paginationChildren);
+     			  const searchChildren = $(response).find('#searchForm').children();
+    			   $('#searchForm').html(searchChildren);
      		   }
      	   })
     	}
@@ -147,17 +164,21 @@
 	            <!-- Content -->
 	            	<div class="container-xxl flex-grow-1 container-p-y">
 		            	<h2 class="fw-bold py-3 mb-4">나의 예약목록</h2>
-						<form class="d-flex align-items-center justify-content-end mb-2">
+						<form class="d-flex align-items-center justify-content-end mb-2" id="searchForm">
 							<div class="px-1">
 								<select id="searchCat" class="form-select">
 									<option value="">분류선택</option>
 									<c:forEach var="cat" items="${bookingCategory}">
-										<option>${cat }</option>
+										<c:set var="isSelect" value=""></c:set>
+										<c:if test="${searchCat == cat }">	
+											<c:set var="isSelect" value="selected"></c:set>
+										</c:if>
+										<option ${isSelect}>${cat }</option>
 									</c:forEach>
 								</select>
 							</div>
 							<div class="px-1">
-								<input type="text" name="searchNm" class="form-control" placeholder="예약대상">
+								<input type="text" name="searchNm" class="form-control" placeholder="예약대상" value="${searchNm }">
 							</div>
 							<div>
 								<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
@@ -219,17 +240,17 @@
 						                          	<!-- 페이징 -->
 													<c:if test="${currentPage!=1}">
 														<li class="page-item first">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=1">
+															<button type="button" class="page-link" onclick="movePage(1)">
 																<i class="tf-icon bx bx-chevrons-left"></i>
-															</a>
+															</button>
 														</li>
 													</c:if>
 													<!-- 1페이지가 아닐때 출력 -->
-													<c:if test="${minPage>1}">
+													<c:if test="${minPage != 1}">
 														<li class="page-item prev">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage-pagePerPage}">
+															<button type="button" class="page-link" onclick="movePage(${minPage-pagePerPage})">
 																<i class="tf-icon bx bx-chevron-left"></i>
-															</a>
+															</button>
 														</li>
 													</c:if>
 													<!-- 페이지 5단위 출력 -->
@@ -238,13 +259,13 @@
 															<c:when test="${i==currentPage}">
 																<!-- 현재 페이지일때 출력 -->
 																<li class="page-item active">
-																	<a class="page-link">${i}</a>
+																	<button type="button" class="page-link">${i}</button>
 																</li>
 															</c:when>
 															<c:otherwise>
 																<!-- 현재 페이지 아닐때 출력 -->
 																<li class="page-item">
-																	<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${i}">${i}</a>
+																	<button type="button" class="page-link" onclick="movePage(${i})">${i}</button>
 																</li>
 															</c:otherwise>
 														</c:choose>
@@ -252,17 +273,17 @@
 													<!-- 마지막 페이지 아닐때 출력 -->
 													<c:if test="${maxPage!=lastPage}">
 														<li class="page-item next">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage+pagePerPage}">
+															<button type="button" class="page-link" onclick="movePage(${maxPage+1})">
 																<i class="tf-icon bx bx-chevron-right"></i>
-															</a>
+															</button>
 														</li>
 													</c:if>
 													<!-- 마지막 페이지일때 출력 -->
 													<c:if test="${currentPage!=lastPage}">
 														<li class="page-item last">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${lastPage}">
+															<button type="button" class="page-link" onclick="movePage(${lastPage})">
 																<i class="tf-icon bx bx-chevrons-right"></i>
-															</a>
+															</button>
 														</li>
 													</c:if>
 												</ul>

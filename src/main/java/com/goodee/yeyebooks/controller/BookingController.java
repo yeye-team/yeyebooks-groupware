@@ -49,10 +49,36 @@ public class BookingController {
 			model.addAttribute(convertString.get(stat), "checked");
 		}
 		String userId = (String)session.getAttribute("userId");
-		List<Booking> myBookingList = bookingService.selectMyBooking(selectedStatus, userId, searchCat, searchNm);
+		int listCnt = bookingService.selectMyBookingCnt(selectedStatus, userId, searchCat, searchNm);
+		
+		int rowPerPage = 10;
+		int pagePerPage = 5;
+		
+		int lastPage = listCnt / rowPerPage;
+		if(listCnt % rowPerPage != 0) {
+			lastPage++;
+		}
+		
+		int startRow = (currentPage - 1) * rowPerPage;
+		
+		int minPage = (currentPage - 1) / pagePerPage * pagePerPage + 1;
+		int maxPage = minPage + pagePerPage;
+		if(maxPage > lastPage) {
+			maxPage = lastPage;
+		}
+		
+		
+		List<Booking> myBookingList = bookingService.selectMyBooking(selectedStatus, userId, searchCat, searchNm, startRow, rowPerPage);
 		List<String> bookingCategory = bookingService.selectBookingCategory();
+		
 		model.addAttribute("bookingCategory", bookingCategory);
 		model.addAttribute("myBookingList", myBookingList);
+		model.addAttribute("searchNm", searchNm);
+		model.addAttribute("searchCat", searchCat);
+		model.addAttribute("minPage", minPage);
+		model.addAttribute("maxPage", maxPage);
+		model.addAttribute("lastPage", lastPage);
+		
 		return "booking/myBooking";
 	}
 }

@@ -16,13 +16,33 @@
 		    </foreach>
 		    )
 		</if>
-		<if test="searchCat != null and searchNm != ''">
+		<if test="searchCat != null and searchCat != ''">
 			AND trgt_cat_cd = (SELECT code FROM common_code WHERE group_code = 'B102' AND code_nm = #{searchCat})
 		</if>
 		<if test="searchNm != null and searchNm != ''">
 			AND trgt_nm like CONCAT('%', #{searchNm}, '%')
 		</if>
 		ORDER BY booking.c_date
+		LIMIT #{startRow}, #{rowPerPage}
+	</select>
+	<select id="selectMyBookingCnt" resultType="int">
+		SELECT COUNT(*) cnt
+		FROM booking, booking_target
+		WHERE booking_target.trgt_no = booking.trgt_no
+		AND user_id = #{userId}
+		<if test="status != null">
+		    AND bkg_stat_cd IN (SELECT code FROM common_code WHERE group_code = 'B101' AND code_nm in
+		    <foreach collection="status" item="item" open="(" separator="," close=")">
+		        #{item}
+		    </foreach>
+		    )
+		</if>
+		<if test="searchCat != null and searchCat != ''">
+			AND trgt_cat_cd = (SELECT code FROM common_code WHERE group_code = 'B102' AND code_nm = #{searchCat})
+		</if>
+		<if test="searchNm != null and searchNm != ''">
+			AND trgt_nm like CONCAT('%', #{searchNm}, '%')
+		</if>
 	</select>
 	<select id="selectBookingCategory">
 		SELECT code_nm
