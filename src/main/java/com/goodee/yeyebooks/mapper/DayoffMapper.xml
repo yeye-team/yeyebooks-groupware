@@ -1,3 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.goodee.yeyebooks.mapper.DayoffMapper"></mapper>
+<mapper namespace="com.goodee.yeyebooks.mapper.DayoffMapper">
+	<select id="selectUserCntByDept" resultType="java.util.Map">
+		SELECT c2.code deptCd, c2.code_nm deptNm, COALESCE(COUNT(u.user_id),0) cnt FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)         
+		RIGHT OUTER JOIN 
+		(SELECT code, code_nm
+				FROM common_code 
+				WHERE group_code = 'D001') c2 ON u.dept_cd = c2.code
+		GROUP BY c2.code
+		ORDER BY deptCd ASC
+	</select>
+	
+	<select id="selectUserListByDept" resultType="java.util.Map">
+		SELECT 
+			u.user_id userId, 
+			u.user_nm userNm, 
+			u.rank_cd rankCd, 
+			u.dept_cd deptCd, 
+			c1.code_nm rankNm, 
+			c2.code_nm deptNm,
+			u.phone_no phoneNo,
+			u.mail,
+			uf.save_filename userImg 
+		FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
+		LEFT OUTER JOIN user_file uf ON (u.user_id = uf.user_id AND uf.file_cat_cd = '02')
+	</select>
+	
+	<select id="selectUserCntByDeptAndAll" resultType="java.util.Map">
+		SELECT u.dept_cd deptCd, c2.code_nm deptNm, COUNT(*) cnt FROM user u      
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
+		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
+		UNION ALL
+		SELECT c2.code deptCd, c2.code_nm deptNm, COALESCE(COUNT(u.user_id),0) cnt FROM user u 
+		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)         
+		RIGHT OUTER JOIN 
+		(SELECT code, code_nm
+				FROM common_code 
+				WHERE group_code = 'D001') c2 ON u.dept_cd = c2.code
+		GROUP BY c2.code
+		ORDER BY deptCd ASC
+	</select>
+</mapper>
