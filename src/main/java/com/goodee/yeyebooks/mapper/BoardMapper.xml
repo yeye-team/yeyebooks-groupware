@@ -17,6 +17,15 @@
 			INNER JOIN 
 				user u ON b.user_id = u.user_id
 			WHERE board_cat_cd = #{boardCatCd}
+			<if test="searchOption != null and searchKeyword != null and searchKeyword != '' and searchOption == '제목'">
+				AND b.board_title LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchOption != null and searchKeyword != null and searchKeyword != '' and searchOption == '내용'">
+				AND b.board_contents LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchOption != null and searchKeyword != null and searchKeyword != '' and searchOption == '제목+내용'">
+				AND (b.board_title LIKE CONCAT('%', #{searchKeyword}, '%') OR b.board_contents LIKE CONCAT('%', #{searchKeyword}, '%'))
+			</if>
 			ORDER BY b.c_date DESC
 			LIMIT #{beginRow}, #{rowPerPage}
 	</select>
@@ -29,6 +38,15 @@
 				COUNT(*)
 			FROM board
 			WHERE board_cat_cd = #{boardCatCd}
+			<if test="searchOption != null and searchKeyword != null and searchKeyword != '' and searchOption == '제목'">
+				AND board_title LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchOption != null and searchKeyword != null and searchKeyword != '' and searchOption == '내용'">
+				AND board_contents LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchOption != null and searchKeyword != null and searchKeyword != '' and searchOption == '제목+내용'">
+				AND (board_title LIKE CONCAT('%', #{searchKeyword}, '%') OR board_contents LIKE CONCAT('%', #{searchKeyword}, '%'))
+			</if>
 	</select>
 	
 	<!-- 로그인 유저의 부서코드와 부서이름 가져오기 -->

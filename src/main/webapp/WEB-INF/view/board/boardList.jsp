@@ -35,12 +35,91 @@
 	
     <jsp:include page="../inc/head.jsp"></jsp:include>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script>
 		$(document).ready(function() {
-			// url파라미터값 삭제
-			/* history.replaceState({}, null, location.pathname);  */
+			// 드롭다운 내용 변경
+			document.querySelectorAll(".dropdown-item").forEach(function(item) {
+			    item.addEventListener("click", function() {
+			      var selectedOption = this.getAttribute("data-option");
+			      document.getElementById("searchOptionBtn").textContent = selectedOption;
+			    });
+			  });
 		});
+			
+		// 검색 실행
+		function search() {
+	        // 선택된 검색 옵션 가져오기
+	        var searchOption = document.getElementById("searchOptionBtn").textContent.trim();
+	        if(searchOption == null){
+	        	searchOption = "제목";
+	        }
+	        // 검색어 가져오기
+	        var searchKeyword = document.getElementById("searchKeyword").value;
+	        var currentPage = ${currentPage};
+	        var boardCatCd = "${boardCatCd}";
+	        
+	        if(searchKeyword == null || searchKeyword == ''){
+	        	Swal.fire({
+                    title: '경고',
+                    text: "검색어를 입력하세요",
+                    icon: 'warning'
+	        	});
+	        	return false;
+	        }
+		        
+        	console.log(currentPage);
+        
+			$.ajax({
+				type: 'GET',
+				url: '${pageContext.request.contextPath}/board/boardList',
+				data: {
+					boardCatCd: boardCatCd,
+					currentPage: currentPage,
+					searchOption: searchOption,
+					searchKeyword: searchKeyword
+				},
+				success: function(response){
+					const boardListChildren = $(response).find('#boardList').children();
+					const pageListChildren = $(response).find('#pageList').children();
+					$('#boardList').html(boardListChildren);
+					$('#pageList').html(pageListChildren);
+				}
+			})
+		}
+			
+		// 페이지 변동 시 검색값 유지
+		function changePage(pageNumber) {
+		    // 선택된 검색 옵션 가져오기
+	    	var searchOption = document.getElementById("searchOptionBtn").textContent.trim();
+		    if (searchOption == null) {
+		        searchOption = "제목";
+		    }
+		    // 검색어 가져오기
+		    var searchKeyword = document.getElementById("searchKeyword").value;
+		    var boardCatCd = "${boardCatCd}";
+
+		    if (searchKeyword == null || searchKeyword == '') {
+		        alert("검색어를 입력하세요");
+		        return false;
+		    }
+
+		    $.ajax({
+		        type: 'GET',
+		        url: '${pageContext.request.contextPath}/board/boardList',
+		        data: {
+		            boardCatCd: boardCatCd,
+		            currentPage: pageNumber,
+		            searchOption: searchOption,
+		            searchKeyword: searchKeyword
+		        },
+		        success: function (response) {
+		            const boardListChildren = $(response).find('#boardList').children();
+		            const pageListChildren = $(response).find('#pageList').children();
+		            $('#boardList').html(boardListChildren);
+		            $('#pageList').html(pageListChildren);
+		        }
+		    });
+		}
     </script>
     
     <style>
@@ -203,6 +282,41 @@
 							</c:otherwise>
 						</c:choose>
 						
+						<!-- 검색 창 -->
+						<div class="container">
+							<div class="row">
+								<div class="col-md-7">
+								&nbsp;
+								</div>
+								<div class="col-md-5">
+									<div class="input-group">
+										<button
+											type="button"
+											class="btn btn-primary dropdown-toggle"
+											data-bs-toggle="dropdown"
+											aria-expanded="false"
+											id="searchOptionBtn"
+											style="width: 25%;"
+										>
+											제목
+										</button>
+										<ul class="dropdown-menu">
+											<li><a class="dropdown-item" href="javascript:void(0);" data-option="제목">제목</a></li>
+											<li><a class="dropdown-item" href="javascript:void(0);" data-option="내용">내용</a></li>
+											<li><a class="dropdown-item" href="javascript:void(0);" data-option="제목+내용">제목+내용</a></li>
+										</ul>
+										<input
+											type="text"
+											class="form-control"
+											placeholder="검색어를 입력하세요."
+											id="searchKeyword"
+										/>
+										<button class="btn btn-primary" type="button" onclick="search()" style="z-index: 0;">검색</button>
+									</div>
+								</div>	
+							</div>
+						</div>
+						<br>
 						<!-- 게시물 리스트 -->
 				        <div class="card" style="height: 600px;">
 				          <div class="table-responsive text-nowrap" style="height: 500px;">
@@ -215,7 +329,7 @@
 									<th>조회수</th>
 				                </tr>
 				              </thead>
-				              <tbody class="table-border-bottom-0">
+				              <tbody class="table-border-bottom-0" id="boardList">
 								<!-- 게시판 변경 시 내용변경 -->
 								<c:forEach var="n" items="${selectBoard}">
 									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/board/boardOne?boardNo=${n.boardNo}'">
@@ -232,7 +346,8 @@
 						  </div>
 						
 		             		<!-- 페이징 -->
-			                <div class="card-body" 
+			                <div class="card-body"
+			                	 id="pageList" 
 			                	style="height: 30px;
 			                		   display: flex;
         							   justify-content: space-between;">
@@ -244,7 +359,7 @@
 						                          	<!-- 페이징 -->
 													<c:if test="${currentPage!=1}">
 														<li class="page-item first">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=1">
+															<a class="page-link" onclick="changePage(1)">
 																<i class="tf-icon bx bx-chevrons-left"></i>
 															</a>
 														</li>
@@ -252,7 +367,7 @@
 													<!-- 1페이지가 아닐때 출력 -->
 													<c:if test="${minPage>1}">
 														<li class="page-item prev">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage-pagePerPage}">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(${minPage - pagePerPage})">
 																<i class="tf-icon bx bx-chevron-left"></i>
 															</a>
 														</li>
@@ -269,7 +384,7 @@
 															<c:otherwise>
 																<!-- 현재 페이지 아닐때 출력 -->
 																<li class="page-item">
-																	<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${i}">${i}</a>
+																	<a class="page-link" href="javascript:void(0);" onclick="changePage(${i})">${i}</a>
 																</li>
 															</c:otherwise>
 														</c:choose>
@@ -277,7 +392,7 @@
 													<!-- 마지막 페이지 아닐때 출력 -->
 													<c:if test="${maxPage!=lastPage}">
 														<li class="page-item next">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${minPage+pagePerPage}">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(${minPage+pagePerPage})">
 																<i class="tf-icon bx bx-chevron-right"></i>
 															</a>
 														</li>
@@ -285,7 +400,7 @@
 													<!-- 마지막 페이지일때 출력 -->
 													<c:if test="${currentPage!=lastPage}">
 														<li class="page-item last">
-															<a class="page-link" href="/yeyebooks/board/boardList?boardCatCd=${boardCatCd}&currentPage=${lastPage}">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(${lastPage})">
 																<i class="tf-icon bx bx-chevrons-right"></i>
 															</a>
 														</li>

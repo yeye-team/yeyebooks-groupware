@@ -56,7 +56,7 @@ public class BoardService {
 		return map;
 	}
 	// 게시판 별 게시물 리스트 조회
-	public Map<String, Object> selectBoardList(HttpSession session, int currentPage, int rowPerPage, String boardCatCd) {
+	public Map<String, Object> selectBoardList(HttpSession session, int currentPage, int rowPerPage, String boardCatCd, String searchOption, String searchKeyword) {
 		// 첫행
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
@@ -76,12 +76,25 @@ public class BoardService {
 			}
 		}
 		
+		log.debug("\u001B[41m" + searchOption + "< searchOption" + "\u001B[0m");
+		log.debug("\u001B[41m" + searchKeyword + "< searchKeyword" + "\u001B[0m");
+		
 		// map에 담아 변수로 넘기게
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("beginRow", beginRow);
 		paramMap.put("rowPerPage", rowPerPage);
 		paramMap.put("boardCatCd", boardCatCd);
-		//log.debug("\u001B[41m" + paramMap + "< paramMap" + "\u001B[0m");
+		
+			// 검색 옵션에 따라 WHERE 절을 동적으로 생성
+		    if ("제목".equals(searchOption)) {
+		        paramMap.put("searchOption", searchOption);
+		    } else if ("내용".equals(searchOption)) {
+		        paramMap.put("searchOption", searchOption);
+		    } else if ("제목+내용".equals(searchOption)) {
+		        paramMap.put("searchOption", searchOption);
+		    }
+	        paramMap.put("searchKeyword", searchKeyword);
+		log.debug("\u001B[41m" + paramMap + "< paramMap" + "\u001B[0m");
 
 		// 각 리스트 조회
 		List<Map<String, Object>> selectBoard = boardMapper.selectBoard(paramMap);
@@ -93,8 +106,8 @@ public class BoardService {
 		
 		// ================ 페이지 =================
 		// 페이징을 위한 게시판 별 게시물 전체 개수
-		int boardCount = boardMapper.selectBoardCount(boardCatCd);
-
+		int boardCount = boardMapper.selectBoardCount(boardCatCd, searchOption, searchKeyword);
+		
 		// 마지막행
 		int endRow = beginRow + (rowPerPage - 1);
 		if (endRow > boardCount) {
@@ -132,7 +145,8 @@ public class BoardService {
 		resultMap.put("maxPage", maxPage);
 		resultMap.put("selectAllCatCode",selectAllCatCode);
 		resultMap.put("userDept", userDept);
-
+		
+		log.debug("\u001B[41m" + "resultMap : " + resultMap + "\u001B[0m");
 		return resultMap;
 	}
 
