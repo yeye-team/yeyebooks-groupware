@@ -10,7 +10,7 @@
   data-template="vertical-menu-template-free"
 >
 <head>
-	<title>부서관리</title>
+	<title>인사정보</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
 </head>
 <body>
@@ -40,7 +40,7 @@
 	            <li class="menu-item">
 					<a href="" class="menu-link">
 					  <i class="menu-icon tf-icons bx bx-user"></i>
-					  사용자관리
+					  
 					</a>
             	</li>
           	</ul>
