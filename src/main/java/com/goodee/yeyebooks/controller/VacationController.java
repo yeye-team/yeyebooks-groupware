@@ -24,10 +24,14 @@ public class VacationController {
 	@GetMapping("/vacationList")
 	public String vacationList(Model model, HttpSession session,
 								@RequestParam(name = "currentPage", defaultValue = "1") int currentPage, 
-								@RequestParam(name = "rowPerPage", defaultValue = "10") int rowPerPage) {
+								@RequestParam(name = "rowPerPage", defaultValue = "10") int rowPerPage,
+								@RequestParam(required = false) String searchDate) {
+		//log.debug("\u001B[41m" + "vaca Controller currentPage : " + currentPage + "\u001B[0m");
+		//log.debug("\u001B[41m" + "vaca Controller rowPerPage : " + rowPerPage + "\u001B[0m");
+		//log.debug("\u001B[41m" + "vaca Controller searchDate : " + searchDate + "\u001B[0m");
 		
-		Map<String,Object> selectVacationList = vacationService.selectVacationList(session, currentPage, rowPerPage);
-		// log.debug("\u001B[41m" + "vaca Controller selectList" + selectVacationList + "\u001B[0m");
+		Map<String,Object> selectVacationList = vacationService.selectVacationList(session, currentPage, rowPerPage, searchDate);
+		//log.debug("\u001B[41m" + "vaca Controller selectList" + selectVacationList + "\u001B[0m");
 		
 		model.addAllAttributes(selectVacationList);
 		

@@ -23,6 +23,9 @@
 			AND a.doc_cat_cd = '02'
 			AND c.group_code = 'A001'
 			AND c2.group_code = 'A005'
+			<if test="searchDate != null and searchDate != ''">
+				AND a.aprv_ymd = #{searchDate}
+			</if>
 		ORDER BY 
 			a.aprv_ymd DESC
 		LIMIT #{beginRow}, #{rowPerPage}
@@ -41,9 +44,12 @@
 		INNER JOIN 
 			common_code c2 ON d.dayoff_type_cd = c2.code
 		WHERE
-			a.user_id = 'm23081702'
+			a.user_id = #{userId}
 			AND a.doc_cat_cd = '02'
 			AND c.group_code = 'A001'
-			AND c2.group_code = 'A005';
+			AND c2.group_code = 'A005'
+			<if test="searchDate != null and searchDate != ''">
+				AND a.aprv_ymd = #{searchDate}
+			</if>
 	</select>
 </mapper>

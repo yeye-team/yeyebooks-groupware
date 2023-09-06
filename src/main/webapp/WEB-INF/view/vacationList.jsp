@@ -18,14 +18,54 @@
     
     <script>
     $(document).ready(function() {
-    document.getElementById("dateSearch").addEventListener("click", function() {
-        var dateInput = document.getElementById("dateInput");
-        dateInput.style.display = "block"; // 화면에 표시
-        dateInput.focus(); // 입력에 포커스
-        dateInput.click(); // 클릭
-        dateInput.style.display = "none"; // 다시 숨김
-      });
-      });
+    	// 검색
+    	$("#searchDate").change(function() {
+            var selectedDate = $("#searchDate").val();
+            
+	    	$.ajax({
+				type: 'GET',
+				url: '${pageContext.request.contextPath}/vacationList',
+				data: {
+					searchDate: selectedDate
+				},
+				success: function(response){
+					const vacationListChildren = $(response).find('#vacationList').children();
+					const pageListChildren = $(response).find('#pageList').children();
+					$('#vacationList').html(vacationListChildren);
+					$('#pageList').html(pageListChildren);
+					
+					if (vacationListChildren.length === 0) {
+						Swal.fire({
+		                    title: '경고',
+		                    text: "내역이 존재하지 않습니다.",
+		                    icon: 'warning'
+			        	});	                    
+	                }
+				}
+			})
+    	});
+    });
+    
+    // 페이지 변동 시 검색값 유지
+	function changePage(pageNumber) {
+	    // 검색어 가져오기
+	    var searchDate = document.getElementById("searchDate").value;
+	    
+	    $.ajax({
+	        type: 'GET',
+	        url: '${pageContext.request.contextPath}/vacationList',
+	        data: {
+	            currentPage: pageNumber,
+	            searchDate: searchDate
+	        },
+	        success: function (response) {
+	            const vacationListChildren = $(response).find('#vacationList').children();
+	            const pageListChildren = $(response).find('#pageList').children();
+	            $('#vacationList').html(vacationListChildren);
+	            $('#pageList').html(pageListChildren);
+	        }
+	    });
+	}
     </script>
     
     <style>
@@ -60,7 +100,14 @@
     	
     	.container {
     		margin-bottom: 7px;
+    		
     	}
+    	@media (max-width: 767px) {
+		    .col-md-2 {
+		        display: block; /* 블록 레이아웃으로 변경 */
+		        width: 100%; /* 너비를 100%로 설정 */
+		    }
+		}
     </style>
   </head>
 
@@ -103,24 +150,15 @@
 	            <!-- Content -->
 	            	<div class="container-xxl flex-grow-1 container-p-y">
 						<h2 class="fw-bold py-3 mb-4">휴가 신청 내역</h2>
+						
 						<!-- 검색 창 -->
 						<div class="container">
 							<div class="row">
-								<div class="col-md-7">
+								<div class="col-md-10">
 								&nbsp;
 								</div>
-								<div class="col-md-5">
-									<button type="button" class="btn btn-icon btn-primary" id="dateSearch">
-		                            	<span class="tf-icons bx bx-calendar"></span>
-		                            </button>
-		                            <input type="date" id="dateInput" style="display: none; position: absolute; top: 0; left: 0; opacity: 0; width: 1px; height: 1px;">
-									<!-- <div class="input-group" style="width: 33%;">
-										<input
-											type="date"
-											class="form-control"
-										/>
-										<button class="input-group-text" type="button" onclick="search()" style="z-index: 0;"><i class="tf-icons bx bx-search"></i></button>
-									</div> -->
+								<div class="col-md-2">
+									<input type="date" id="searchDate" class="form-control">
 								</div>	
 							</div>
 						</div> 
@@ -138,7 +176,7 @@
 									<th>상태</th>
 				                </tr>
 				              </thead>
-				              <tbody class="table-border-bottom-0" id="boardList">
+				              <tbody class="table-border-bottom-0" id="vacationList">
 								<c:forEach var="v" items="${selectVacationList}">
 									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/vacationOne?aprv_no=${v.aprvNo}'">
 										<td>${v.aprvTitle}</td>
@@ -168,7 +206,7 @@
 						                          	<!-- 페이징 -->
 													<c:if test="${currentPage!=1}">
 														<li class="page-item first">
-															<a class="page-link" href="${pageContext.request.contextPath}/vactionList?currentPage=1">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(1)">
 																<i class="tf-icon bx bx-chevrons-left"></i>
 															</a>
 														</li>
@@ -176,7 +214,7 @@
 													<!-- 1페이지가 아닐때 출력 -->
 													<c:if test="${minPage>1}">
 														<li class="page-item prev">
-															<a class="page-link" href="${pageContext.request.contextPath}/vactionList?currentPage=${minPage - pagePerPage}">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(${minPage - pagePerPage})">
 																<i class="tf-icon bx bx-chevron-left"></i>
 															</a>
 														</li>
@@ -193,7 +231,7 @@
 															<c:otherwise>
 																<!-- 현재 페이지 아닐때 출력 -->
 																<li class="page-item">
-																	<a class="page-link" href="${pageContext.request.contextPath}/vactionList?currentPage=${i}">${i}</a>
+																	<a class="page-link" href="javascript:void(0);" onclick="changePage(${i})">${i}</a>
 																</li>
 															</c:otherwise>
 														</c:choose>
@@ -201,7 +239,7 @@
 													<!-- 마지막 페이지 아닐때 출력 -->
 													<c:if test="${maxPage!=lastPage}">
 														<li class="page-item next">
-															<a class="page-link" href="${pageContext.request.contextPath}/vactionList?currentPage=${minPage+pagePerPage}">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(${minPage+pagePerPage})">
 																<i class="tf-icon bx bx-chevron-right"></i>
 															</a>
 														</li>
@@ -209,7 +247,7 @@
 													<!-- 마지막 페이지일때 출력 -->
 													<c:if test="${currentPage!=lastPage}">
 														<li class="page-item last">
-															<a class="page-link" href="${pageContext.request.contextPath}/vactionList?currentPage=${lastPage}">
+															<a class="page-link" href="javascript:void(0);" onclick="changePage(${lastPage})">
 																<i class="tf-icon bx bx-chevrons-right"></i>
 															</a>
 														</li>

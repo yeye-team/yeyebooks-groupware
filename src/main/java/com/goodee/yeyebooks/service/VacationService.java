@@ -21,17 +21,17 @@ public class VacationService {
 	private VacationMapper vacationMapper;
 	
 	// 휴가 내역 리스트
-	public Map<String, Object> selectVacationList(HttpSession session, int currentPage, int rowPerPage){
+	public Map<String, Object> selectVacationList(HttpSession session, int currentPage, int rowPerPage, String searchDate){
 		String userId = (String) session.getAttribute("userId");
 		
 		int beginRow = (currentPage - 1) * rowPerPage;
 		
 		// 리스트
-		List<Map<String, Object>> selectVacationList = vacationMapper.selectVacationList(userId, beginRow, rowPerPage);
+		List<Map<String, Object>> selectVacationList = vacationMapper.selectVacationList(userId, beginRow, rowPerPage,searchDate);
 		
 		// ================ 페이지 =================
 		// 페이징을 위한 내역 개수
-		int vacationListCount = vacationMapper.vacationListCount();
+		int vacationListCount = vacationMapper.vacationListCount(userId, searchDate);
 		
 		
 		// 마지막행
