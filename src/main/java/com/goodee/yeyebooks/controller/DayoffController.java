@@ -2,16 +2,34 @@ package com.goodee.yeyebooks.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import com.goodee.yeyebooks.service.DayoffService;
+import com.goodee.yeyebooks.vo.Holiday;
 
 @Controller
 public class DayoffController {
+	@Autowired
+	DayoffService dayoffService;
+	
 	@GetMapping("/test")
 	public String apiTest(Model model) throws Exception {
 		StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"); /*URL*/
@@ -37,8 +55,28 @@ public class DayoffController {
         }
         rd.close();
         conn.disconnect();
-        System.out.println(sb.toString());
-        model.addAttribute("list",sb.toString());
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new InputSource(new StringReader(sb.toString())));
+        NodeList dateNameList = document.getElementsByTagName("dateName");
+        NodeList isHolidayList = document.getElementsByTagName("isHoliday");
+        NodeList locdateList = document.getElementsByTagName("locdate");
+        List<Holiday> list = new ArrayList<>();
+        
+        for(int i=0; i < dateNameList.getLength(); i++) {
+        	Holiday h = new Holiday();
+        	Node n1 = dateNameList.item(i).getChildNodes().item(0);
+        	Node n2 = isHolidayList.item(i).getChildNodes().item(0);
+        	Node n3 = locdateList.item(i).getChildNodes().item(0);
+        	h.setDateName(n1.getNodeValue());
+        	h.setIsHoliday(n2.getNodeValue());
+        	h.setLocdate(n3.getNodeValue());
+        	list.add(h);
+        }
+      
+        
+        
+        model.addAttribute("list",list);
 		return "/testApi";
 	}
 	
@@ -48,4 +86,17 @@ public class DayoffController {
 		return "user/attendanceManagement";
 	}
 	
+	
+	@GetMapping("/userInformation")
+	public String userInformation(Model model) {
+		List<Map<String, Object>> deptList = dayoffService.getUserCntByDept();
+		List<Map<String, Object>> userList = dayoffService.getUserListByDept();
+		List<Map<String, Object>> userCnt = dayoffService.getUserCntByDeptAndAll();
+		
+		model.addAttribute("deptList",deptList);
+		model.addAttribute("userList",userList);
+		model.addAttribute("userCnt",userCnt);
+		
+		return "user/userInformation";
+	}
 }
