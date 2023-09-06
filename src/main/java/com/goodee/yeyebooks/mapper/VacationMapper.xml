@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goodee.yeyebooks.mapper.VacationMapper">
+	<!-- 휴가 신청 내역 조회 -->
+	<select id="selectVacationList">
+		SELECT 
+			a.aprv_no aprvNo,
+			a.aprv_title aprvTitle,
+			a.aprv_ymd aprvYmd,
+			c.code_nm aprvStatNm,
+			d.dayoff_ymd dayoffYmd,
+			c2.code_nm dayoffTypeNm
+		FROM 
+			approval a
+		INNER JOIN 
+			dayoff d ON a.aprv_no = d.aprv_no
+		INNER JOIN
+			common_code c ON a.aprv_stat_cd = c.code
+		INNER JOIN 
+			common_code c2 ON d.dayoff_type_cd = c2.code
+		WHERE
+			a.user_id = #{userId}
+			AND a.doc_cat_cd = '02'
+			AND c.group_code = 'A001'
+			AND c2.group_code = 'A005'
+		ORDER BY 
+			a.aprv_ymd DESC
+		LIMIT #{beginRow}, #{rowPerPage}
+
+	</select>
+	
+	<!-- 페이징을 위한 휴가 신청 내역 개수 -->
+	<select id="vacationListCount">
+		SELECT COUNT(*)
+		FROM 
+			approval a
+		INNER JOIN 
+			dayoff d ON a.aprv_no = d.aprv_no
+		INNER JOIN
+			common_code c ON a.aprv_stat_cd = c.code
+		INNER JOIN 
+			common_code c2 ON d.dayoff_type_cd = c2.code
+		WHERE
+			a.user_id = 'm23081702'
+			AND a.doc_cat_cd = '02'
+			AND c.group_code = 'A001'
+			AND c2.group_code = 'A005';
+	</select>
+</mapper>
