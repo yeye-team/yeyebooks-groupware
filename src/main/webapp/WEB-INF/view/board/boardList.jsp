@@ -156,6 +156,9 @@
     	tbody tr:hover {
     		background-color: lightgray;
     	}
+    	.container {
+    		margin-bottom: 7px;
+    	}
     </style>
   </head>
 
@@ -285,11 +288,11 @@
 						<!-- 검색 창 -->
 						<div class="container">
 							<div class="row">
-								<div class="col-md-7">
+								<div class="col-md-8">
 								&nbsp;
 								</div>
-								<div class="col-md-5">
-									<div class="input-group" style="width:65%;">
+								<div class="col-md-4">
+									<div class="input-group">
 										<button
 											type="button"
 											class="btn btn-outline-dark dropdown-toggle"
@@ -315,7 +318,7 @@
 								</div>	
 							</div>
 						</div>
-						<br>
+						
 						<!-- 게시물 리스트 -->
 				        <div class="card" style="height: 600px;">
 				          <div class="table-responsive text-nowrap" style="height: 500px;">
