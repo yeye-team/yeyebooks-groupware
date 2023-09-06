@@ -130,29 +130,26 @@
 				</div>
 		
 				<div class="menu-inner-shadow"></div>
-				
-				<form>
-					<ul class="menu-inner py-1">
-						<li class="menu-item active">
-							<button type="submit" class="menu-link">
-								<i class='bx bxs-user-detail'></i>
-								<div data-i18n="Analytics">&nbsp;나의 예약목록</div>
-							</button>
-						</li>
-						<li class="menu-item">
-							<button type="submit" class="menu-link">
-								<i class='bx bxs-timer' ></i>
-								<div data-i18n="Analytics">&nbsp;예약현황</div>
-							</button>
-						</li>
-						<li class="menu-item">
-							<button type="submit" class="menu-link">
-								<i class='bx bx-list-plus' ></i>
-								<div data-i18n="Analytics">&nbsp;예약하기</div>
-							</button>
-						</li>
-					</ul>
-				</form>
+				<ul class="menu-inner py-1">
+					<li class="menu-item active">
+						<button type="button" class="menu-link" onclick="location.href='myBooking'">
+							<i class='bx bxs-user-detail'></i>
+							<div data-i18n="Analytics">&nbsp;나의 예약목록</div>
+						</button>
+					</li>
+					<li class="menu-item">
+						<button type="submit" class="menu-link">
+							<i class='bx bxs-timer' ></i>
+							<div data-i18n="Analytics">&nbsp;예약현황</div>
+						</button>
+					</li>
+					<li class="menu-item">
+						<button type="submit" class="menu-link">
+							<i class='bx bx-list-plus' ></i>
+							<div data-i18n="Analytics">&nbsp;예약하기</div>
+						</button>
+					</li>
+				</ul>
 			</aside>
 			<!-- / Menu -->
 

@@ -49,4 +49,22 @@
 		FROM common_code
 		WHERE group_code = 'B102'
 	</select>
+	
+	<select id="selectBookingOne">
+		SELECT bkg_no bkgNo, user_id userId,
+		trgt_nm trgtNm,
+		trgt_info trgtInfo,
+		(SELECT code_nm FROM common_code WHERE group_code = 'B102' AND code = trgt_cat_cd) trgtCatNm,
+		save_filename saveFilename,
+		path,
+		bkg_start_ymd bkgStartYmd, bkg_end_ymd bkgEndYmd, substring(bkg_start_time, 1, 5) bkgStartTime, substring(bkg_end_time, 1, 5) bkgEndTime, 
+		(SELECT code_nm FROM common_code WHERE group_code = 'B101' AND code = bkg_stat_cd) bkgStatus,
+		bkg_purpose bkgPurpose
+		FROM booking bk, booking_target bt
+		WHERE bt.trgt_no = bk.trgt_no
+		AND bkg_no = #{bkgNo}
+	</select>
+	<delete id="deleteBooking">
+		DELETE FROM booking WHERE bkg_no = #{bkgNo}
+	</delete>
 </mapper>

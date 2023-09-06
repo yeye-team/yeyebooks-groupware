@@ -23,4 +23,10 @@ public class BookingService {
 	public int selectMyBookingCnt(List<String> status, String userId, String searchCat, String searchNm) {
 		return bookingMapper.selectMyBookingCnt(status, userId, searchCat, searchNm);
 	}
+	public Booking selectBookingOne(int bkgNo) {
+		return bookingMapper.selectBookingOne(bkgNo);
+	}
+	public int deleteBooking(int bkgNo) {
+		return bookingMapper.deleteBooking(bkgNo);
+	}
 }

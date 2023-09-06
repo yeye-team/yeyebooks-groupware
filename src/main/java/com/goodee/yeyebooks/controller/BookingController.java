@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.goodee.yeyebooks.service.BookingService;
+import com.goodee.yeyebooks.service.UserService;
 import com.goodee.yeyebooks.vo.Booking;
+import com.goodee.yeyebooks.vo.User;
 
 @Controller
 public class BookingController {
 	@Autowired
 	BookingService bookingService;
+	@Autowired
+	UserService userService;
+	
 	Map<String, String> convertString = new HashMap<>() {{
 	    put("예약완료", "isBooking");
 	    put("이용중", "isUsing");
@@ -80,5 +85,21 @@ public class BookingController {
 		model.addAttribute("lastPage", lastPage);
 		
 		return "booking/myBooking";
+	}
+	
+	@GetMapping("/booking/bookingOne")
+	public String bookingOne(@RequestParam int bkgNo,
+							Model model) {
+		Booking booking = bookingService.selectBookingOne(bkgNo);
+		User user = userService.selectUserInfo(booking.getUserId()); 
+		model.addAttribute("booking", booking);
+		model.addAttribute("user", user);
+		return "booking/bookingOne";
+	}
+	
+	@GetMapping("/booking/deleteBooking")
+	public String deleteBooking(@RequestParam int bkgNo) {
+		bookingService.deleteBooking(bkgNo);
+		return "redirect:/booking/myBooking";
 	}
 }

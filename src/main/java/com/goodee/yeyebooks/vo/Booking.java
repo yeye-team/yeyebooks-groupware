@@ -8,6 +8,9 @@ public class Booking {
 	private String userId;
 	private int trgtNo;
 	private String trgtNm;
+	private String trgtInfo;
+	private String saveFilename;
+	private String path;
 	private String trgtCatNm;
 	private String bkgStartYmd;
 	private String bkgEndYmd;

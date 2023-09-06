@@ -164,4 +164,7 @@ public class UserService {
 		recentTotalUserInfo.put("totalUserCnt", totalUserCnt);
 		return recentTotalUserInfo;
 	}
+	public User selectUserInfo(String userId) {
+		return userMapper.selectUserInfo(userId);
+	}
 }
