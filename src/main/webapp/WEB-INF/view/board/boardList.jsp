@@ -43,7 +43,7 @@
 			      var selectedOption = this.getAttribute("data-option");
 			      document.getElementById("searchOptionBtn").textContent = selectedOption;
 			    });
-			  });
+			});
 		});
 			
 		// 검색 실행
@@ -98,7 +98,7 @@
 		    var searchKeyword = document.getElementById("searchKeyword").value;
 		    var boardCatCd = "${boardCatCd}";
 
-		    if (searchKeyword == null || searchKeyword == '') {
+		    if (searchKeyword == null) {
 		        alert("검색어를 입력하세요");
 		        return false;
 		    }
@@ -289,14 +289,13 @@
 								&nbsp;
 								</div>
 								<div class="col-md-5">
-									<div class="input-group">
+									<div class="input-group" style="width:65%;">
 										<button
 											type="button"
-											class="btn btn-primary dropdown-toggle"
+											class="btn btn-outline-dark dropdown-toggle"
 											data-bs-toggle="dropdown"
 											aria-expanded="false"
 											id="searchOptionBtn"
-											style="width: 25%;"
 										>
 											제목
 										</button>
@@ -311,7 +310,7 @@
 											placeholder="검색어를 입력하세요."
 											id="searchKeyword"
 										/>
-										<button class="btn btn-primary" type="button" onclick="search()" style="z-index: 0;">검색</button>
+										<button class="input-group-text" type="button" onclick="search()" style="z-index: 0;"><i class="tf-icons bx bx-search"></i></button>
 									</div>
 								</div>	
 							</div>
@@ -410,21 +409,21 @@
 										</div>
 				                    </div>
 								</div>
-				             		<!-- 작성버튼 구분 -->
-									<div class="addBtn">
-										<c:choose>
-											<c:when test="${userId == 'admin' && boardCatCd == '00'}">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=00'">공지 작성</button>
-											</c:when>
-											<c:when test="${userId != 'admin' && boardCatCd == '99'}">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=99'">게시물 작성</button>
-											</c:when>
-											<c:when test="${userId != 'admin' && boardCatCd != '00' && boardCatCd != '99'}">
-												<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=${ud.deptCd}'">게시물 작성</button>
-											</c:when>
-										</c:choose>
-									</div>
-									<!-- / 작성버튼 -->
+			             		<!-- 작성버튼 구분 -->
+								<div class="addBtn">
+									<c:choose>
+										<c:when test="${userId == 'admin' && boardCatCd == '00'}">
+											<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=00'">공지 작성</button>
+										</c:when>
+										<c:when test="${userId != 'admin' && boardCatCd == '99'}">
+											<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=99'">게시물 작성</button>
+										</c:when>
+										<c:when test="${userId != 'admin' && boardCatCd != '00' && boardCatCd != '99'}">
+											<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/board/addBoard?boardCatCd=${ud.deptCd}'">게시물 작성</button>
+										</c:when>
+									</c:choose>
+								</div>
+								<!-- / 작성버튼 -->
 			                </div>
 			                <!-- / 페이징 -->
 			                
