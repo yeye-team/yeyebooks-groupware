@@ -9,10 +9,10 @@
 				<c:when test="${sessionScope.userId == 'admin'}">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					  <li class="nav-item">
-					    <a class="nav-link" href="javascript:void(0)">조직관리</a>
+					    <a class="nav-link" href="/yeyebooks/deptList">조직관리</a>
 					  </li>
 					  <li class="nav-item">
-					    <a class="nav-link" href="javascript:void(0)">구성원관리</a>
+					    <a class="nav-link" href="/yeyebooks/userList">구성원관리</a>
 					  </li>
 					  <li class="nav-item">
 					    <a class="nav-link" href="/yeyebooks/board/boardList">게시판관리</a>
@@ -23,9 +23,9 @@
 					  <li class="nav-item">
 					    <a class="nav-link" href="javascript:void(0)">시설/비품관리</a>
 					  </li>
-					  <li class="nav-item">
+					  <!-- <li class="nav-item">
 					    <a class="nav-link" href="javascript:void(0)">매점매출관리</a>
-					  </li>
+					  </li> -->
 					</ul>
 				</c:when>
 				<c:otherwise>
@@ -34,7 +34,7 @@
 					    <a class="nav-link" href="javascript:void(0)">전자결재</a>
 					  </li>
 					  <li class="nav-item">
-					    <a class="nav-link" href="javascript:void(0)">인사</a>
+					    <a class="nav-link" href="/yeyebooks/userInformation">인사</a>
 					  </li>
 					  <li class="nav-item">
 					    <a class="nav-link" href="/yeyebooks/board/boardList">게시판</a>

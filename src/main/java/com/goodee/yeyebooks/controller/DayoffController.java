@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.goodee.yeyebooks.service.DayoffService;
-import com.goodee.yeyebooks.vo.Holiday;
+//import com.goodee.yeyebooks.vo.Holiday;
 
 @Controller
 public class DayoffController {
@@ -61,30 +61,30 @@ public class DayoffController {
         NodeList dateNameList = document.getElementsByTagName("dateName");
         NodeList isHolidayList = document.getElementsByTagName("isHoliday");
         NodeList locdateList = document.getElementsByTagName("locdate");
-        List<Holiday> list = new ArrayList<>();
+        //List<Holiday> list = new ArrayList<>();
         
         for(int i=0; i < dateNameList.getLength(); i++) {
-        	Holiday h = new Holiday();
-        	Node n1 = dateNameList.item(i).getChildNodes().item(0);
-        	Node n2 = isHolidayList.item(i).getChildNodes().item(0);
-        	Node n3 = locdateList.item(i).getChildNodes().item(0);
-        	h.setDateName(n1.getNodeValue());
-        	h.setIsHoliday(n2.getNodeValue());
-        	h.setLocdate(n3.getNodeValue());
-        	list.add(h);
+			/*
+			 * Holiday h = new Holiday(); Node n1 =
+			 * dateNameList.item(i).getChildNodes().item(0); Node n2 =
+			 * isHolidayList.item(i).getChildNodes().item(0); Node n3 =
+			 * locdateList.item(i).getChildNodes().item(0);
+			 * h.setDateName(n1.getNodeValue()); h.setIsHoliday(n2.getNodeValue());
+			 * h.setLocdate(n3.getNodeValue()); list.add(h);
+			 */
         }
       
         
         
-        model.addAttribute("list",list);
+        //model.addAttribute("list",list);
 		return "/testApi";
 	}
 	
-	@GetMapping("/attendance")
-	public String attendanceManagement() {
-		
-		return "user/attendanceManagement";
-	}
+	/*
+	 * @GetMapping("/attendance") public String attendanceManagement() {
+	 * 
+	 * return "user/attendanceManagement"; }
+	 */
 	
 	
 	@GetMapping("/userInformation")

@@ -104,7 +104,7 @@
 	        
 	        $('#moveToCalendarAll').click(function(){
 	        	// 캘린더 주소
-	        	location.href="/yeyebooks/";
+	        	location.href="/yeyebooks/schedule";
 	        })
 	        $('#moveToWaitingAll').click(function(){
 	        	// 진행중인 문서 주소
