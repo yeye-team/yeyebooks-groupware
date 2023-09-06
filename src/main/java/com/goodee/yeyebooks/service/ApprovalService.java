@@ -69,27 +69,30 @@ public class ApprovalService {
 	
 
 	// 문서 추가 메서드
-	public int addApproval(Approval approval, String path) {
+	public void addApproval(Approval approval, String path) {
 		//log.debug("\u001B[41m"+ "boardService board : " +  board + "\u001B[0m");
 		
 		// 관리자 메인메뉴바 : 모든 부서 코드 조회
 		List<Map<String, Object>> selectAllCatCode = approvalMapper.selectAll();
 		//log.debug("\u001B[41m" + selectAllCatCode + "< selectAllCatCode" + "\u001B[0m");
 		
-		int row = approvalMapper.insertApproval(null);
+		approvalMapper.insertApproval(approval);
+		
+		String aprvNo = approval.getAprvNo();
+		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
+		
 		//log.debug("\u001B[41m" + "insertBoard row : " + row + "\u001B[0m");
 		// addboard 성공 및 첨부된 파일이 1개 이상 있다면
 		List<MultipartFile> fileList = approval.getMultipartFile();
-		if(row == 1 && fileList != null && fileList.size() > 0) {
-			String aprvNo = approval.getAprvNo();
+		if(fileList != null && fileList.size() > 0) {
 			//log.debug("\u001B[41m" + "insertBoard boardFile boardNo : " + boardNo + "\u001B[0m");
 			for(MultipartFile mf : fileList) { // 첨부 파일 개수만큼 반복
 				if(mf.getSize() > 0) {
 					ApprovalFile bf = new ApprovalFile();
-					bf.setAprvNo(path); // 부모키값
-					bf.setOrginFilename(path); // 파일원본이름
+					bf.setAprvNo(aprvNo); // 부모키값
+					bf.setOrginFilename(mf.getOriginalFilename()); // 파일원본이름
 					bf.setSaveFilename(path);
-					bf.setFiletype(path); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
+					bf.setFiletype(mf.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
 					bf.setPath(path);
 					
 					// 저장될 파일 이름
@@ -102,7 +105,7 @@ public class ApprovalService {
 					bf.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
 					
 					// 테이블에 저장
-					approvalMapper.insertApprovalFile(null);
+					approvalMapper.insertApprovalFile(bf);
 					// 파일저장(저장위치필요 > path변수 필요)
 					// path 위치에 저장파일이름으로 빈파일을 생성
 					File f = new File(path+bf.getSaveFilename());
@@ -120,7 +123,6 @@ public class ApprovalService {
 				}
 			}
 		}
-		return row;
 	}
 	
 	public Map<String, Object> getApprovalWaitingCnt(String userId){

@@ -13,7 +13,7 @@ import com.goodee.yeyebooks.vo.ApprovalLine;
 public interface ApprovalMapper {
 	List<Map<String, Object>> selectAll();
 	// 결재문서 추가
-	public int insertApproval(Approval approval);
+	public void insertApproval(Approval approval);
 	// 결재문서 파일추가
 	public int insertApprovalFile(ApprovalFile approvalFile);
 	// 결재문서 결재선 추가

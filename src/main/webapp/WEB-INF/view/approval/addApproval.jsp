@@ -102,80 +102,6 @@
         $('#documentType').trigger('change');
     });
     
-/*     // ul li 숨기고 보이는 기능  ------------------------------------
-    $('.toggle-link').click(function(e) {
-    	e.preventDefault();
-
-    	// 클릭한 요소의 하위 ul 요소를 활성화/비활성화합니다.
-    	$(this).next('ul').toggleClass('active');
-
-    	// 아이콘 방향을 변경합니다.
-    	$(this).toggleClass('active');
-    });
- */
-/*     // 체크박스 관련 기능
-    let selectedCheckbox = null; // 선택된 체크박스를 추적하는 변수
-
-    // 체크박스 클릭 이벤트
-    $('.member-checkbox').click(function() {
-    	// 다른 체크박스 선택 해제
-    	$('.member-checkbox').not(this).prop('checked', false);
-
-    	// 클릭한 체크박스 선택
-    	$(this).prop('checked', true);
-
-    	selectedCheckbox = this; // 선택된 체크박스 저장
-    });
-
- // 오른쪽 화살표 첫번째 버튼 동작 구현
-    $('#rightArrowButtonFirst').click(function() {
-        if (selectedCheckbox !== null) {
-            const memberIdInputFirst = $('.memberIdInputFirst');
-            const memberNameInputFirst = $('.memberNameInputFirst');
-            const memberId = $(selectedCheckbox).val();
-            const memberName = $(selectedCheckbox).parent().text().trim();
-            
-            // user 객체 찾기
-            const selectedUser = userList.find(user => user.userId === memberId);
-            
-            memberIdInputFirst.val(selectedUser.userId);
-            memberNameInputFirst.val(selectedUser.userNm);
-        }
-    });
-
-    // 오른쪽 화살표 두번째 버튼 동작 구현
-    $('#rightArrowButtonSecond').click(function() {
-        if (selectedCheckbox !== null) {
-            const memberIdInputSecond = $('.memberIdInputSecond');
-            const memberNameInputSecond = $('.memberNameInputSecond');
-            const memberId = $(selectedCheckbox).val();
-            const memberName = $(selectedCheckbox).parent().text().trim();
-            
-            // user 객체 찾기
-            const selectedUser = userList.find(user => user.userId === memberId);
-            
-            memberIdInputSecond.val(selectedUser.userId);
-            memberNameInputSecond.val(selectedUser.userNm);
-        }
-    });
-
-    // 오른쪽 화살표 세번째 버튼 동작 구현
-    $('#rightArrowButtonThird').click(function() {
-        if (selectedCheckbox !== null) {
-            const memberIdInputThird = $('.memberIdInputThird');
-            const memberNameInputThird = $('.memberNameInputThird');
-            const memberId = $(selectedCheckbox).val();
-            const memberName = $(selectedCheckbox).parent().text().trim();
-            
-            // user 객체 찾기
-            const selectedUser = userList.find(user => user.userId === memberId);
-            
-            memberIdInputThird.val(selectedUser.userId);
-            memberNameInputThird.val(selectedUser.userNm);
-        }
-    }); */
-    
-    
 </script>
 
 
@@ -340,7 +266,22 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+<script>
+    // 문서 종류 선택 변경 이벤트 핸들러
+    document.getElementById("documentType").addEventListener("change", function() {
+        // 선택한 문서 종류 값 가져오기
+        var selectedValue = this.value;
 
+        // doc_cat_cd 설정
+        var docCatCd = (selectedValue === "expense") ? "01" : "03";
+
+        // 폼 요소에 숨겨진 필드로 doc_cat_cd 설정
+        document.getElementById("doc_cat_cd").value = docCatCd;
+
+        // 폼 제출
+        document.getElementById("approvalForm").submit();
+    });
+</script>
 
 </head>
 <body>
@@ -460,24 +401,24 @@ document.addEventListener("DOMContentLoaded", function() {
 		    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
 		    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
 		</div>
-        <form action="${pageContext.request.contextPath}/approval/addApproval" method="post" enctype="multipart/form-data">
+        <form id="approvalForm" action="addApproval" method="post" enctype="multipart/form-data">
 			
-            <label for="documentType">문서 종류 선택:</label>
-	        <select id="documentType" name="documentType">
-	            <option value="normal">일반 문서</option>
-	            <option value="expense">지출 결의서</option>
+            <label for="docCatCd">문서 종류 선택:</label>
+	        <select id="docCatCd" name="docCatCd">
+	            <option value="03">일반 문서</option>
+	            <option value="01">지출 결의서</option>
 	        </select>
     
     		<div id="normalForm" style="margin-top: 20px;">
     			<!-- 제목 입력 -->
                 <div class="mb-3">
 	                <input type="hidden" name="userId" value="${userId}">
-	                <input type="text" name="boardTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+	                <input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
                 </div>
                 <!-- 내용 입력 -->
 				<div class="mb-1">
 					<!-- 네이버 에디터 -->
-					<textarea name="boardContents"
+					<textarea name="aprvContents"
 							  class="form-control"
 							  id="editor"
 							  placeholder="내용을 입력하세요"
@@ -531,7 +472,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
             </div>
             
-            <input type="submit" value="문서 작성">
+            <button type="submit" class='btn btn-primary' onclick="submitContents()">문서등록</button>
         </form>
 
 

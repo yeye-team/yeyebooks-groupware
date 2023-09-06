@@ -4,21 +4,26 @@
 	
 	<!-- 결제 문서 추가 --> 
 	<insert id="insertApproval" parameterType="com.goodee.yeyebooks.vo.Approval">
+	   <selectKey order="AFTER" keyProperty="aprvNo" resultType="java.lang.String">
+			SELECT last_insert_id() as aprvNo
+		</selectKey>
 	    INSERT INTO approval (
-	    	user_id userId, doc_cat_cd docCatCd, 
-	    	aprv_title aprvTitle, aprv_contents aprvContents, 
-	    	aprv_ymd aprvYmd, rjct_reason rjctReason, 
-	    	aprv_stat_cd aprvStartCd, reference, 
+	    	user_id, 
+	    	doc_cat_cd, 
+	    	aprv_title, 
+	    	aprv_contents, 
+	    	aprv_ymd, 
+	    	aprv_stat_cd, 
+	    	reference, 
 	    	c_date, u_date
 	    	)
 	    VALUES (
-		    #{user_id},
-			#{doc_cat_cd}, 
-			#{aprv_title},
-			#{aprv_contents},
-			#{aprv_ymd},
-			#{rjct_reason},
-			#{aprv_stat_cd},
+		    #{userId},
+			#{docCatCd}, 
+			#{aprvTitle},
+			#{aprvContents},
+			NOW(),
+			(select code from common_code where group_code='A001' and code_nm='진행중'),
 			#{reference},
 		    NOW(), NOW()
 		    );
@@ -27,13 +32,16 @@
 	 <!-- 첨부 파일 추가 쿼리 -->
     <insert id="insertApprovalFile" parameterType="com.goodee.yeyebooks.vo.ApprovalFile">
         INSERT INTO approval_file(
-				aprv_no aprvNo, orgin_filename orginFilename,
-				save_filename saveFilename, filetype ,
+				aprv_no, 
+				orgin_filename,
+				save_filename, 
+				filetype ,
 				path
 			)
 		VALUES(
-			#{orgin_filename},
-			#{save_filename},
+			#{aprvNo},
+			#{orginFilename},
+			#{saveFilename},
 			#{filetype},
 			#{path}
 		)
@@ -48,11 +56,11 @@
             aprv_ymd aprvYmd
         )
         VALUES (
-            #{aprv_no},
-            #{user_id},
-            #{aprv_stat_cd},
-            #{aprv_sequence},
-            #{aprv_ymd}
+            #{aprvNo},
+            #{userId},
+            #{aprvStatCd},
+            #{aprvSequence},
+            #{aprvYmd}
         )
 
     </insert>

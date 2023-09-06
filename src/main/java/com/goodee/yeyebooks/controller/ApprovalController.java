@@ -94,8 +94,8 @@ public class ApprovalController {
 	 */
 
 	@GetMapping("/approval/addApproval")
-	public String addBoard(Model model, HttpSession session, String boardCatCd) {
-		String userId = (String)session.getAttribute("userId");
+	public String addApproval(Model model, HttpSession session, String docCatCd) {
+		String userId = "admin";
 		//log.debug("\u001B[41m"+ "addBoard loginUserId : " + userId + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ "addBoard boardCatCd : " + boardCatCd + "\u001B[0m");
 		
@@ -110,20 +110,20 @@ public class ApprovalController {
 		model.addAttribute("userCnt",userCnt);
 		
 		model.addAttribute("userId", userId);
-		model.addAttribute("boardCatCd", boardCatCd);
+		model.addAttribute("docCatCd", docCatCd);
 		model.addAllAttributes(mainMenu);
 		return("/approval/addApproval");
 	}
 	
 	@PostMapping("/approval/addApproval")	
-	public String addBoard(HttpServletRequest request, Board board) {
+	public String addApproval(HttpServletRequest request, Approval approval) {
 		// RealPath를 붙혀야 경로를 안다.
-		String path = request.getServletContext().getRealPath("/boardFile/");
+		String path = request.getServletContext().getRealPath("/approvalFile/");
 		log.debug("\u001B[41m" + "path" + path + "\u001B[0m");
-		int row = approvalService.addApproval(approval, path);
-		log.debug("\u001B[41m"+ board + "입력 board" + "\u001B[0m");	
+		approvalService.addApproval(approval, path);
+		log.debug("\u001B[41m"+ approval + "입력 board" + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
-		return "redirect:/approval/approvalList?boardCatCd="+board.getBoardCatCd();
+		return "redirect:/approval/approvalList?docCatCd="+approval.getDocCatCd();
 	}
 
 }
