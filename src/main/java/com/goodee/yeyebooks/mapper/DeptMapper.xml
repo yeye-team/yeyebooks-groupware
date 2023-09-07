@@ -46,7 +46,7 @@
 	</select>
 	
 	<select id="selectUserCntByDeptAndAll" resultType="java.util.Map">
-		SELECT u.dept_cd deptCd, c2.code_nm deptNm, COUNT(*) cnt FROM user u      
+		SELECT null deptCd, null deptNm, COUNT(*) cnt FROM user u      
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
 		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)
 		UNION ALL
