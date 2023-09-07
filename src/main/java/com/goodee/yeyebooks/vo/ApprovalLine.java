@@ -6,7 +6,7 @@ import lombok.Data;
 public class ApprovalLine {
 	private String aprvNo;
 	private String userId;
-	private String aprvYn;
+	private String aprvStatCd;
 	private int aprvSequence;
 	private String aprvYmd;
 }

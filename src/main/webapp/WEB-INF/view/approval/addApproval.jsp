@@ -83,25 +83,24 @@
 
 <script>
     $(document).ready(function() {
-        $('#documentType').on('change', function() {
+        $('#docCatCd').on('change', function() {
             var selectedValue = $(this).val();
             changeForm(selectedValue);
         });
 
         function changeForm(selectedValue) {
-            if (selectedValue === "normal") {
-                $('#normalForm').show();
-                $('#expenseForm').hide();
-            } else if (selectedValue === "expense") {
-                $('#normalForm').hide();
-                $('#expenseForm').show();
+            if (selectedValue === "03") {
+                $('#03').show();
+                $('#01').hide();
+            } else if (selectedValue === "01") {
+                $('#03').hide();
+                $('#01').show();
             }
         }
 
         // 최초 로딩 시 select의 값을 확인하여 초기 폼 설정
-        $('#documentType').trigger('change');
+        $('#docCatCd').trigger('change');
     });
-    
 </script>
 
 
@@ -165,6 +164,7 @@
 </script>
 
 <script>
+	let approvalLine = [];
     $(document).ready(function() {
         let selectedUsers = []; // 선택된 사용자 정보를 저장하는 배열
 
@@ -189,6 +189,7 @@
             }
         });
 
+
         // 모달 추가 버튼 클릭 시
         $('.modalAddUserToDeptBtn').click(function() {
             // 선택된 사용자 정보를 확인하기 위해 콘솔에 출력
@@ -209,24 +210,38 @@
             const firstApproverName = $('#firstApproverName');
             const secondApproverName = $('#secondApproverName');
             const thirdApproverName = $('#thirdApproverName');
-
+            
+            const firstApproveId = $('input[name="approvalLine"]').eq(0);
+            const secondApproveId = $('input[name="approvalLine"]').eq(1);
+            const thirdApproveId = $('input[name="approvalLine"]').eq(2);
+            
             if (users.length >= 1) {
                 firstApproverName.text(users[0].memberName);
+                firstApproveId.val(users[0].memberId);
+                approvalLine.push(users[0].memberId);
             } else {
                 firstApproverName.text("");
             }
 
             if (users.length >= 2) {
                 secondApproverName.text(users[1].memberName);
+                secondApproveId.val(users[1].memberId);
+                approvalLine.push(users[1].memberId);
             } else {
                 secondApproverName.text("");
             }
 
             if (users.length >= 3) {
                 thirdApproverName.text(users[2].memberName);
+                thirdApproveId.val(users[2].memberId);
+                approvalLine.push(users[2].memberId);
             } else {
                 thirdApproverName.text("");
             }
+            console.log(approvalLine);
+            console.log(firstApproveId.val());
+            console.log(secondApproveId.val());
+            console.log(thirdApproveId.val());
         }
     });
  // 모달 닫힘 이벤트를 감지하여 선택된 값 초기화
@@ -251,6 +266,36 @@
         selectedUsers = [];
     });
 
+</script>
+
+<script>
+//FormData 객체 생성
+var formData = new FormData(document.getElementById('selectedUsers')); // #myForm은 폼의 ID입니다.
+
+// 추가 데이터를 JavaScript 객체로 생성
+var additionalData = {
+    key1: 'approvalLine'
+};
+
+// 추가 데이터를 formData에 추가
+$.each(additionalData, function(key, value) {
+    formData.append(key, value);
+});
+
+// Ajax 요청 보내기
+$.ajax({
+    type: 'POST',
+    url: 'addApproval',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function(response) {
+        // 성공 처리
+    },
+    error: function(error) {
+        // 오류 처리
+    }
+});
 </script>
 
 <script>
@@ -395,13 +440,18 @@ document.addEventListener("DOMContentLoaded", function() {
 		  </div>
 		</div>
 		
+        <form id="approvalForm" action="addApproval" method="post" enctype="multipart/form-data">
+
+	    <!-- 선택된 결재자 정보를 저장할 hidden 필드 -->
+	    <input type="hidden" name="approvalLine" value="">
+		<input type="hidden" name="approvalLine" value="">
+		<input type="hidden" name="approvalLine" value="">
 		<!-- 선택된 결재자 정보를 표시할 HTML 요소 -->
 		<div id="selectedApprovers">
 		    <p>첫 번째 결재자: <span id="firstApproverName"></span></p>
 		    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
 		    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
 		</div>
-        <form id="approvalForm" action="addApproval" method="post" enctype="multipart/form-data">
 			
             <label for="docCatCd">문서 종류 선택:</label>
 	        <select id="docCatCd" name="docCatCd">
@@ -409,7 +459,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	            <option value="01">지출 결의서</option>
 	        </select>
     
-    		<div id="normalForm" style="margin-top: 20px;">
+    		<div id="03" style="margin-top: 20px;">
     			<!-- 제목 입력 -->
                 <div class="mb-3">
 	                <input type="hidden" name="userId" value="${userId}">
@@ -448,7 +498,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			  	</div>
 			</div>
 			
-			<div id="expenseForm" style="display: none; margin-top: 20px;">
+			<div id="01" style="display: none; margin-top: 20px;">
 			    <label for="expenseDate">지출 날짜:</label>
 			    <input type="date" id="expenseDate" name="expenseDate"><br>
 			    

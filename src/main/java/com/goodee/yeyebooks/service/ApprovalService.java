@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 public class ApprovalService {
-	
+	String todayYmd = LocalDate.now().toString();
 	@Autowired 
 	private ApprovalMapper approvalMapper;
 	
@@ -69,38 +69,47 @@ public class ApprovalService {
 	
 
 	// 문서 추가 메서드
-	public void addApproval(Approval approval, String path) {
-		//log.debug("\u001B[41m"+ "boardService board : " +  board + "\u001B[0m");
+	public int addApproval(Approval approval, String[] approvalLine, String path) {
+		log.debug("\u001B[35m"+ "approvalLien : " +  approvalLine + "\u001B[0m");
+		approval.setAprvYmd(todayYmd);
+		String aprvNo = approvalMapper.selectApprovalNo(approval);
+		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
+		approval.setAprvNo(aprvNo);
+		
+		int row = approvalMapper.insertApproval(approval);
 		
 		// 관리자 메인메뉴바 : 모든 부서 코드 조회
 		List<Map<String, Object>> selectAllCatCode = approvalMapper.selectAll();
 		//log.debug("\u001B[41m" + selectAllCatCode + "< selectAllCatCode" + "\u001B[0m");
 		
-		approvalMapper.insertApproval(approval);
+		if(approvalLine != null && approvalLine.length != 0) {
+			int seq = 1;
+			for(String line : approvalLine) {
+				System.out.println("ApprovalService line : " + line);
+				ApprovalLine apl = new ApprovalLine();
+				apl.setUserId(line);
+				apl.setAprvSequence(seq);
+				apl.setAprvNo(aprvNo);
+				int lineRow = approvalMapper.insertApprovalLine(apl);
+				seq++;
+			}
+		}
 		
-		String aprvNo = approval.getAprvNo();
-		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
-		
-		//log.debug("\u001B[41m" + "insertBoard row : " + row + "\u001B[0m");
-		// addboard 성공 및 첨부된 파일이 1개 이상 있다면
+		// addApproval 성공 및 첨부된 파일이 1개 이상 있다면
 		List<MultipartFile> fileList = approval.getMultipartFile();
 		if(fileList != null && fileList.size() > 0) {
-			//log.debug("\u001B[41m" + "insertBoard boardFile boardNo : " + boardNo + "\u001B[0m");
 			for(MultipartFile mf : fileList) { // 첨부 파일 개수만큼 반복
 				if(mf.getSize() > 0) {
 					ApprovalFile bf = new ApprovalFile();
 					bf.setAprvNo(aprvNo); // 부모키값
 					bf.setOrginFilename(mf.getOriginalFilename()); // 파일원본이름
-					bf.setSaveFilename(path);
 					bf.setFiletype(mf.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
-					bf.setPath(path);
+					bf.setPath("/approvalFile/");
 					
 					// 저장될 파일 이름
 					// 확장자
 					int lastIdx = mf.getOriginalFilename().lastIndexOf(".");
 					String ext = mf.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
-					//log.debug("\u001B[41m" + "insertBoard boardFile lastIdx : " + lastIdx + "\u001B[0m");
-					//log.debug("\u001B[41m" + "insertBoard boardFile ext : " + ext + "\u001B[0m");
 					// 새로운 이름 + 확장자
 					bf.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
 					
@@ -110,8 +119,6 @@ public class ApprovalService {
 					// path 위치에 저장파일이름으로 빈파일을 생성
 					File f = new File(path+bf.getSaveFilename());
 					// 빈파일에 첨부된 파일의 스트림을 주입한다.
-					log.debug("\u001B[41m" + "insertBoard boardFile f : " + f + "\u001B[0m");
-					log.debug("\u001B[41m" + "insertBoard boardFile f.getAbsolutePath() : " + f.getAbsolutePath() + "\u001B[0m");
 					try {
 						mf.transferTo(f);
 					} catch(IllegalStateException | IOException e) {
@@ -123,6 +130,7 @@ public class ApprovalService {
 				}
 			}
 		}
+		return row;
 	}
 	
 	public Map<String, Object> getApprovalWaitingCnt(String userId){

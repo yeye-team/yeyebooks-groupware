@@ -96,15 +96,13 @@ public class ApprovalController {
 	@GetMapping("/approval/addApproval")
 	public String addApproval(Model model, HttpSession session, String docCatCd) {
 		String userId = "admin";
-		//log.debug("\u001B[41m"+ "addBoard loginUserId : " + userId + "\u001B[0m");	
-		//log.debug("\u001B[41m"+ "addBoard boardCatCd : " + boardCatCd + "\u001B[0m");
 		
 		List<Map<String, Object>> mainMenu = approvalService.getUserCntByDeptAndAll();
 		//log.debug("\u001B[41m"+ "addBoard mainMenu : " + mainMenu + "\u001B[0m");
 		List<Map<String, Object>> deptList = deptService.getUserCntByDept();
 		List<Map<String, Object>> userList = deptService.getUserListByDept();
 		List<Map<String, Object>> userCnt = deptService.getUserCntByDeptAndAll();
-		
+	
 		model.addAttribute("deptList",deptList);
 		model.addAttribute("userList",userList);
 		model.addAttribute("userCnt",userCnt);
@@ -116,12 +114,14 @@ public class ApprovalController {
 	}
 	
 	@PostMapping("/approval/addApproval")	
-	public String addApproval(HttpServletRequest request, Approval approval) {
+	public String addApproval(HttpServletRequest request, Approval approval,
+							@RequestParam(name="approvalLine") String[] approvalLine) {
+		System.out.println("ApprovalController approvalLine[0] : " + approvalLine[0]);
 		// RealPath를 붙혀야 경로를 안다.
 		String path = request.getServletContext().getRealPath("/approvalFile/");
-		log.debug("\u001B[41m" + "path" + path + "\u001B[0m");
-		approvalService.addApproval(approval, path);
-		log.debug("\u001B[41m"+ approval + "입력 board" + "\u001B[0m");	
+		log.debug("\u001B[35m" + "path" + path + "\u001B[0m");
+		approvalService.addApproval(approval, approvalLine, path);
+		log.debug("\u001B[35m"+ approval + "입력 board" + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
 		return "redirect:/approval/approvalList?docCatCd="+approval.getDocCatCd();
 	}

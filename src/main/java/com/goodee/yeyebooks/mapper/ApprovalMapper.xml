@@ -2,12 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goodee.yeyebooks.mapper.ApprovalMapper">
 	
+	<select id="selectApprovalNo" parameterType="com.goodee.yeyebooks.vo.Approval">
+		SELECT generate_approval_no(
+			#{docCatCd},
+			replace(#{aprvYmd}, '-', '')
+		) aprvNo
+		FROM DUAL
+	</select>
+	
 	<!-- 결제 문서 추가 --> 
 	<insert id="insertApproval" parameterType="com.goodee.yeyebooks.vo.Approval">
-	   <selectKey order="AFTER" keyProperty="aprvNo" resultType="java.lang.String">
-			SELECT last_insert_id() as aprvNo
-		</selectKey>
 	    INSERT INTO approval (
+	    	aprv_no,
 	    	user_id, 
 	    	doc_cat_cd, 
 	    	aprv_title, 
@@ -18,6 +24,7 @@
 	    	c_date, u_date
 	    	)
 	    VALUES (
+	    	#{aprvNo},
 		    #{userId},
 			#{docCatCd}, 
 			#{aprvTitle},
@@ -51,16 +58,16 @@
 	<!-- 결재 선 추가 쿼리 -->
     <insert id="insertApprovalLine" parameterType="com.goodee.yeyebooks.vo.ApprovalLine">
         INSERT INTO approval_line (
-            aprv_no aprvNo, user_id userId,
-            aprv_stat_cd aprvStatCd, aprv_sequence aprvSequence,
-            aprv_ymd aprvYmd
+            aprv_no, 
+            user_id,
+            aprv_stat_cd, 
+            aprv_sequence
         )
         VALUES (
             #{aprvNo},
             #{userId},
-            #{aprvStatCd},
-            #{aprvSequence},
-            #{aprvYmd}
+            (select code from common_code where group_code = 'A001' and code_nm = '진행중'),
+            #{aprvSequence}
         )
 
     </insert>
@@ -124,14 +131,10 @@
 			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm statName,
 			a.reference, a.c_date cDate,
 			af.orgin_filename orginFilename, af.save_filename saveFilename,
-			al.aprv_stat_cd aprvStatCd, al.aprv_ymd aprv_line_ymd,
-			al.user_id alUserId, u.user_nm userName,
-			ul.user_nm ulUserName
+			(select user_nm from user where user_id = a.user_id) userName
 		FROM approval a
 		JOIN user u ON a.user_id = u.user_id
 		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
-		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-		LEFT JOIN user ul ON al.user_id = ul.user_id
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
 		<choose>
@@ -139,13 +142,13 @@
 	            WHERE a.user_id = 'admin'
 	         </when>
 	         <when test="status == 3">
-	            WHERE al.user_id = 'admin'
+	            WHERE 'admin' in (select user_id from approval_line where aprv_no = a.aprv_no)
 	         </when>
 	         <when test="status == 5">
 	            WHERE a.user_id = 'admin'
 	         </when>
 			<otherwise>
-				WHERE (a.user_id = 'admin' OR al.user_id = 'admin' OR a.reference LIKE '%admin%')
+				WHERE (a.user_id = 'admin' OR u.user_id in (select user_id from approval_line where aprv_no = a.aprv_no) OR a.reference LIKE '%admin%')
 			</otherwise>
 		</choose>
 		<choose>
