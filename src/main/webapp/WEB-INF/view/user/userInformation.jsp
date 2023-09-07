@@ -12,6 +12,13 @@
 <head>
 	<title>인사정보</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
+	<style>
+		.menu-link{
+    		background-color: white;
+	    	border: none;
+	    	width: 88%;
+    	}
+	</style>
 </head>
 <body>
 	<!-- Layout wrapper -->
@@ -29,20 +36,24 @@
 			
 			<ul class="menu-inner py-1">
 	            <!-- 인사정보 -->
-	            <li class="menu-item active">
-	              <a href="${pageContext.request.contextPath}/deptList" class="menu-link">
-	                <i class="menu-icon tf-icons bx bx-group"></i>
-	                인사정보
-	              </a>
+	            <li class="menu-item active" onclick="location.href='${pageContext.request.contextPath}/userInformation'">
+	            	<button class="menu-link">
+						<i class="menu-icon tf-icons bx bx-group"></i>
+	                	인사정보
+					</button>
 	            </li>
-
-	            <!--  -->
-	            <li class="menu-item">
-					<a href="" class="menu-link">
-					  <i class="menu-icon tf-icons bx bx-user"></i>
-					  
-					</a>
-            	</li>
+				<li class="menu-item" onclick="location.href='${pageContext.request.contextPath}/vacationList'">
+					<button class="menu-link">
+						<i class='menu-icon tf-icons bx bxl-telegram'></i>
+						휴가 신청 내역
+					</button>
+				</li>
+				<li class="menu-item" onclick="location.href='${pageContext.request.contextPath}/addVacation'">
+					<button class="menu-link">
+						<i class='menu-icon tf-icons bx bxl-telegram'></i>
+						휴가 신청
+					</button>
+				</li>
           	</ul>
         </aside>
         <!-- / Menu -->

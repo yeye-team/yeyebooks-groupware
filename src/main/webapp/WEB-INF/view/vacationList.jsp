@@ -126,6 +126,12 @@
 				<div class="menu-inner-shadow"></div>
 				
 				<ul class="menu-inner py-1">
+					<li class="menu-item" onclick="location.href='${pageContext.request.contextPath}/userInformation'">
+		            	<button class="menu-link">
+							<i class="menu-icon tf-icons bx bx-group"></i>
+		                	인사정보
+						</button>
+		            </li>
 					<li class="menu-item active" onclick="location.href='${pageContext.request.contextPath}/vacationList'">
 						<button class="menu-link">
 							<i class='menu-icon tf-icons bx bxl-telegram'></i>
