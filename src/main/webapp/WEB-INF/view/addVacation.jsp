@@ -11,14 +11,6 @@
   data-assets-path="${pageContext.request.contextPath}/assets/"
   data-template="vertical-menu-template-free"
 >
-<html
-  lang="en"
-  class="light-style layout-menu-fixed"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="${pageContext.request.contextPath}/assets/"
-  data-template="vertical-menu-template-free"
->
 <head>
 	<title>휴가 신청</title>
 	
@@ -26,8 +18,24 @@
     
     <script>
 		$(document).ready(function() {
+			$('#dayoffCd01').click(function(){
+				$('#dayoffDate01').show();
+				$('#dayoffDate02').hide();
+				$('#dayoffDate03').hide();
+			});
 			
-		}
+			$('#dayoffCd02').click(function(){
+				$('#dayoffDate01').hide();
+				$('#dayoffDate02').show();
+				$('#dayoffDate03').hide();
+			});
+			
+			$('#dayoffCd03').click(function(){
+				$('#dayoffDate01').hide();
+				$('#dayoffDate02').hide();
+				$('#dayoffDate03').show();
+			});
+		});
     </script>
     
     <style>
@@ -36,35 +44,34 @@
 	    	border: none;
 	    	width: 88%;
     	}
-    	.catScroll{
-    		overflow-y: scroll;
-    		overflow-x: hidden;
-    		width: 100%;
-    		height: 235px;
-    	}
+    	
     	h2{
     		text-align: center;
     	}
-    	
-    	.addBtn{
-    		display: flex;
- 		   justify-content: flex-end;
-    	}
-    	
-    	.table{
+    	.infoTh th {
+    		font-weight: bolder;
     		text-align: center;
-    		table-layout: fixed;
-       		width: 100%; /* 테이블의 전체 너비 */
+    		width: 20%;
     	}
-    	
-    	.table th,
-   		.table td:nth-child(1) {
-	        width: 25%;
+    	.infoTh td {
+    		width: 50%;
     	}
-    	tbody tr:hover {
-    		background-color: lightgray;
+    	.aprvTh th {
+    		font-weight: bolder;
+    		text-align: center;
     	}
-    </style>
+    	.aprvTd {
+    		height: 40px;
+    		text-align: center;
+    	}
+    	input::placeholder {
+	        text-align: center;
+	    }
+	    .form-control[readonly]{
+	    	background-color: white;
+	    	height: 50px;
+	    }
+	</style>    	
 </head>
 <body>
 	<!-- Layout wrapper -->
@@ -81,6 +88,12 @@
 				<div class="menu-inner-shadow"></div>
 				
 				<ul class="menu-inner py-1">
+					<li class="menu-item" onclick="location.href='${pageContext.request.contextPath}/userInformation'">
+		            	<button class="menu-link">
+							<i class="menu-icon tf-icons bx bx-group"></i>
+		                	인사정보
+						</button>
+		            </li>
 					<li class="menu-item" onclick="location.href='${pageContext.request.contextPath}/vacationList'">
 						<button class="menu-link">
 							<i class='menu-icon tf-icons bx bxl-telegram'></i>
@@ -108,85 +121,204 @@
 							<!-- Basic Layout -->
 							<div class="row">
 								<div class="col-xl">
-									<div class="card-header d-flex justify-content-between align-items-center">
-										<h3 class="mb-0"><strong>게시글 쓰기</strong></h3>
+									<div class="card-header">
+										<h2 class="mb-0"><strong>휴&nbsp;가&nbsp;신&nbsp;청</strong></h2>
 									</div>
 									<!-- 구분선 -->
 									<hr class="m-0">
       						    	<div class="card-body">
-					                    <form action="${pageContext.request.contextPath}/board/addBoard" method="post" enctype="multipart/form-data">
-				                        	<!-- 게시판 선택 -->
-					                        <div class="mb-3">
-				                           		<c:choose>
-				                           			<c:when test="${userId == 'admin'}">
-				                           				<select name="boardCatCd" class="form-select">
-								                        	<option value="00" selected="selected">공지 게시판</option>
-								                        </select>
-				                           			</c:when>
-				                           			<c:otherwise>
-				                           				<c:choose>
-				                           					<c:when test="${boardCatCd == '99'}">
-								                                <select name="boardCatCd" class="form-select">
-										                        	<option value="99" selected="selected">전체 게시판</option>
-										                        	<option value="${userDept.deptCd}">${userDept.deptNm} 게시판</option>
-										                        </select>
-				                           					</c:when>
-				                           					<c:otherwise>
-								                                <select name="boardCatCd" class="form-select">
-										                        	<option value="99">전체게시판</option>
-										                        	<option value="${userDept.deptCd}" selected="selected">${userDept.deptNm} 게시판</option>
-										                        </select>
-				                           					</c:otherwise>
-				                           				</c:choose>
-				                           			</c:otherwise>
-				                           		</c:choose>
-					                        </div>
-					                        <!-- 제목 입력 -->
-							                <div class="mb-3">
-								                <input type="hidden" name="userId" value="${userId}">
-								                <input type="text" name="boardTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
-							                </div>
-							                <!-- 내용 입력 -->
-                     						<div class="mb-1">
-                     							<!-- 네이버 에디터 -->
-												<textarea name="boardContents"
-														  class="form-control"
-														  id="editor"
-														  placeholder="내용을 입력하세요"
-														  maxlength="2500" 
-														  style="
-														  	height: 380px;
-														  	width: 100%"
-							                         	  ></textarea>
-												<script type="text/javascript">
-											        var oEditors = [];
-											        nhn.husky.EZCreator.createInIFrame({
-											            oAppRef: oEditors,
-											            elPlaceHolder: "editor",
-											            sSkinURI: "${pageContext.request.contextPath}/smartEditor/SmartEditor2Skin.html",  // 스킨 경로
-											            fCreator: "createSEditor2",
-											            htParams: {
-											            	bUseToolbar : true,
-											            	bUseVerticalResizer: false,
-											            	bUseModeChanger: false
-											            }
-											        });
-											        
-											        function submitContents(){
-											        	oEditors.getById["editor"].exec("UPDATE_CONTENTS_FIELD",[]);
-											        }
-											    </script>
-               							  	</div>
+					                    <form action="${pageContext.request.contextPath}/addVacation" method="post" enctype="multipart/form-data">
+					                    	<!-- 문서 상단 -->
+					                    	<div class="row" style="margin-bottom: 5px;">
+					                    		<!-- 기안자 정보 -->
+					                    		<div class="col-md-4">
+					                    			<table class="table table-sm table-bordered infoTh">
+			                    						<tbody>
+			                    							<tr>
+			                    								<th>기안자</th>
+			                    								<td>${aprvInfo.userNm}</td>
+			                    							</tr>
+			                    							<tr>
+			                    								<th>기안부서</th>
+			                    								<td>인사팀</td>
+			                    							</tr>
+			                    							<tr>
+			                    								<th>기안일</th>
+			                    								<td>
+			                    									<a id="aprvYmd">${today}</a>
+			                    								</td>
+			                    							</tr>
+			                    							<tr>
+			                    								<th>문서번호</th>
+			                    								<td>&nbsp;</td>
+			                    							</tr>
+			                    						</tbody>
+			                    					</table>
+					                    		</div>
+					                    		
+					                    		<div class="col-md-3">&nbsp;</div>
+					                    		
+					                    		<!-- 결재선 -->
+					                    		<div class="col-md-5 table-bordered">
+					                    			<!-- 결재 -->
+					                    			<div class="row mb-1">
+					                    				<label class="col-sm-1" 
+					                    						style="font-weight: bolder; 
+					                    								display: flex;
+																        justify-content: center;
+																        align-items: center;
+																        border: 1px solid #d9dee3;">결재
+														</label>
+					                    				<div class="col-sm-11">
+					                    					<table class="table table-bordered aprvTh">
+					                    						<thead>
+					                    							<tr>
+					                    								<c:forEach items="${aprvLine}" var="line" varStatus="loop">
+						                    								<th>
+						                    									<a id="aprvSequence${loop.index+1}">
+						                    										${line.codeNm}
+					                    										</a>
+						                    								</th>
+					                    								</c:forEach>
+					                    							</tr>
+					                    						</thead>
+					                    						<tbody class="aprvTd">
+					                    							<tr>
+					                    								<c:forEach items="${aprvLine}" var="lineNm">
+						                    								<td>${lineNm.userNm}</td>
+					                    								</c:forEach>
+					                    							</tr>
+					                    						</tbody>
+					                    					</table>
+								                        </div>
+					                    			</div>
+					                    			<!-- 참조 -->
+					                    			<div class="row">
+					                    				<label class="col-sm-1" 
+					                    						style="font-weight: bolder; 
+					                    								display: flex;
+																        justify-content: center;
+																        align-items: center;
+																        border: 1px solid #d9dee3;">참조
+												        </label>
+												        <div class="col-sm-11">
+												        	<div class="table table-bordered">
+													        	<input 
+													        		class="form-control" 
+													        		type="text" 
+													        		name="reference" 
+													        		placeholder="참조를 선택하세요" 
+													        		readonly="readonly" 
+													        		value="<c:forEach items="${referList}" var="item">${item.userNm} ${item.codeNm} </c:forEach>" 
+										        				 />
+												        	</div>
+												        </div>
+					                    			</div>
+					                    		</div>
+					                    	</div>
+					                    	
+											<!-- 신청양식 -->
+											<!-- 신청인 정보 -->
+											<table class="table table-sm table-bordered">
+												<thead>
+													<tr>
+														<th style="font-size: 14px; text-align: center;">신청인</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>
+															<table class="table table-sm table-bordered infoTh">
+																<tr>
+																	<th>소속</th>
+																	<td>${aprvInfo.deptNm}</td>
+																</tr>
+																<tr>
+																	<th>직책</th>
+																	<td>${aprvInfo.rankNm}</td>
+																</tr>
+																<tr>
+																	<th>성명</th>
+																	<td>${aprvInfo.userNm}</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+											<br>
+											
+											<!-- 휴가 정보 -->
+											<table class="table table-sm table-bordered">
+												<tbody style="text-align: center;">
+						                        	<!-- 휴가 종류 선택 -->
+													<tr>
+														<th class="vacationInfo">휴가 종류</th>
+														<td colspan="3">
+								                        	<input
+									                              name="dayoffTypeCd"
+									                              class="form-check-input"
+									                              type="radio"
+									                              value="01"
+									                              checked="checked"
+									                              id="dayoffCd01"
+									                        > 오전반차 &nbsp;&nbsp;
+								                        	<input
+									                              name="dayoffTypeCd"
+									                              class="form-check-input"
+									                              type="radio"
+									                              value="02"
+									                              id="dayoffCd02"
+									                        > 오후반차 &nbsp;&nbsp;
+								                        	<input
+									                              name="dayoffTypeCd"
+									                              class="form-check-input"
+									                              type="radio"
+									                              value="03"
+									                              id="dayoffCd03"
+									                        > 연차
+														</td>
+													</tr>
+													<!-- 휴가 종류에 따른 기간 선택 폼 선택 -->
+													<tr>
+														<th class="vacationInfo">휴가 기간</th>
+														<td id="dayoffDate01">
+															<div style="display: flex; justify-content: center;">
+																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 60%">
+															</div>
+														</td>
+														<td id="dayoffDate02" style="display: none">
+															<div style="display: flex; justify-content: center;">
+																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 60%">
+															</div>
+														</td>
+														<td id="dayoffDate03" style="display: none;">
+															<div class="row" style="display: flex; justify-content: center;">
+																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 40%;">
+																&nbsp;-&nbsp;
+																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 40%;">
+															</div>
+														</td>
+														<th class="vacationInfo">잔여연차</th>
+														<td>${aprvInfo.dayoffCnt}</td>
+													</tr>
+													<tr>
+														<th class="vacationInfo">휴가 사유</th>
+														<td colspan="3">
+															<input class="form-control form-control-sm" type="text" name="aprvContents" placeholder="사유를 입력하세요" required="required">
+														</td>
+													</tr>
+												</tbody>
+											</table>
+											
                							  	<!-- 첨부 파일 -->
-							                <div class="mb-1">
+							                <div class="mb-1" style="margin-top: 10px;">
 							                	<div id="files">
 							                		<input class="form-control boardFiles" type="file" name="multipartFile"><br>
 							                	</div>
 							                </div>
 							                <div>
-							                	<button type="button" class="btn btn-icon btn-primary" id="addFile"><i class='bx bxs-file-plus'></i></button>
-												<button type="button" class="btn btn-icon btn-primary" id="removeFile"><i class='bx bxs-x-square'></i></button>
-												<button type="submit" class="btn btn-primary" style="float: right;" onclick="submitContents()" id="submitBtn">등록</button>
+												<button type="submit" class="btn btn-primary" style="float: right;" id="submitBtn">신청</button>
 							                </div>
 										</form>
 										<br>
