@@ -17,9 +17,9 @@
     <jsp:include page="./inc/head.jsp"></jsp:include>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <link href='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.css' rel='stylesheet' />
-    <script src='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.js'></script>
-    <script src="${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/locales/ko.js"></script>
+    <link href='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.css' rel='stylesheet' />
+    <script src='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.js'></script>
+    <script src="${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/locales/ko.js"></script>
     <script>
     	//full calenader
 		document.addEventListener('DOMContentLoaded', function() {	

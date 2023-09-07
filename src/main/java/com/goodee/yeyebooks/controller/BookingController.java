@@ -83,6 +83,7 @@ public class BookingController {
 		model.addAttribute("minPage", minPage);
 		model.addAttribute("maxPage", maxPage);
 		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("currentPage", currentPage);
 		
 		return "booking/myBooking";
 	}
@@ -101,5 +102,9 @@ public class BookingController {
 	public String deleteBooking(@RequestParam int bkgNo) {
 		bookingService.deleteBooking(bkgNo);
 		return "redirect:/booking/myBooking";
+	}
+	@GetMapping("/booking/currBooking")
+	public String currBooking() {
+		return "booking/currBooking";
 	}
 }

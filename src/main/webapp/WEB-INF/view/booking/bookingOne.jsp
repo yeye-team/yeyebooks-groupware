@@ -11,7 +11,7 @@
   data-template="vertical-menu-template-free"
 >
   <head>
-	<title>YEYEBOOKS</title>
+	<title>예약상세보기</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
     <script>
 		
@@ -54,7 +54,7 @@
 						</button>
 					</li>
 					<li class="menu-item">
-						<button type="submit" class="menu-link">
+						<button type="submit" class="menu-link" onclick="location.href='currBooking'">
 							<i class='bx bxs-timer' ></i>
 							<div data-i18n="Analytics">&nbsp;예약현황</div>
 						</button>
@@ -85,10 +85,7 @@
 			            			</div>
 				            	</div>
 				            	
-				            	<div class="col-md-1" 
-				            		 style="display: flex;
-       										justify-content: center;
-       										align-items: center; ">
+				            	<div class="col-md-1 d-flex justify-content-center align-items-center">
        								<c:if test="${sessionScope.userId == user.userId}">
        									<div class="dropdown">
 											<button

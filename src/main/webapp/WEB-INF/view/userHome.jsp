@@ -20,8 +20,8 @@
 
     <jsp:include page="./inc/head.jsp"></jsp:include>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-	<link href='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.css' rel='stylesheet' />
-    <script src='${pageContext.request.contextPath}/fullcalendar-5.11.5/lib/main.js'></script>
+	<link href='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.css' rel='stylesheet' />
+    <script src='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.js'></script>
   	<style>
   		.card-header, .card-header a{
   			color: #666;

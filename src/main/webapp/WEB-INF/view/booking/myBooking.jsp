@@ -11,7 +11,7 @@
   data-template="vertical-menu-template-free"
 >
   <head>
-	<title>나의 예약목록</title>
+	<title>나의예약목록</title>
     <jsp:include page="../inc/head.jsp"></jsp:include>
     
     <style>
@@ -63,10 +63,8 @@
     	let searchNm = '';
     	let currentPage;
     	
-    	$(document).ready(function() {
-    	  $('input[type="checkbox"]').on('change', function() {
-    		  labelTexts.length = 0;
-    	    $('input[type="checkbox"]:checked').each(function() {
+    	function statCheckChange(){
+    		$('input[type="checkbox"]:checked').each(function() {
     	     	const labelText = $("label[for='" + $(this).attr('name') + "']").text();
     	      	labelTexts.push(labelText);
     	    });
@@ -75,20 +73,15 @@
 				return;
 			}
 			updateBookingList();
-    	  });
-    	  
-    	  $('input[name="searchNm"]').on('change', function(){
-    		  searchNm = $('input[name="searchNm"]').val();
-    	  });
-    	  
-    	  $('#searchCat').on('change', function(){
-    		  searchCat = $('#searchCat').val();
-    	  })
-    	  
-    	  $('#searchBtn').click(function(){
-    		  updateBookingList();
-    	  })
-    	});
+    	}
+    	
+    	function searchNmChange(){
+    		searchNm = $('input[name="searchNm"]').val();
+    	}
+    	
+    	function searchCatChange(){
+    		searchCat = $('#searchCat').val();
+    	}
     	function movePage(pageNum){
     		currentPage = pageNum;
     		updateBookingList();
@@ -104,12 +97,16 @@
      			   currentPage: currentPage
      		   },
      		   success: function(response){
-     			   const bookingListChildren = $(response).find('#bookingList').children();
-     			   $('#bookingList').html(bookingListChildren);
-     			   const paginationChildren = $(response).find('.pagination').children();
-     			   $('.pagination').html(paginationChildren);
+     			   Swal.fire({
+     				   icon: 'success',
+     				   title: '성공'
+     			   })
+     			   const paginationChildren = $(response).find('#bookingPagination').children();
+     			   $('#bookingPagination').html(paginationChildren);
      			  const searchChildren = $(response).find('#searchForm').children();
     			   $('#searchForm').html(searchChildren);
+    			   const bookingListChildren = $(response).find('#bookingList').children();
+     			   $('#bookingList').html(bookingListChildren);
      		   }
      	   })
     	}
@@ -138,7 +135,7 @@
 						</button>
 					</li>
 					<li class="menu-item">
-						<button type="submit" class="menu-link">
+						<button type="submit" class="menu-link" onclick="location.href='currBooking'">
 							<i class='bx bxs-timer' ></i>
 							<div data-i18n="Analytics">&nbsp;예약현황</div>
 						</button>
@@ -163,7 +160,7 @@
 		            	<h2 class="fw-bold py-3 mb-4">나의 예약목록</h2>
 						<form class="d-flex align-items-center justify-content-end mb-2" id="searchForm">
 							<div class="px-1">
-								<select id="searchCat" class="form-select">
+								<select id="searchCat" class="form-select" onchange="searchCatChange()">
 									<option value="">분류선택</option>
 									<c:forEach var="cat" items="${bookingCategory}">
 										<c:set var="isSelect" value=""></c:set>
@@ -175,25 +172,25 @@
 								</select>
 							</div>
 							<div class="px-1">
-								<input type="text" name="searchNm" class="form-control" placeholder="예약대상" value="${searchNm }">
+								<input type="text" name="searchNm" class="form-control" placeholder="예약대상" value="${searchNm }" onchange="searchNmChange()">
 							</div>
 							<div>
-								<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+								<button type="button" class="btn btn-primary" id="searchBtn" onclick="updateBookingList()">검색</button>
 							</div>
 							<div class="form-check px-3">
-								<input type="checkbox" name="isBooking" class="form-check-input" ${isBooking}>
+								<input type="checkbox" name="isBooking" class="form-check-input" ${isBooking} onchange="statCheckChange()">
 								<label for="isBooking">예약완료</label>
 							</div>
 							<div class="form-check px-3">
-								<input type="checkbox" name="isUsing" class="form-check-input" ${isUsing}>
+								<input type="checkbox" name="isUsing" class="form-check-input" ${isUsing} onchange="statCheckChange()">
 								<label for="isUsing">이용중</label>
 							</div>
 							<div class="form-check px-3">
-								<input type="checkbox" name="isUsed" class="form-check-input" ${isUsed}>
+								<input type="checkbox" name="isUsed" class="form-check-input" ${isUsed} onchange="statCheckChange()">
 								<label for="isUsed">이용완료</label>
 							</div>
 							<div class="form-check px-3">
-								<input type="checkbox" name="isCanceled" class="form-check-input" ${isCanceled}>
+								<input type="checkbox" name="isCanceled" class="form-check-input" ${isCanceled} onchange="statCheckChange()">
 								<label for="isCanceled">예약취소</label>
 							</div>
 							
@@ -233,7 +230,7 @@
 				                    <div class="col">
 										<div class="demo-inline-spacing">
 					                        <nav aria-label="Page navigation">
-												<ul class="pagination">
+												<ul class="pagination" id="bookingPagination">
 						                          	<!-- 페이징 -->
 													<c:if test="${currentPage!=1}">
 														<li class="page-item first">
@@ -253,7 +250,7 @@
 													<!-- 페이지 5단위 출력 -->
 													<c:forEach var="i" begin="${minPage}" end="${maxPage}">
 														<c:choose>
-															<c:when test="${i==currentPage}">
+															<c:when test="${i == currentPage}">
 																<!-- 현재 페이지일때 출력 -->
 																<li class="page-item active">
 																	<button type="button" class="page-link">${i}</button>
