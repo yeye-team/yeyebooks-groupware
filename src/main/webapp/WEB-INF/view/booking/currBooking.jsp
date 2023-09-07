@@ -13,37 +13,6 @@
   <head>
 	<title>예약현황</title>
 	<jsp:include page="../inc/head.jsp"></jsp:include>
-	<link href='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.css' rel='stylesheet' />
-    <script src='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.js'></script>
-    <script>
-    $(document).ready(function() {
-    	  var calendarDiv = document.getElementById('calendar');
-
-    	  var calendar = new FullCalendar.Calendar(calendarDiv, {
-    	    selectable: true,
-    	    initialView: 'resourceTimelineDay',
-    	    headerToolbar: {
-    	      left: 'prev,next today',
-    	      center: 'title',
-    	      right: 'resourceTimelineWeek,timeGridDay'
-    	    },
-    	    resources: [
-    	    	{ id: 'a', building: '460 Bryant', title: 'Auditorium A' },
-    	        { id: 'b', building: '460 Bryant', title: 'Auditorium B' },
-    	        { id: 'c', building: '460 Bryant', title: 'Auditorium C' },
-    	        { id: 'd', building: '460 Bryant', title: 'Auditorium D' },
-    	    ],
-    	    dateClick: function(info) {
-    	      alert('clicked ' + info.dateStr + ' on resource ' + info.resource.id);
-    	    },
-    	    select: function(info) {
-    	      alert('selected ' + info.startStr + ' to ' + info.endStr + ' on resource ' + info.resource.id);
-    	    }
-    	  });
-
-    	  calendar.render();
-    	});
-	</script>
 	<style>
     	.menu-link{
     		background-color: white;
@@ -56,7 +25,41 @@
     		width: 100%;
     		height: 235px;
     	}
+    	.fc-license-message{
+    		display:none;
+    	}
+    	.card, .card-body{
+    		height: 120%;
+    	}
+    	.fc-scrollgrid-section-header .fc-datagrid-cell-main{
+    		display: none;
+    	}
     </style>
+	<link href='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.css' rel='stylesheet' />
+    <script src='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.js'></script>
+    <script src="${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/locales/ko.js"></script>
+    <script>
+    $(document).ready(function() {
+    	  var calendarDiv = document.getElementById('calendar');
+
+    	  var calendar = new FullCalendar.Calendar(calendarDiv, {
+    		height: '100%',
+    		selectable: false,
+    	    initialView: 'resourceTimelineDay',
+    	    headerToolbar: {
+    	      left: 'prev,next today',
+    	      center: 'title',
+    	      right: 'resourceTimelineWeek,timeGridDay'
+    	    },
+    	    resourceGroupField: 'building',
+    	    resources: '${pageContext.request.contextPath}/booking/bookingTargets',
+    	    locale: 'ko'
+    	  });
+
+    	  calendar.render();
+    	});
+	</script>
+	
   </head>
 
   <body>

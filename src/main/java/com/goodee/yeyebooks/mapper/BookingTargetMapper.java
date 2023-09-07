@@ -1,5 +1,12 @@
 package com.goodee.yeyebooks.mapper;
 
-public interface BookingTargetMapper {
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
+import com.goodee.yeyebooks.vo.BookingTarget;
+
+@Mapper
+public interface BookingTargetMapper {
+	List<BookingTarget> selectBookingTarget();
 }

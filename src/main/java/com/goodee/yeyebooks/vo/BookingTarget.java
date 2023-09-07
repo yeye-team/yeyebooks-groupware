@@ -6,6 +6,7 @@ import lombok.Data;
 public class BookingTarget {
 	private int trgtNo;
 	private String trgtCatCd;
+	private String trgtCategory;
 	private String trgtNm;
 	private String trgtInfo;
 	private String saveFilename;

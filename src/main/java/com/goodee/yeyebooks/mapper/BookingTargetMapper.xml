@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.goodee.yeyebooks.mapper.BookingTargetMapper">
+	<select id="selectBookingTarget" resultType="com.goodee.yeyebooks.vo.BookingTarget">
+		SELECT trgt_no trgtNo, 
+		(SELECT code_nm FROM common_code WHERE group_code = 'B102' AND CODE = trgt_cat_cd) trgtCategory,
+		trgt_nm trgtNm, trgt_info trgtInfo, save_filename saveFilename, path
+		FROM booking_target
+	</select>
 </mapper>

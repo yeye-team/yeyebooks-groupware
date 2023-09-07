@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.goodee.yeyebooks.vo.Booking;
+import com.goodee.yeyebooks.vo.BookingTarget;
 
 @Mapper
 public interface BookingMapper {
@@ -13,4 +14,5 @@ public interface BookingMapper {
 	List<String> selectBookingCategory();
 	Booking selectBookingOne(int bkgNo);
 	int deleteBooking(int bkgNo);
+
 }
