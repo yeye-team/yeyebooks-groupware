@@ -52,4 +52,151 @@
 				AND a.aprv_ymd = #{searchDate}
 			</if>
 	</select>
+	
+	<!-- 휴가 신청 -->
+	
+	<!-- 기안자 정보 조회 -->
+	<select id="getAprvInfo">
+		SELECT 
+			user_nm userNm,
+			(SELECT code_nm FROM common_code WHERE group_code = 'R001' AND CODE = rank_cd) rankNm,
+			(SELECT code_nm FROM common_code WHERE group_code = 'D001' AND CODE = dept_cd) deptNm,
+			dayoff_cnt dayoffCnt
+		FROM user
+		WHERE 
+			user_id = #{userId}
+	</select>
+	
+	<!-- 결재자 (대표 / 같은부서의 부장/차장) -->
+	<select id="getAprvLine">
+		SELECT 
+			userNm, codeNm
+		FROM (
+		    SELECT 
+		    	u.user_nm userNm, 
+		    	c.code_nm codeNm, 
+		    	u.rank_cd rankCd
+		    FROM user u
+		    LEFT OUTER JOIN common_code c
+		    ON u.rank_cd = c.code
+		    WHERE 
+		    	c.group_code = 'R001' 
+	    		AND u.rank_cd = '01'
+		    
+		    UNION ALL
+		    
+		    SELECT 
+		    	u.user_nm userNm, 
+		    	c.code_nm codeNm, 
+		    	u.rank_cd rankCd
+		    FROM user u
+		    LEFT OUTER JOIN common_code c
+		    ON u.rank_cd = c.code
+		    WHERE 
+		    	c.group_code = 'R001' 
+		    	AND u.dept_cd = (SELECT dept_cd FROM user WHERE user_id = #{userId})
+		    	AND (u.rank_cd = '04' OR u.rank_cd = '05')
+		) result
+		ORDER BY rankCd DESC
+	</select>
+	
+	<!-- 부장 차장 제외 참조자 정보 조회 -->
+	<select id="getReference">
+		SELECT u.user_nm userNm,
+			c.code_nm codeNm
+		FROM user u
+		LEFT OUTER JOIN common_code c
+		ON u.rank_cd = c.code
+		WHERE 
+			c.group_code = 'R001'
+			AND dept_cd = (SELECT dept_cd FROM user WHERE user_id = #{userId})
+			AND u.user_id != #{userId}
+			AND c.code NOT IN ('04', '05');
+	</select>
+	
+	<!-- 휴가 신청 시 시퀀스 함수 실행하여 문서번호 임의 테이블에 생성 -->
+	<select id="getAprvNo">
+		SELECT 
+			generate_approval_no('02', replace(#{aprvYmd}, '-', '')) aprvNo
+		FROM DUAL
+	</select>
+	
+	<!-- 상신내용 결재 테이블에 입력 -->
+	<insert id="insertAprv">
+	    INSERT INTO 
+	    	approval (
+		    	aprv_no,
+		    	user_id, 
+		    	doc_cat_cd, 
+		    	aprv_title, 
+		    	aprv_contents, 
+		    	aprv_ymd, 
+		    	aprv_stat_cd, 
+		    	reference, 
+		    	c_date,
+		    	u_date
+	    	) VALUES (
+		    	#{aprvNo},
+			    #{userId},
+				'02', 
+				#{aprvTitle},
+				#{aprvContents},
+				NOW(),
+				'01',
+				#{reference},
+			    NOW(),
+			    NOW()
+			);
+	</insert>
+	
+	<!-- 휴가 세부 내용 입력 -->
+	<insert id="insertDayoff">
+		INSERT INTO
+			dayoff (
+				aprv_no,
+				dayoff_ymd,
+				dayoff_type_cd
+			) VALUES (
+				#{arpvNo},
+				#{dayoffYmd},
+				#{dayoffTypeCd}
+			)
+	</insert>
+	
+	<!-- 결재라인 입력 -->
+    <insert id="insertAprvLine">
+        INSERT INTO 
+        	approval_line (
+	            aprv_no, 
+	            user_id,
+	            aprv_stat_cd, 
+	            aprv_sequence,
+	            aprv_ymd
+	        ) VALUES (
+	            #{aprvNo},
+	            #{userId},
+	            '01',
+	            #{aprvSequence},
+	            #{aprvYmd}
+	        )
+    </insert>
+    
+    <!-- 첨부파일 입력 -->
+    <insert id="insertAprvFile">
+        INSERT INTO 
+        	approval_file(
+				aprv_no, 
+				orgin_filename,
+				save_filename, 
+				filetype,
+				path
+			) VALUES (
+				#{aprvNo},
+				#{orginFilename},
+				#{saveFilename},
+				#{filetype},
+				#{path}
+			)
+    </insert>
+	
 </mapper>

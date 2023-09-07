@@ -1,5 +1,7 @@
 package com.goodee.yeyebooks.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import com.goodee.yeyebooks.mapper.ApprovalMapper;
 import com.goodee.yeyebooks.mapper.VacationMapper;
+import com.goodee.yeyebooks.vo.Approval;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class VacationService {
 	@Autowired
 	private VacationMapper vacationMapper;
+	@Autowired
+	private ApprovalMapper approvalMapper;
 	
 	// 휴가 내역 리스트
 	public Map<String, Object> selectVacationList(HttpSession session, int currentPage, int rowPerPage, String searchDate){
@@ -66,8 +72,59 @@ public class VacationService {
 		map.put("pagePerPage", pagePerPage);
 		map.put("minPage", minPage);
 		map.put("maxPage", maxPage);
-		// ========================================
 		
 		return map;
+	}
+	
+	// 휴가 신청 폼
+	public Map<String, Object> addVactionForm(HttpSession session){
+		String userId = (String)session.getAttribute("userId");
+		
+		// 기안자 정보
+		Map<String, Object> aprvInfo = vacationMapper.getAprvInfo(userId);
+		//log.debug("\u001B[41m"+ "vacaService addVacation aprvInfo : " + aprvInfo + "\u001B[0m");
+		
+		// 결재자 정보
+		List<Map<String, Object>> aprvLine = vacationMapper.getAprvLine(userId);
+		log.debug("\u001B[41m"+ "vacaService addVacation aprvLine : " + aprvLine + "\u001B[0m");
+		
+		// 참조자 정보
+		List<Map<String, Object>> referList = vacationMapper.getReference(userId);
+		log.debug("\u001B[41m"+ "vacaService addVacation referList : " + referList + "\u001B[0m");
+		
+		// 현재 날짜 구하기
+        LocalDate now = LocalDate.now();
+        // 포맷 정의
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        // 포맷 적용
+        String formatedNow = now.format(formatter);
+        //log.debug("\u001B[41m"+ "vacaService addVacation formatedNow : " + formatedNow + "\u001B[0m");
+        
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("aprvInfo", aprvInfo);
+		map.put("aprvLine", aprvLine);
+		map.put("referList", referList);
+		map.put("today", formatedNow);
+		
+		return map;
+	}
+	
+	// 휴가 상신
+	public int addVacation(Approval approval) {
+		int row = 0;
+		
+		// 시퀀스로 생성된 문서번호
+		String aprvNo = vacationMapper.getAprvNo(approval.getAprvYmd());
+		
+		// 문서제목
+		// 현재 날짜 구하기
+        LocalDate now = LocalDate.now();
+        // 포맷 정의
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 포맷 적용
+        String aprvTitle = now.format(formatter) + " 휴가 신청서";
+        //log.debug("\u001B[41m"+ "vacaService addVacation formatedNow : " + aprvTitle + "\u001B[0m");
+		return row;
 	}
 }

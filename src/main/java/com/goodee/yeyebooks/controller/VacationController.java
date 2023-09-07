@@ -21,6 +21,7 @@ public class VacationController {
 	@Autowired
 	private VacationService vacationService;
 	
+	// 휴가 신청 내역
 	@GetMapping("/vacationList")
 	public String vacationList(Model model, HttpSession session,
 								@RequestParam(name = "currentPage", defaultValue = "1") int currentPage, 
@@ -37,4 +38,16 @@ public class VacationController {
 		
 		return "/vacationList";
 	}
+	
+	// 휴가 신청
+	@GetMapping("/addVacation")
+	public String addVacation(Model model, HttpSession session) {
+		
+		Map<String, Object> map = vacationService.addVactionForm(session);
+		
+		model.addAllAttributes(map);
+		
+		return "/addVacation";
+	}
+	
 }
