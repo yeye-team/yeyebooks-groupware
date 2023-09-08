@@ -67,4 +67,10 @@
 	<delete id="deleteBooking">
 		DELETE FROM booking WHERE bkg_no = #{bkgNo}
 	</delete>
+	<select id="selectBookingListByDate">
+		SELECT bkg_no bkgNo, user_id userId, bt.trgt_no trgtNo,trgt_nm  targetNm, concat(bkg_start_ymd, ' ', bkg_start_time) bkgStartTime, concat(bkg_end_ymd, ' ', bkg_end_time) bkgEndTime,
+		trgt_info trgtInfo, save_filename saveFilename, path
+		FROM booking bk, booking_target bt
+		WHERE bk.trgt_no = bt.trgt_no 
+	</select>
 </mapper>

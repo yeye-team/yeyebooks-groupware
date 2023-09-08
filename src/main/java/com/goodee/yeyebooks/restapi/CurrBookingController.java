@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goodee.yeyebooks.service.BookingService;
+import com.goodee.yeyebooks.vo.Booking;
 import com.goodee.yeyebooks.vo.BookingTarget;
 
 @RestController
@@ -32,5 +34,19 @@ public class CurrBookingController {
 			bkTargetList.add(bkTargetData);
 		}
 		return new ResponseEntity<>(bkTargetList, HttpStatus.OK);
+	}
+	@GetMapping("/booking/bookingList")
+	public ResponseEntity<List<Map<String, Object>>> getBookingList(){
+		List<Map<String, Object>> bookingList = new ArrayList<>();
+		List<Booking> selectedBookingList = bookingService.selectBookingListByDate();
+		for(Booking bk : selectedBookingList) {
+			Map<String, Object> booking = new HashMap<>();
+			booking.put("id", bk.getBkgNo());
+			booking.put("resourceId", bk.getTrgtNo());
+			booking.put("start", bk.getBkgStartTime());
+			booking.put("end", bk.getBkgEndTime());
+			bookingList.add(booking);
+		}
+		return new ResponseEntity<>(bookingList, HttpStatus.OK);
 	}
 }

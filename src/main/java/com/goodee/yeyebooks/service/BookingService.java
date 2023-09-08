@@ -38,4 +38,8 @@ public class BookingService {
 	public List<BookingTarget> selectBookingTarget(){
 		return bookingTargetMapper.selectBookingTarget();
 	}
+	
+	public List<Booking> selectBookingListByDate(){
+		return bookingMapper.selectBookingListByDate();
+	}
 }

@@ -53,6 +53,7 @@
     	    },
     	    resourceGroupField: 'building',
     	    resources: '${pageContext.request.contextPath}/booking/bookingTargets',
+    	    events: '${pageContext.request.contextPath}/booking/bookingList',
     	    locale: 'ko'
     	  });
 

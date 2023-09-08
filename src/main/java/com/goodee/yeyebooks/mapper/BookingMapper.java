@@ -14,5 +14,5 @@ public interface BookingMapper {
 	List<String> selectBookingCategory();
 	Booking selectBookingOne(int bkgNo);
 	int deleteBooking(int bkgNo);
-
+	List<Booking> selectBookingListByDate();
 }

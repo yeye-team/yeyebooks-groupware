@@ -64,6 +64,7 @@
     	let currentPage;
     	
     	function statCheckChange(){
+    		labelTexts = [];
     		$('input[type="checkbox"]:checked').each(function() {
     	     	const labelText = $("label[for='" + $(this).attr('name') + "']").text();
     	      	labelTexts.push(labelText);
@@ -97,10 +98,6 @@
      			   currentPage: currentPage
      		   },
      		   success: function(response){
-     			   Swal.fire({
-     				   icon: 'success',
-     				   title: '성공'
-     			   })
      			   const paginationChildren = $(response).find('#bookingPagination').children();
      			   $('#bookingPagination').html(paginationChildren);
      			  const searchChildren = $(response).find('#searchForm').children();
