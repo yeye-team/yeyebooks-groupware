@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.goodee.yeyebooks.service.VacationService;
+import com.goodee.yeyebooks.vo.Approval;
+import com.goodee.yeyebooks.vo.ApprovalLine;
+import com.goodee.yeyebooks.vo.Dayoff;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +52,24 @@ public class VacationController {
 		model.addAllAttributes(map);
 		
 		return "/addVacation";
+	}
+	
+	@PostMapping("addVacation")
+	public String addVaction(HttpSession session, 
+							Approval approval, 
+							@RequestParam(name="lineUserId") String[] approvalLine, 
+							Dayoff dayOff, 
+							String[] dayoffYmd) {
+		//log.debug("\u001B[41m" + "controller approvalLine" + approvalLine + "\u001B[0m");
+		
+		int row = vacationService.addVacation(session, approval, approvalLine, dayOff, dayoffYmd);
+		
+		if(row != 1) {
+			log.debug("\u001B[41m" + "입력실패" + "\u001B[0m");
+			return "redirect:/addVacation";
+		}
+		
+		return "redirect:/vacationList";
 	}
 	
 }

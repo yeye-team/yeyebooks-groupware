@@ -15,28 +15,29 @@
 	<title>휴가 신청</title>
 	
     <jsp:include page="inc/head.jsp"></jsp:include>
-    
     <script>
 		$(document).ready(function() {
-			$('#dayoffCd01').click(function(){
-				$('#dayoffDate01').show();
-				$('#dayoffDate02').hide();
-				$('#dayoffDate03').hide();
-			});
-			
-			$('#dayoffCd02').click(function(){
-				$('#dayoffDate01').hide();
-				$('#dayoffDate02').show();
-				$('#dayoffDate03').hide();
+			$('.dayoffCd01').click(function(){
+				$('#dayoffDate').show();
+				$('#dayoffDate2').hide();
+				
+				$('#dayoffInput1').prop('disabled', false);
+				$('#dayoffInput2').prop('disabled', true);
+				$('#dayoffInput3').prop('disabled', true);
 			});
 			
 			$('#dayoffCd03').click(function(){
-				$('#dayoffDate01').hide();
-				$('#dayoffDate02').hide();
-				$('#dayoffDate03').show();
+				$('#dayoffDate').hide();
+				$('#dayoffDate2').show();
+				
+				$('#dayoffInput1').prop('disabled', true);
+				$('#dayoffInput2').prop('disabled', false);
+				$('#dayoffInput3').prop('disabled', false);
 			});
 		});
     </script>
+    
+    
     
     <style>
     	.menu-link{
@@ -185,6 +186,7 @@
 					                    						<tbody class="aprvTd">
 					                    							<tr>
 					                    								<c:forEach items="${aprvLine}" var="lineNm">
+				                    										<input type="hidden" name="lineUserId" value="${lineNm.userId}">
 						                    								<td>${lineNm.userNm}</td>
 					                    								</c:forEach>
 					                    							</tr>
@@ -257,18 +259,16 @@
 														<td colspan="3">
 								                        	<input
 									                              name="dayoffTypeCd"
-									                              class="form-check-input"
+									                              class="form-check-input dayoffCd01"
 									                              type="radio"
 									                              value="01"
 									                              checked="checked"
-									                              id="dayoffCd01"
 									                        > 오전반차 &nbsp;&nbsp;
 								                        	<input
 									                              name="dayoffTypeCd"
-									                              class="form-check-input"
+									                              class="form-check-input dayoffCd01"
 									                              type="radio"
 									                              value="02"
-									                              id="dayoffCd02"
 									                        > 오후반차 &nbsp;&nbsp;
 								                        	<input
 									                              name="dayoffTypeCd"
@@ -282,21 +282,16 @@
 													<!-- 휴가 종류에 따른 기간 선택 폼 선택 -->
 													<tr>
 														<th class="vacationInfo">휴가 기간</th>
-														<td id="dayoffDate01">
+														<td id="dayoffDate">
 															<div style="display: flex; justify-content: center;">
-																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 60%">
+																<input class="form-control form-control-sm" type="date" id="dayoffInput1" name="dayoffYmd" style="width: 60%" required="required">
 															</div>
 														</td>
-														<td id="dayoffDate02" style="display: none">
-															<div style="display: flex; justify-content: center;">
-																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 60%">
-															</div>
-														</td>
-														<td id="dayoffDate03" style="display: none;">
+														<td id="dayoffDate2" style="display: none;">
 															<div class="row" style="display: flex; justify-content: center;">
-																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 40%;">
+																<input class="form-control form-control-sm" type="date" id="dayoffInput2" name="dayoffYmd" style="width: 40%;" disabled required="required">
 																&nbsp;-&nbsp;
-																<input class="form-control form-control-sm" type="date" name="dayoffYmd" required="required" style="width: 40%;">
+																<input class="form-control form-control-sm" type="date" id="dayoffInput3" name="dayoffYmd" style="width: 40%;" disabled required="required">
 															</div>
 														</td>
 														<th class="vacationInfo">잔여연차</th>
@@ -319,8 +314,9 @@
 							                </div>
 							                <div>
 												<button type="submit" class="btn btn-primary" style="float: right;" id="submitBtn">신청</button>
-							                </div>
+						                	</div>
 										</form>
+										<!-- 문서 끝 -->
 										<br>
 									</div>
 								</div>

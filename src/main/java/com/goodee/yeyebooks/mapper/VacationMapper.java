@@ -42,4 +42,10 @@ public interface VacationMapper {
 	
 	// 첨부파일 입력
 	int insertAprvFile(ApprovalFile approvalFile);
+	
+	// 사용자 연차 조회
+	double getDayoffCnt(String userId);
+	
+	// 연차차감
+	int minusDayoff(String userId, double userDayoffCnt);
 }

@@ -27,7 +27,7 @@
 				AND a.aprv_ymd = #{searchDate}
 			</if>
 		ORDER BY 
-			a.aprv_ymd DESC
+			a.c_date DESC
 		LIMIT #{beginRow}, #{rowPerPage}
 
 	</select>
@@ -70,9 +70,10 @@
 	<!-- 결재자 (대표 / 같은부서의 부장/차장) -->
 	<select id="getAprvLine">
 		SELECT 
-			userNm, codeNm
+			userId, userNm, codeNm
 		FROM (
 		    SELECT 
+		    	u.user_id userId,
 		    	u.user_nm userNm, 
 		    	c.code_nm codeNm, 
 		    	u.rank_cd rankCd
@@ -86,6 +87,7 @@
 		    UNION ALL
 		    
 		    SELECT 
+		    	u.user_id userId,
 		    	u.user_nm userNm, 
 		    	c.code_nm codeNm, 
 		    	u.rank_cd rankCd
@@ -157,7 +159,7 @@
 				dayoff_ymd,
 				dayoff_type_cd
 			) VALUES (
-				#{arpvNo},
+				#{aprvNo},
 				#{dayoffYmd},
 				#{dayoffTypeCd}
 			)
@@ -199,4 +201,21 @@
 			)
     </insert>
 	
+	<!-- 연차 날짜 조회 -->
+	<select id="getDayoffCnt">
+		SELECT 
+			dayoff_cnt 
+		FROM user 
+		WHERE 
+			user_id = #{userId}
+	</select>
+	
+	<!-- 연차 차감 실행 -->
+	<update id="minusDayoff">
+		UPDATE 
+			user 
+		SET dayoff_cnt = #{userDayoffCnt} 
+		WHERE 
+			user_id = #{userId}
+	</update>
 </mapper>
