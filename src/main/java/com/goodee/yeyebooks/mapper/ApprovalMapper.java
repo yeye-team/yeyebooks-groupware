@@ -25,8 +25,15 @@ public interface ApprovalMapper {
 	List<Approval> selectMyApproval(String loginId, int status);
 	// 각 상태별 문서함 조회
 	List<Approval> selectApprovalByStatus(String loginId, String status);
+	
 	// 문서 상세보기
-	List<Approval> selectApprovalOne(String aprvNo);
+	public String selectApprovalOne(String aprvNo);
+
+	List<ApprovalFile> selectApprovalFileOne(String aprvNo);
+	
+	List<ApprovalLine> selectApprovalLineOne(String aprvNo);
+	
+	public String selectAccountOne(String aprvNo);
 	
 	List<Map<String, Object>> selectUserListByDept();
 	

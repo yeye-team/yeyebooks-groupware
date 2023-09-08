@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.goodee.yeyebooks.mapper.ApprovalMapper;
+import com.goodee.yeyebooks.vo.Account;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
@@ -60,10 +61,19 @@ public class ApprovalService {
 	};
 	
 	// 문서상세보기
-	
-	public List<Approval> selectApprovalOne(String aprvNo) {
-		List<Approval> approvalOne = null;
-		approvalOne = approvalMapper.selectApprovalOne(aprvNo);		
+	public Map<String, Object> selectApprovalOne(String aprvNo) {
+		Map<String, Object> approvalOne = new HashMap<>();
+		String approval = approvalMapper.selectApprovalOne(aprvNo);
+		List<ApprovalFile> aprvFile = approvalMapper.selectApprovalFileOne(aprvNo);
+		List<ApprovalLine> aprvLine =  approvalMapper.selectApprovalLineOne(aprvNo);
+		String account = approvalMapper.selectAccountOne(aprvNo);
+
+		approvalOne.put("approval", approval);
+	    approvalOne.put("aprvFile", aprvFile);
+	    approvalOne.put("aprvLine", aprvLine);
+	    approvalOne.put("account", account);
+
+
 		return approvalOne;
 	}
 	

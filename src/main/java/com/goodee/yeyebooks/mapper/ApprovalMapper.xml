@@ -174,29 +174,66 @@
 	
 	
 	<!-- 문서 상세보기 -->
-	<select id="selectApprovalOne" parameterType="com.goodee.yeyebooks.vo.Approval" resultType="com.goodee.yeyebooks.vo.Approval">
+	<select id="selectApprovalOne" parameterType="String">
 		SELECT
-			a.aprv_no aprvNo, a.user_id userId,
-			a.doc_cat_cd docCatCd, a.aprv_title aprvTitle,
-			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
-			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStat,
-			a.reference,
-			a.c_date cDate,
-			a.u_date uDate,
+			aprv_no aprvNo,
+			user_id userId,
+			doc_cat_cd docCatCd,
+			aprv_title aprvTitle,
+			aprv_contents aprvContents,
+			aprv_ymd aprvYmd,
+			rjct_reason rjctReason,
+			aprv_stat_cd aprvStatCd,
+			reference,
+			c_date cDate,
+			u_date uDate
+		FROM approval
+		WHERE aprv_no = ${aprvNo}
+	</select> 
+	
+	<!-- 문서 상세보기 -->
+	<select id="selectApprovalFileOne" parameterType="String">
+		SELECT
+			aprv_file_no aprvFileNo,
+			aprv_no aprvNo,
+			orgin_filename orginFilename,
+			save_filename saveFilename,
+			filetype,
+			path
+		FROM approval_file
+		WHERE aprv_no = ${aprvNo}
+	</select> 
+	
+	<!-- 문서 상세보기 -->
+	<select id="selectApprovalLineOne" parameterType="String">
+		SELECT 
+			al.aprv_no aprvNo,
+			al.user_id userId,
+			al.aprv_stat_cd aprvStatCd,
+			al.aprv_sequence aprvSequence,
+			al.aprv_ymd aprvYmd,
 			u.user_nm userName,
-			u.rank_cd, u.dept_cd,
-			c1.code_nm rankName,
-			c2.code_nm deptName,
-			al.aprv_stat_cd lineAprvStat,
-			al.aprv_ymd lineAprvYmd,
-			al.aprv_sequence aprvSequence
-		FROM approval a
-		JOIN user u ON a.user_id = u.user_id
-		LEFT JOIN common_code c1 ON u.rank_cd = c1.code AND c1.group_code = 'R001'
-		LEFT JOIN common_code c2 ON u.dept_cd = c2.code AND c2.group_code = 'D001'
-		LEFT JOIN approval_line al ON a.aprv_no = al.aprv_no
-		WHERE a.aprv_no = #{aprvNo}
-		ORDER BY al.aprv_sequence;
+			uf.user_file_no userFileNo
+		FROM approval_line al
+		LEFT JOIN user u ON al.user_id = u.user_id
+		LEFT JOIN user_file uf ON u.user_id = uf.user_id
+		WHERE aprv_no = ${aprvNo}
+	</select> 
+	
+	<!-- 문서 상세보기 -->
+	<select id="selectAccountOne" parameterType="String">
+		SELECT 
+			acnt_no acntNo,
+			aprv_no aprvNo,
+			acnt_subject acntSubject,
+			acnt_ymd acntYmd,
+			acnt_contents acntContents,
+			acnt_nm acntNm,
+			acnt_amount acntAmount,
+			acnt_credit_cd acntCreditCd,
+			acnt_proof_cd acntProofCd
+		FROM account
+		WHERE aprv_no = ${aprvNo}
 	</select> 
 	
 	<!-- 문서처리 -->
