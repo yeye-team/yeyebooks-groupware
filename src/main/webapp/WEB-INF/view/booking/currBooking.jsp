@@ -44,7 +44,7 @@
 
     	  var calendar = new FullCalendar.Calendar(calendarDiv, {
     		height: '100%',
-    		selectable: false,
+    		selectable: true,
     	    initialView: 'resourceTimelineDay',
     	    headerToolbar: {
     	      left: 'prev,next today',
@@ -52,9 +52,42 @@
     	      right: 'resourceTimelineWeek,timeGridDay'
     	    },
     	    resourceGroupField: 'building',
-    	    resources: '${pageContext.request.contextPath}/booking/bookingTargets',
-    	    events: '${pageContext.request.contextPath}/booking/bookingList',
-    	    locale: 'ko'
+    	    resources: '/yeyebooks/booking/bookingTargets',
+    	    events: '/yeyebooks/booking/bookingList',
+    	    locale: 'ko',
+   	      	select: function(info) {
+   	      		const startInfo = info.startStr.split("T");
+	        	const startYmd = startInfo[0];
+	        	const startTime = startInfo[1].split("+")[0];
+	        	const endInfo = info.endStr.split("T");
+	        	const endYmd = endInfo[0];
+	        	const endTime = endInfo[1].split("+")[0];
+	        	$.ajax({
+	        		url: '/yeyebooks/booking/isOverlap',
+	        		type: 'get',
+	     			data: {
+	     				bookingStart: startYmd + ' ' + startTime,
+	     				bookingEnd: endYmd + ' ' + endTime,
+	     				targetNo: info.resource.id
+	     			},
+	     			dataType: 'json',
+	     			success: function(data, textStatus, xhr){
+	     				if(xhr.status === 200){
+	     					if(data.success === true){
+	     						$('#bookingTarget').val(info.resource.title);
+		     		        	$('#bookingStart').val(startYmd + " " + startTime);
+		     		        	$('#bookingEnd').val(endYmd + " " + endTime);
+		     		        	$('#modalCenter').modal('show');
+	     					}else{
+	     						alert('중복값');
+	     						calendar.unselect();
+	     					}
+	     				}else{
+	     					alert('요청실패');
+	     				}
+	     			}
+	        	})
+   	      	}
     	  });
 
     	  calendar.render();
@@ -88,13 +121,7 @@
 					<li class="menu-item active">
 						<button type="submit" class="menu-link" onclick="location.href='currBooking'">
 							<i class='bx bxs-timer' ></i>
-							<div data-i18n="Analytics">&nbsp;예약현황</div>
-						</button>
-					</li>
-					<li class="menu-item">
-						<button type="submit" class="menu-link">
-							<i class='bx bx-list-plus' ></i>
-							<div data-i18n="Analytics">&nbsp;예약하기</div>
+							<div data-i18n="Analytics">&nbsp;예약현황(예약하기)</div>
 						</button>
 					</li>
 				</ul>
@@ -133,6 +160,76 @@
 			<!-- / Content Wrapper -->
 		</div>
 	</div>
+	<!-- Vertically Centered Modal -->
+
+      <div class="mt-3">
+        <!-- Modal -->
+        <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">예약하기</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col mb-3">
+                    <label for="bookingTarget" class="form-label">예약대상</label>
+                    <input
+                      type="text"
+                      id="bookingTarget"
+                      class="form-control"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="row g-2">
+                  <div class="col mb-0">
+                    <label for="bookingStart" class="form-label">시작일시</label>
+                    <input
+                      type="datetime"
+                      id="bookingStart"
+                      class="form-control"
+                      readonly
+                    />
+                  </div>
+                  <div class="col mb-0">
+                    <label for="bookingEnd" class="form-label">종료일시</label>
+                    <input
+                      type="datetime"
+                      id="bookingEnd"
+                      class="form-control"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col mb-3">
+                    <label for="bookingPurpose" class="form-label">예약목적</label>
+                    <input
+                      type="text"
+                      id="bookingPurpose"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                  Close
+                </button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
    	<!-- card End -->
 
     <jsp:include page="../inc/coreJs.jsp"></jsp:include>

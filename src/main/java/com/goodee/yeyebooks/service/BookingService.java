@@ -42,4 +42,7 @@ public class BookingService {
 	public List<Booking> selectBookingListByDate(){
 		return bookingMapper.selectBookingListByDate();
 	}
+	public int selectOverlapCnt(String bookingStart, String bookingEnd, int targetNo) {
+		return bookingMapper.selectOverlapCnt(bookingStart, bookingEnd, targetNo);
+	}
 }

@@ -134,13 +134,7 @@
 					<li class="menu-item">
 						<button type="submit" class="menu-link" onclick="location.href='currBooking'">
 							<i class='bx bxs-timer' ></i>
-							<div data-i18n="Analytics">&nbsp;예약현황</div>
-						</button>
-					</li>
-					<li class="menu-item">
-						<button type="submit" class="menu-link">
-							<i class='bx bx-list-plus' ></i>
-							<div data-i18n="Analytics">&nbsp;예약하기</div>
+							<div data-i18n="Analytics">&nbsp;예약현황(예약하기)</div>
 						</button>
 					</li>
 				</ul>

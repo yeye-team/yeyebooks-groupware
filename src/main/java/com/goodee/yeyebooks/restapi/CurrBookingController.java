@@ -45,8 +45,18 @@ public class CurrBookingController {
 			booking.put("resourceId", bk.getTrgtNo());
 			booking.put("start", bk.getBkgStartTime());
 			booking.put("end", bk.getBkgEndTime());
-			bookingList.add(booking);
+			booking.put("selectable", false);
+;			bookingList.add(booking);
 		}
 		return new ResponseEntity<>(bookingList, HttpStatus.OK);
+	}
+	@GetMapping("/booking/isOverlap")
+	public ResponseEntity<String> checkIsOverlap(String bookingStart, String bookingEnd, int targetNo){
+		int overlapCnt = bookingService.selectOverlapCnt(bookingStart, bookingEnd, targetNo);
+		if (overlapCnt == 0) {
+            return ResponseEntity.status(HttpStatus.OK).body("{\"success\": true}");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("{\"success\": false}");
+        }
 	}
 }

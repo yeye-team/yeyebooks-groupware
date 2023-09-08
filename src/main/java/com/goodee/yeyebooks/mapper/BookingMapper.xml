@@ -73,4 +73,11 @@
 		FROM booking bk, booking_target bt
 		WHERE bk.trgt_no = bt.trgt_no 
 	</select>
+	<select id="selectOverlapCnt" resultType="int">
+		SELECT COUNT(*) 
+		FROM booking
+		WHERE trgt_no = #{targetNo}
+		AND ((str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')) 
+		OR (str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')))
+	</select>
 </mapper>
