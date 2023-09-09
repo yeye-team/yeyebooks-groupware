@@ -22,7 +22,7 @@
 		<if test="searchNm != null and searchNm != ''">
 			AND trgt_nm like CONCAT('%', #{searchNm}, '%')
 		</if>
-		ORDER BY booking.c_date
+		ORDER BY booking.bkg_start_ymd desc, booking.bkg_start_time asc
 		LIMIT #{startRow}, #{rowPerPage}
 	</select>
 	<select id="selectMyBookingCnt" resultType="int">
@@ -89,4 +89,16 @@
 		INSERT INTO booking(user_id, trgt_no, bkg_start_ymd, bkg_end_ymd, bkg_start_time, bkg_end_time, bkg_stat_cd, bkg_purpose, c_date, u_date)
 		VALUES(#{userId}, #{trgtNo}, #{bkgStartYmd}, #{bkgEndYmd}, #{bkgStartTime}, #{bkgEndTime}, (SELECT CODE FROM common_code WHERE group_code = 'B101' AND code_nm = '예약완료'), #{bkgPurpose}, NOW(), NOW()) 
 	</insert>
+	<update id="updateBookingStartSchedule">
+		UPDATE booking SET bkg_stat_cd = (SELECT CODE FROM common_code WHERE group_code = 'B101' AND code_nm = '이용중')
+		WHERE bkg_start_ymd = DATE(NOW())
+		AND bkg_start_time &lt;= NOW()
+		AND bkg_stat_cd = (SELECT CODE FROM common_code WHERE group_code = 'B101' AND code_nm = '예약완료')
+	</update>
+	<update id="updateBookingEndSchedule">
+		UPDATE booking SET bkg_stat_cd = (SELECT CODE FROM common_code WHERE group_code = 'B101' AND code_nm = '이용완료')
+		WHERE bkg_end_ymd = DATE(NOW())
+		AND bkg_end_time &lt;= NOW()
+		AND bkg_stat_cd = (SELECT CODE FROM common_code WHERE group_code = 'B101' AND code_nm = '이용중')
+	</update>
 </mapper>

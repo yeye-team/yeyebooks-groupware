@@ -35,6 +35,7 @@
     		display: none;
     	}
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 	<link href='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.css' rel='stylesheet' />
     <script src='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.js'></script>
     <script src="${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/locales/ko.js"></script>
@@ -61,6 +62,7 @@
     	    events: '/yeyebooks/booking/bookingList',
     	    locale: 'ko',
    	      	select: function(info) {
+   	      		let nowTime = dayjs();
    	      		const startInfo = info.startStr.split("T");
 	        	startYmd = startInfo[0];
 	        	startTime = startInfo[1].split("+")[0];
@@ -68,6 +70,15 @@
 	        	endYmd = endInfo[0];
 	        	endTime = endInfo[1].split("+")[0];
 	        	trgtNo = info.resource.id;
+	        	
+	       		if(dayjs(info.startStr).isBefore(nowTime)){
+	       			Swal.fire({
+	       				icon: 'error',
+	       				title: '선택불가',
+	       				text: '현재 시간 이후로 선택해주세요.'
+	       			})
+	       			return;
+	       		}
 	        	$.ajax({
 	        		url: '/yeyebooks/booking/isOverlap',
 	        		type: 'get',
@@ -85,11 +96,19 @@
 		     		        	$('#bookingEnd').val(endYmd + " " + endTime);
 		     		        	$('#modalCenter').modal('show');
 	     					}else{
-	     						alert('중복값');
+	     						Swal.fire({
+	     							icon: 'error',
+	     							title: '선택불가',
+	     							text: '이미 예약이 되어있는 시간입니다.'
+	     						})
 	     						calendar.unselect();
 	     					}
 	     				}else{
-	     					alert('요청실패');
+	     					Swal.fire({
+     							icon: 'error',
+     							title: 'ERROR',
+     							text: '알 수 없는 에러가 발생했습니다.'
+     						})
 	     				}
 	     			}
 	        	})

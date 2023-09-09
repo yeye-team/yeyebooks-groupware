@@ -17,4 +17,6 @@ public interface BookingMapper {
 	List<Booking> selectBookingListByDate();
 	int selectOverlapCnt(String bookingStart, String bookingEnd, int targetNo);
 	int insertBooking(Booking booking);
+	void updateBookingStartSchedule();
+	void updateBookingEndSchedule();
 }

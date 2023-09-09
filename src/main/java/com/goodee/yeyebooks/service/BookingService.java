@@ -3,6 +3,7 @@ package com.goodee.yeyebooks.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.goodee.yeyebooks.mapper.BookingMapper;
@@ -47,5 +48,11 @@ public class BookingService {
 	}
 	public int insertBooking(Booking booking) {
 		return bookingMapper.insertBooking(booking);
+	}
+	
+	@Scheduled(cron = "0 0/30 * * * *")
+	public void bookingScheduling() {
+		bookingMapper.updateBookingStartSchedule();
+		bookingMapper.updateBookingEndSchedule();
 	}
 }
