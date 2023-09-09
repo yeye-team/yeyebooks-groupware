@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,19 +64,35 @@ public class ApprovalService {
 	// 문서상세보기
 	public Map<String, Object> selectApprovalOne(String aprvNo) {
 		Map<String, Object> approvalOne = new HashMap<>();
-		String approval = approvalMapper.selectApprovalOne(aprvNo);
+		Approval approval = approvalMapper.selectApprovalOne(aprvNo);
 		List<ApprovalFile> aprvFile = approvalMapper.selectApprovalFileOne(aprvNo);
 		List<ApprovalLine> aprvLine =  approvalMapper.selectApprovalLineOne(aprvNo);
 		String account = approvalMapper.selectAccountOne(aprvNo);
+		String nowApprovalUser = approvalMapper.selectNowApproveUSer(aprvNo);
 
 		approvalOne.put("approval", approval);
 	    approvalOne.put("aprvFile", aprvFile);
 	    approvalOne.put("aprvLine", aprvLine);
 	    approvalOne.put("account", account);
+	    approvalOne.put("approvalUser", nowApprovalUser);
 
 
 		return approvalOne;
 	}
+	
+	// 문서 회수
+    public void updateAprvStatCd(String aprvNo) {
+    	
+    	approvalMapper.updateAprvStatCd(aprvNo);
+    	
+    }
+
+    
+    // 문서 반려
+    public void updaterjctReason(String aprvNo, String rejectReason, String userId) {
+    	approvalMapper.updateRjctReason(rejectReason, aprvNo);
+    	approvalMapper.updateAprvlineRjct(aprvNo, userId);  	
+    }
 	
 
 	// 문서 추가 메서드
@@ -149,5 +166,14 @@ public class ApprovalService {
 		result.put("approveCnt", approvalMapper.selectApproveWaitingCnt(userId));
 		return result;
 	}
-    
+	
+	public String selectLastApprovalUser(String aprvNo) {
+		return approvalMapper.selectLastApprovalUser(aprvNo);
+	}
+    public void updateApproveApproval(String aprvNo) {
+    	approvalMapper.updateApproveApproval(aprvNo);
+    }
+    public void updateApproveApprovalLine(String aprvNo, String userId) {
+    	approvalMapper.updateApproveApprovalLine(aprvNo, userId);
+    }
 }

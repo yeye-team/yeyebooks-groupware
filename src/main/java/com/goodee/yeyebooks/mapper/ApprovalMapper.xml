@@ -130,11 +130,9 @@
 			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
 			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm statName,
 			a.reference, a.c_date cDate,
-			af.orgin_filename orginFilename, af.save_filename saveFilename,
 			(select user_nm from user where user_id = a.user_id) userName
 		FROM approval a
 		JOIN user u ON a.user_id = u.user_id
-		LEFT JOIN approval_file af ON a.aprv_no = af.aprv_no
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
 		<choose>
@@ -176,19 +174,25 @@
 	<!-- 문서 상세보기 -->
 	<select id="selectApprovalOne" parameterType="String">
 		SELECT
-			aprv_no aprvNo,
-			user_id userId,
-			doc_cat_cd docCatCd,
-			aprv_title aprvTitle,
-			aprv_contents aprvContents,
-			aprv_ymd aprvYmd,
-			rjct_reason rjctReason,
-			aprv_stat_cd aprvStatCd,
-			reference,
-			c_date cDate,
-			u_date uDate
-		FROM approval
-		WHERE aprv_no = ${aprvNo}
+			a.aprv_no aprvNo,
+			a.user_id userId,
+			a.doc_cat_cd docCatCd,
+			a.aprv_title aprvTitle,
+			a.aprv_contents aprvContents,
+			a.aprv_ymd aprvYmd,
+			a.rjct_reason rjctReason,
+			a.aprv_stat_cd aprvStatCd,
+			a.reference,
+			a.c_date cDate,
+			a.u_date uDate,
+			c1.code_nm codeName,
+			c2.code_nm statName,
+			(select user_nm from user where user_id = a.user_id) userName
+		FROM approval a
+		JOIN user u ON a.user_id = u.user_id
+		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
+		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
+		WHERE aprv_no = #{aprvNo}
 	</select> 
 	
 	<!-- 문서 상세보기 -->
@@ -201,23 +205,17 @@
 			filetype,
 			path
 		FROM approval_file
-		WHERE aprv_no = ${aprvNo}
+		WHERE aprv_no = #{aprvNo}
 	</select> 
 	
 	<!-- 문서 상세보기 -->
 	<select id="selectApprovalLineOne" parameterType="String">
-		SELECT 
-			al.aprv_no aprvNo,
-			al.user_id userId,
-			al.aprv_stat_cd aprvStatCd,
-			al.aprv_sequence aprvSequence,
-			al.aprv_ymd aprvYmd,
-			u.user_nm userName,
-			uf.user_file_no userFileNo
-		FROM approval_line al
-		LEFT JOIN user u ON al.user_id = u.user_id
-		LEFT JOIN user_file uf ON u.user_id = uf.user_id
-		WHERE aprv_no = ${aprvNo}
+		SELECT user_id userId,
+			(SELECT code_nm
+			FROM common_code
+			WHERE group_code = 'A001' AND CODE = aprv_stat_cd) aprvStatCd
+		FROM approval_line
+		WHERE aprv_no = #{aprvNo}
 	</select> 
 	
 	<!-- 문서 상세보기 -->
@@ -233,28 +231,33 @@
 			acnt_credit_cd acntCreditCd,
 			acnt_proof_cd acntProofCd
 		FROM account
-		WHERE aprv_no = ${aprvNo}
+		WHERE aprv_no = #{aprvNo}
 	</select> 
 	
-	<!-- 문서처리 -->
-	<update id="updateApprovalProcessed" parameterType="com.goodee.yeyebooks.vo.Approval">
+	<!-- 반려 -->
+	<update id="updateRjctReason">
 		UPDATE approval
-		SET aprv_yn = '1', 
-			aprv_ymd = NOW(), 
-			signature = #{signature} 
-		WHERE aprv_no = #{aprv_no} 
-		AND user_id = #{user_id};
+		SET rjct_reason = #{rjctReason},
+			aprv_stat_cd = '03'
+		WHERE aprv_no = #{aprvNo};
+	</update>
+	<update id="updateAprvlineRjct">
+		update approval_line
+		set aprv_stat_cd = '03'
+		where aprv_no = #{aprvNo}
+		and user_id = #{userId}
 	</update>
 	
+	<!-- 승인 -->
+	
 	<!-- 문서회수 -->
-	<update id="updateApprovalWithDrawn" parameterType="com.goodee.yeyebooks.vo.Approval">
+	<update id="updateAprvStatCd" parameterType="com.goodee.yeyebooks.vo.Approval">
 		UPDATE approval
-		SET aprv_stat_cd = #{withdrawnStatus},
-			aprv_ymd = NOW(),
-			rjct_reason = #{withdrawReason}
-		WHERE aprv_no = #{aprv_no} 
-		AND user_id = #{loginId};
+		SET aprv_stat_cd = '04',
+			u_date = NOW()
+		WHERE aprv_no = #{aprvNo};
 	</update>
+	
 	<select id="selectApprovalWaitingCnt" resultType="int">
 		SELECT COUNT(*)
 		FROM approval INNER JOIN approval_line
@@ -275,4 +278,26 @@
 									WHERE group_code = 'A001' 
 									AND code_nm = '진행중')
 	</select>
+	<select id="selectNowApproveUSer">
+		SELECT user_id, aprv_sequence
+		from approval_line
+		WHERE aprv_no = #{aprvNo}
+		AND aprv_sequence = (SELECT min(aprv_sequence) FROM approval_line where aprv_no = 'D2023090801' and aprv_stat_cd = '01')
+	</select>
+	
+	<select id="selectLastApprovalUser">
+		SELECT user_id
+		FROM approval_line
+		WHERE aprv_no = #{aprvNo}
+		AND aprv_sequence = (select MAX(aprv_sequence) FROM approval_line WHERE aprv_no = #{aprvNo})
+	</select>
+	
+	<update id="updateApproveApproval">
+		UPDATE approval SET aprv_stat_cd = '02'
+		WHERE aprv_no = #{aprvNo}
+	</update>
+	<update id="updateApproveApprovalLine">
+		UPDATE approval_line SET aprv_stat_cd = '02'
+		WHERE aprv_no = #{aprvNo} AND user_id = #{userId}
+	</update>
 </mapper>

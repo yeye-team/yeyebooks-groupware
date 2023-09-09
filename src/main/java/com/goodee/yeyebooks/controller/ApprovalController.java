@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.service.DeptService;
+import com.goodee.yeyebooks.service.UserService;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
 import com.goodee.yeyebooks.vo.Board;
+import com.goodee.yeyebooks.vo.User;
+import com.goodee.yeyebooks.vo.UserFile;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +43,9 @@ public class ApprovalController {
 	@Autowired
 	DeptService deptService;
 	private Approval approval;
+	
+	@Autowired
+	UserService userService;
 
 	// 내 문서함 리스트 출력
 	@Autowired
@@ -63,13 +70,51 @@ public class ApprovalController {
 	@GetMapping("/approval/approvalOne")
 	public String selectApprovalOne(Model model, 
 							@RequestParam(name = "aprvNo") String aprvNo) {
-		approvalService.selectApprovalOne(aprvNo);
-		log.debug("\u001B[35m" + "selectApprovalOne" + selectApprovalOne(null, null) + "\u001B[0m");
-		model.addAttribute("selectApprovalOne", selectApprovalOne(null, null));
+		Map<String, Object> approvalOne = approvalService.selectApprovalOne(aprvNo);
+		List<Map<String,Object>> aprvLineInfo = new ArrayList<>();
+		List<ApprovalLine> aprvLine = (List<ApprovalLine>)approvalOne.get("aprvLine");
+		for(ApprovalLine al : aprvLine) {
+			Map<String, Object> alInfo = new HashMap<>();
+			alInfo.put("userId", al.getUserId());
+			alInfo.put("aprvStat", al.getAprvStatCd());
+			Map<String, Object> userInfo = userService.mypage(al.getUserId());
+			User user = (User)userInfo.get("user");
+			alInfo.put("userInfo", (user.getDept() == null ? "" : user.getDept()) + " " + user.getRank() + " " + user.getUserNm());
+			if(userInfo.get("signFile") != null) {
+				UserFile userFile = (UserFile)userInfo.get("signFile");
+				alInfo.put("userSign", userFile.getPath() + userFile.getSaveFilename());
+			}
+			
+			
+			aprvLineInfo.add(alInfo);
+		}
+		
+		model.addAttribute("aprvLine", aprvLineInfo);
+		model.addAttribute("approval", approvalOne.get("approval"));
+		model.addAttribute("aprvFile", approvalOne.get("aprvFile"));
+		model.addAttribute("account", approvalOne.get("account"));
+		model.addAttribute("approvalUser", approvalOne.get("approvalUser"));
 		return "approval/approvalOne";
 	}
-			
-			
+	
+	@GetMapping("/approval/cancelApproval")
+	public String updateAprvStatCd(Model model,
+							@RequestParam String aprvNo) {
+		approvalService.updateAprvStatCd(aprvNo);
+	    return "redirect:/approval/approvalList";
+	}
+	
+	@PostMapping("/approval/rejectApproval")
+	public String updaterjctReason(HttpSession session,
+								@RequestParam String aprvNo,
+								@RequestParam String rejectReason) {
+		String userId = (String)session.getAttribute("userId");
+		approvalService.updaterjctReason(aprvNo, rejectReason, userId);
+		return "redirect:/approval/approvalList";
+	}
+
+	
+	// 문서작성
 	@GetMapping("/approval/addApproval")
 	public String addApproval(Model model, HttpSession session, String docCatCd) {
 		String userId = "admin";
@@ -101,6 +146,15 @@ public class ApprovalController {
 		log.debug("\u001B[35m"+ approval + "입력 board" + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
 		return "redirect:/approval/approvalList?docCatCd="+approval.getDocCatCd();
+	}
+	@PostMapping("approval/approveApproval")
+	public String approvaApproval(@RequestParam String aprvNo, @RequestParam String userId) {
+		String lastUser = approvalService.selectLastApprovalUser(aprvNo);
+		approvalService.updateApproveApprovalLine(aprvNo, userId);
+		if(userId.equals(lastUser)) {
+			approvalService.updateApproveApproval(aprvNo);
+		}
+		return "approval/approvalList";
 	}
 
 }

@@ -9,4 +9,5 @@ public class ApprovalLine {
 	private String aprvStatCd;
 	private int aprvSequence;
 	private String aprvYmd;
+	private String userName;
 }

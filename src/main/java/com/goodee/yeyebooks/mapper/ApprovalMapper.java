@@ -27,7 +27,7 @@ public interface ApprovalMapper {
 	List<Approval> selectApprovalByStatus(String loginId, String status);
 	
 	// 문서 상세보기
-	public String selectApprovalOne(String aprvNo);
+	public Approval selectApprovalOne(String aprvNo);
 
 	List<ApprovalFile> selectApprovalFileOne(String aprvNo);
 	
@@ -41,13 +41,28 @@ public interface ApprovalMapper {
 	
 	List<Map<String, Object>> selectUserCntByDeptAndAll();
 	
-	public int updateApprovalProcessed(Approval approval);
+	//문서반려
+	public void updateRjctReason(String rjctReason, String aprvNo);
+	//approvalLine반려
+	public void updateAprvlineRjct(String aprvNo, String userId);
 	
-	public int updateApprovalWithDrawn(Approval approval);
+	//문서회수
+	public void updateAprvStatCd(String aprvNo);
+	
+	//문서 승인
+	void updateApproveApproval(String aprvNo);
+	//approvalLine승인
+	void updateApproveApprovalLine(String aprvNo, String userId);
 	
 	//결재대기건수
 	int selectApprovalWaitingCnt(String userId);
 	
 	//승인대기건수
 	int selectApproveWaitingCnt(String userId);
+	
+	//이번에 결재해야할 유저id
+	String selectNowApproveUSer(String aprvNo);
+	
+	//마지막으로 결재하는 유저id
+	String selectLastApprovalUser(String aprvNo);
 }
