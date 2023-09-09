@@ -65,7 +65,9 @@
 		AND bkg_no = #{bkgNo}
 	</select>
 	<delete id="deleteBooking">
-		DELETE FROM booking WHERE bkg_no = #{bkgNo}
+		UPDATE booking 
+		SET bkg_stat_cd = (SELECT code FROM common_code WHERE group_code = 'B101' AND code_nm = '예약취소') 
+		WHERE bkg_no = #{bkgNo}
 	</delete>
 	<select id="selectBookingListByDate">
 		SELECT bkg_no bkgNo, user_id userId, bt.trgt_no trgtNo,trgt_nm  targetNm, concat(bkg_start_ymd, ' ', bkg_start_time) bkgStartTime, concat(bkg_end_ymd, ' ', bkg_end_time) bkgEndTime,
@@ -80,4 +82,11 @@
 		AND ((str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')) 
 		OR (str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')))
 	</select>
+	<insert id="insertBooking" parameterType="com.goodee.yeyebooks.vo.Booking">
+		<selectKey keyProperty="bkgNo" resultType="int" order="AFTER">
+        	SELECT LAST_INSERT_ID() AS bkgNo
+    	</selectKey>
+		INSERT INTO booking(user_id, trgt_no, bkg_start_ymd, bkg_end_ymd, bkg_start_time, bkg_end_time, bkg_stat_cd, bkg_purpose, c_date, u_date)
+		VALUES(#{userId}, #{trgtNo}, #{bkgStartYmd}, #{bkgEndYmd}, #{bkgStartTime}, #{bkgEndTime}, (SELECT CODE FROM common_code WHERE group_code = 'B101' AND code_nm = '예약완료'), #{bkgPurpose}, NOW(), NOW()) 
+	</insert>
 </mapper>

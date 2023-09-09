@@ -45,4 +45,7 @@ public class BookingService {
 	public int selectOverlapCnt(String bookingStart, String bookingEnd, int targetNo) {
 		return bookingMapper.selectOverlapCnt(bookingStart, bookingEnd, targetNo);
 	}
+	public int insertBooking(Booking booking) {
+		return bookingMapper.insertBooking(booking);
+	}
 }

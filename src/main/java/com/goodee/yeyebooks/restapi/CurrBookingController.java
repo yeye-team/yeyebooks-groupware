@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,5 +61,21 @@ public class CurrBookingController {
         } else {
             return ResponseEntity.status(HttpStatus.OK).body("{\"success\": false}");
         }
+	}
+	@PostMapping("/booking/addBooking")
+	public ResponseEntity<Map<String, Object>> addBooking(HttpSession session, Booking booking) {
+		String userId = (String)session.getAttribute("userId");
+		booking.setUserId(userId);
+		bookingService.insertBooking(booking);
+		
+		Map<String, Object> responseData = new HashMap<>();
+        responseData.put("bkgNo", booking.getBkgNo());
+        
+		if(booking.getBkgNo() == 0) {
+			responseData.put("success", false);
+		}else {
+			responseData.put("success", true);
+		}
+		 return ResponseEntity.status(HttpStatus.OK).body(responseData);
 	}
 }

@@ -39,7 +39,12 @@
     <script src='${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/main.js'></script>
     <script src="${pageContext.request.contextPath}/fullcalendar-scheduler-5.11.5/lib/locales/ko.js"></script>
     <script>
-    $(document).ready(function() {
+    	let startYmd = '';
+    	let startTime = '';
+    	let endYmd = '';
+    	let endTime = '';
+    	let trgtNo = 0;
+    	$(document).ready(function() {
     	  var calendarDiv = document.getElementById('calendar');
 
     	  var calendar = new FullCalendar.Calendar(calendarDiv, {
@@ -57,18 +62,19 @@
     	    locale: 'ko',
    	      	select: function(info) {
    	      		const startInfo = info.startStr.split("T");
-	        	const startYmd = startInfo[0];
-	        	const startTime = startInfo[1].split("+")[0];
+	        	startYmd = startInfo[0];
+	        	startTime = startInfo[1].split("+")[0];
 	        	const endInfo = info.endStr.split("T");
-	        	const endYmd = endInfo[0];
-	        	const endTime = endInfo[1].split("+")[0];
+	        	endYmd = endInfo[0];
+	        	endTime = endInfo[1].split("+")[0];
+	        	trgtNo = info.resource.id;
 	        	$.ajax({
 	        		url: '/yeyebooks/booking/isOverlap',
 	        		type: 'get',
 	     			data: {
 	     				bookingStart: startYmd + ' ' + startTime,
 	     				bookingEnd: endYmd + ' ' + endTime,
-	     				targetNo: info.resource.id
+	     				targetNo: trgtNo
 	     			},
 	     			dataType: 'json',
 	     			success: function(data, textStatus, xhr){
@@ -92,6 +98,48 @@
 
     	  calendar.render();
     	});
+    	
+    	function addBooking(){
+    		const bkgPurpose = $('#bookingPurpose').val();
+    		if(bkgPurpose == ''){
+    			Swal.fire({
+    				icon: 'warning',
+    				title: '예약실패',
+    				text: '예약목적을 입력하세요'
+    			})
+    			return;
+    		}
+    		$.ajax({
+    			url: '/yeyebooks/booking/addBooking',
+    			type: 'post',
+    			data: {
+    				bkgStartYmd: startYmd,
+    				bkgStartTime: startTime,
+    				bkgEndYmd: endYmd,
+    				bkgEndTime: endTime,
+    				trgtNo: trgtNo,
+    				bkgPurpose: bkgPurpose
+    			},
+    			dataType: 'json',
+    			success: function(response){
+    				if(response.success){
+    					Swal.fire({
+        					icon: 'success',
+        					title: '예약성공'
+        				}).then(function(){
+        					$('#modalCenter').modal('hide');
+        					location.href="/yeyebooks/booking/bookingOne?bkgNo=" + response.bkgNo;
+        				})
+    				}else{
+    					Swal.fire({
+        					icon: 'error',
+        					title: '예약실패'
+        				})
+    				}
+    				
+    			}
+    		})
+    	}
 	</script>
 	
   </head>
@@ -221,9 +269,9 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                  Close
+                  닫기
                 </button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" onclick="addBooking()">예약하기</button>
               </div>
             </div>
           </div>
