@@ -34,6 +34,15 @@
 				$('#dayoffInput2').prop('disabled', false);
 				$('#dayoffInput3').prop('disabled', false);
 			});
+			
+			// 연차 선택시 입력값 기본설정
+			document.getElementById("dayoffInput2").addEventListener("change", function() {
+			    // dayoffInput2의 값을 가져옴
+			    var selectedDate = this.value;
+
+			    // dayoffInput3에 선택된 날짜를 설정
+			    document.getElementById("dayoffInput3").value = selectedDate;
+			});
 		});
     </script>
     

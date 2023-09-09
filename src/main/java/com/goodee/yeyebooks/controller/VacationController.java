@@ -3,6 +3,7 @@ package com.goodee.yeyebooks.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.goodee.yeyebooks.service.VacationService;
 import com.goodee.yeyebooks.vo.Approval;
+import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
 import com.goodee.yeyebooks.vo.Dayoff;
 
@@ -55,14 +58,16 @@ public class VacationController {
 	}
 	
 	@PostMapping("addVacation")
-	public String addVaction(HttpSession session, 
+	public String addVaction(HttpSession session,
+							HttpServletRequest request,
 							Approval approval, 
 							@RequestParam(name="lineUserId") String[] approvalLine, 
 							Dayoff dayOff, 
-							String[] dayoffYmd) {
+							String[] dayoffYmd,
+							@RequestParam MultipartFile multipartFile) {
 		//log.debug("\u001B[41m" + "controller approvalLine" + approvalLine + "\u001B[0m");
 		
-		int row = vacationService.addVacation(session, approval, approvalLine, dayOff, dayoffYmd);
+		int row = vacationService.addVacation(request, session, approval, approvalLine, dayOff, dayoffYmd, multipartFile);
 		
 		if(row != 1) {
 			log.debug("\u001B[41m" + "입력실패" + "\u001B[0m");

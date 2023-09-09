@@ -1,5 +1,7 @@
 package com.goodee.yeyebooks.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,18 +9,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.goodee.yeyebooks.controller.LunarCalendar;
 import com.goodee.yeyebooks.mapper.ApprovalMapper;
 import com.goodee.yeyebooks.mapper.VacationMapper;
 import com.goodee.yeyebooks.vo.Approval;
+import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
+import com.goodee.yeyebooks.vo.BoardFile;
 import com.goodee.yeyebooks.vo.Dayoff;
 
 import lombok.extern.slf4j.Slf4j;
@@ -129,7 +136,13 @@ public class VacationService {
 	}
 	
 	// 휴가 상신
-	public int addVacation(HttpSession session, Approval approval, String[] approvalLine, Dayoff dayOff, String[] dayoffYmd) {
+	public int addVacation(HttpServletRequest request, 
+							HttpSession session, 
+							Approval approval, 
+							String[] approvalLine, 
+							Dayoff dayOff, 
+							String[] dayoffYmd, 
+							MultipartFile multipartFile) {
 		//log.debug("\u001B[41m"+ "vacaService addVacation approvalLine : " + approvalLine + "\u001B[0m");
 		//log.debug("\u001B[41m"+ "vacaService addVacation dayoffYmd : " + dayoffYmd + "\u001B[0m");
 		int row = 0;
@@ -220,12 +233,15 @@ public class VacationService {
                 		
                 		DateTimeFormatter dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 		
-                		log.debug("\u001B[41m"+ "날짜 포맷" + dbDateFormatter + "\u001B[0m");
-                		log.debug("\u001B[41m"+ "연차 신청 처음" + dayoffYmd[0] + "\u001B[0m");
-                		log.debug("\u001B[41m"+ "연차 신청 끝" + dayoffYmd[1] + "\u001B[0m");
+                		//log.debug("\u001B[41m"+ "연차 신청 처음" + dayoffYmd[0] + "\u001B[0m");
+                		//log.debug("\u001B[41m"+ "연차 신청 끝" + dayoffYmd[1] + "\u001B[0m");
                 		
-                		LocalDate startDate = LocalDate.parse(dayoffYmd[0], DateTimeFormatter.BASIC_ISO_DATE);
-                	    LocalDate endDate = LocalDate.parse(dayoffYmd[1], DateTimeFormatter.BASIC_ISO_DATE);
+                		LocalDate startDate = LocalDate.parse(dayoffYmd[0]);
+                	    LocalDate endDate = LocalDate.parse(dayoffYmd[1]);
+                	    
+                	    
+                	    //log.debug("\u001B[41m"+ "연차 신청 startDate" + startDate + "\u001B[0m");
+                	    //log.debug("\u001B[41m"+ "연차 신청 endDate" + endDate + "\u001B[0m");
                 	    
                 	    int expectedRowCount = calculateExpectedRowCount(startDate, endDate, holidaysSet);
                 	    int actualRowCount = 0; // 입력된 휴가 개수 확인
@@ -245,7 +261,7 @@ public class VacationService {
                 	    }
                 	    
                 	    if (actualRowCount != expectedRowCount) {
-                	    	log.debug("\u001B[41m"+ "연차 입력실패" + "\u001B[0m");
+                	    	//log.debug("\u001B[41m"+ "연차 입력실패" + "\u001B[0m");
                        	 	return 0;
                 	    }
                 	    
@@ -258,6 +274,45 @@ public class VacationService {
                 	}
                     
     			}
+    			
+    			String path = request.getServletContext().getRealPath("/approvalFile/");
+    			log.debug("\u001B[41m"+ "path" + path + "\u001B[0m");
+    			
+				ApprovalFile vF = new ApprovalFile();
+				
+				vF.setAprvNo(aprvNo);
+				vF.setOrginFilename(multipartFile.getOriginalFilename());
+				vF.setFiletype(multipartFile.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
+				vF.setPath(path);
+				
+				// 저장될 파일 이름
+				// 확장자
+				int lastIdx = multipartFile.getOriginalFilename().lastIndexOf(".");
+				String ext = multipartFile.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
+				
+				// 새로운 이름 + 확장자
+				vF.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
+				
+				// 테이블에 저장
+				vacationMapper.insertAprvFile(vF);
+				
+				// path 위치에 저장파일이름으로 빈파일을 생성
+				File f = new File(path+vF.getSaveFilename());
+				
+				// 폴더가 없으면 생성
+				if(!f.exists()) {
+					f.mkdir();
+				}
+				
+				// 빈파일에 첨부된 파일의 스트림을 주입한다.
+				try {
+					multipartFile.transferTo(f);
+				} catch(IllegalStateException | IOException e) {
+					// 트랜잭션 작동을 위해 예외 발생이 필요
+					e.printStackTrace();
+					// 트랜잭션 작동을 위해 예외(try catch 강요하지 않는 예외 ex) RuntimeException) 발생 필요
+					throw new RuntimeException();
+				}
     		}
         }
 		return row;
