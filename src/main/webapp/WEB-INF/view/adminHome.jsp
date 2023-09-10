@@ -152,7 +152,7 @@
 				responsive: true,
 			    scales: {
 			    	y : {
-			    		max: 100	
+			    		max: 60
 			    	},
 			    }
 			}
