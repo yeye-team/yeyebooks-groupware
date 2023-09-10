@@ -105,10 +105,6 @@
 
 							<div class="card-body">
 								<h4><b>예약정보</b></h4>
-								<div class="mb-3 row">
-		                        	<div class="col-md-2"><b>예약번호</b></div>
-		                        	<div class="col-md-10">${booking.bkgNo}</div>
-		                     	</div>
 		                    	<div class="mb-3 row">
 		                        	<div class="col-md-2"><b>예약시작일시</b></div>
 		                        	<div class="col-md-10">${booking.bkgStartYmd}, ${booking.bkgStartTime}</div>
@@ -150,7 +146,6 @@
 		                        	<div class="col-md-10">${booking.trgtInfo}</div>
 		                     	</div>
 		                      	<div>
-		                      		<div class="col-md-2"><b>예약대상이미지</b></div>
 		                        	<div class="col-md-10">
 		                        		<img src="/yeyebooks${booking.path}${booking.saveFilename}">
 		                        	</div>
