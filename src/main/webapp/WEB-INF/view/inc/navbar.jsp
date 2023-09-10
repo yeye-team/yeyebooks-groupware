@@ -20,9 +20,9 @@
 					  <li class="nav-item">
 					    <a class="nav-link" href="/yeyebooks/schedule">회사일정관리</a>
 					  </li>
-					  <li class="nav-item">
+					  <!--<li class="nav-item">
 					    <a class="nav-link" href="javascript:void(0)">시설/비품관리</a>
-					  </li>
+					  </li> -->
 					  <!-- <li class="nav-item">
 					    <a class="nav-link" href="javascript:void(0)">매점매출관리</a>
 					  </li> -->
@@ -31,7 +31,7 @@
 				<c:otherwise>
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					  <li class="nav-item">
-					    <a class="nav-link" href="javascript:void(0)">전자결재</a>
+					    <a class="nav-link" href="/yeyebooks/approval/approvalList">전자결재</a>
 					  </li>
 					  <li class="nav-item">
 					    <a class="nav-link" href="/yeyebooks/userInformation">인사</a>

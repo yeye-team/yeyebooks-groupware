@@ -108,11 +108,11 @@
 	        })
 	        $('#moveToWaitingAll').click(function(){
 	        	// 진행중인 문서 주소
-	        	location.href="/yeyebooks/"
+	        	location.href="/yeyebooks/approval/approvalList?status=1"
 	        })
 	        $('#moveToWorkTimeAll').click(function(){
 	        	// 근태현황 전체 주소
-	        	location.href="/yeyebooks/"
+	        	location.href="/yeyebooks/vacationList"
 	        })
 	        $('#workStart').click(function(){
 	        	const workStartTime = $('#nowTime').text();
@@ -187,11 +187,11 @@
 		                    	<button type="button" class="btn btn-secondary" id="moveToWaitingAll">전체보기</button>
 		                 	</h5>
 	                    	<div class="card-body ">
-	                          <a href="#" class="btn btn-primary btn-lg">
+	                          <a href="approval/approvalList?status=2" class="btn btn-primary btn-lg">
 	                            승인대기 결재건
 	                            <span class="badge badge-center rounded-pill bg-label-warning">${approveCnt }</span>
 	                          </a>
-	                          <a href="#" class="btn btn-primary btn-lg">
+	                          <a href="approval/approvalList?status=3" class="btn btn-primary btn-lg">
 	                            결재대기 결재건
 	                            <span class="badge badge-center rounded-pill bg-label-warning">${approvalCnt }</span>
 	                          </a>
