@@ -22,6 +22,7 @@
 			c2.code_nm deptNm,
 			u.phone_no phoneNo,
 			u.mail,
+			uf.path userPath,
 			uf.save_filename userImg 
 		FROM user u 
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)

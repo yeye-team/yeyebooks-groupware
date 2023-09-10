@@ -119,7 +119,7 @@
 										                              		<div class="col-md-3">
 										                              			<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
 																			    <c:if test="${u.userImg != null}">
-																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userPath }${u.userImg}"></c:set>
 																			    </c:if>
 																			    <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
 										                              		</div>
@@ -144,7 +144,7 @@
 									                              		<div class="col-md-3">
 									                              			<c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
 																			    <c:if test="${u.userImg != null}">
-																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+																			    	<c:set var="photoUrl" value="/yeyebooks/${u.userPath }${u.userImg}"></c:set>
 																			    </c:if>
 																			    <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
 									                              		</div>
