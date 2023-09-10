@@ -441,6 +441,9 @@
 		  color: blue;
 		  text-decoration: none;
 		}
+		.fc-license-message{
+			display: none;
+		}
     </style>
     <script>
 	$(document).ready(function() {
