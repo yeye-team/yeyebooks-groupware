@@ -82,27 +82,85 @@
 </script>
 
 <script>
-    $(document).ready(function() {
-        $('#docCatCd').on('change', function() {
-            var selectedValue = $(this).val();
-            changeForm(selectedValue);
-        });
-
-        function changeForm(selectedValue) {
-            if (selectedValue === "03") {
-                $('#03').show();
-                $('#01').hide();
-            } else if (selectedValue === "01") {
-                $('#03').hide();
-                $('#01').show();
-            }
-        }
-
-        // 최초 로딩 시 select의 값을 확인하여 초기 폼 설정
-        $('#docCatCd').trigger('change');
+$(document).ready(function() {
+    $('#docCatCd').on('change', function() {
+        var selectedValue = $(this).val();
+        changeForm(selectedValue);
     });
+
+    function changeForm(selectedValue) {
+        if (selectedValue === "03") {
+            $('#03').show();
+            $('#01').hide();
+        } else if (selectedValue === "01") {
+            $('#03').hide();
+            $('#01').show();
+        }
+    }
+
+    
+/* 
+    // 폼 전송 버튼 클릭 시 데이터 전송
+    $('#submitBtn').on('click', function() {
+        submitForm();
+    });
+ */
+    // 최초 로딩 시 select의 값을 확인하여 초기 폼 설정
+    $('#docCatCd').trigger('change');
+});
+//폼 데이터 전송 함수
+function submitForm() {
+    var selectedValue = $('#docCatCd').val();
+    var formData = new FormData($('#approvalForm')[0]); // 폼 데이터를 가져오는 방식 변경
+
+/*     // 폼 데이터 수집
+    if (selectedValue === "03") {
+        formData.append('aprvTitle', $("input[name='aprvTitle']").val());
+        formData.append('aprvContents', $("textarea[name='aprvContents']").val());
+        // 필요한 다른 폼 요소들도 추가 수집
+    } else if (selectedValue === "01") {
+        formData.append('acntSubject', $("select[name='acntSubject']").val());
+        formData.append('acntYmd', $("input[name='acntYmd']").val());
+        formData.append('acntContents', $("textarea[name='acntContents']").val());
+        formData.append('acntNm', $("input[name='acntNm']").val());
+        formData.append('acntAmount', $("input[name='acntAmount']").val());
+        formData.append('acntCreditCd', $("select[name='acntCreditCd']").val());
+    } */
+
+    // 폼 데이터 전송 (AJAX 예제)
+    $.ajax({
+        url: '/yeyebooks/approval/addApproval',
+        type: 'POST',
+        data: formData,
+        processData: false, // 중요: 폼 데이터를 jQuery가 자동으로 처리하지 않도록 설정
+        contentType: false, // 중요: 데이터 유형을 설정하지 않도록 설정
+        success: function(response) {
+            // 성공 시 처리
+        },
+        error: function(error) {
+            // 오류 시 처리
+        }
+    });
+}
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // acntCreditCd 선택 변경 이벤트 핸들러
+    document.getElementById("acntCreditCd").addEventListener("change", function() {
+        var selectedValue = this.value;
+        var acntAmountInput = document.getElementById("acntAmount");
+
+        // 선택한 구분에 따라 acntAmount 값을 변경
+        if (selectedValue === "01") {
+            acntAmountInput.value = "";
+        } else if (selectedValue === "02") {
+            // 법인일 때는 원하는 값으로 설정합니다.
+            acntAmountInput.value = ""; 
+        }
+    });
+});
+</script>
 
 <script>
     // 문서가 완전히 로드된 후에 스크립트 실행
@@ -313,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <script>
     // 문서 종류 선택 변경 이벤트 핸들러
-    document.getElementById("documentType").addEventListener("change", function() {
+    $("#documentType").on("change", function() {
         // 선택한 문서 종류 값 가져오기
         var selectedValue = this.value;
 
@@ -322,9 +380,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 폼 요소에 숨겨진 필드로 doc_cat_cd 설정
         document.getElementById("doc_cat_cd").value = docCatCd;
-
+/* 
         // 폼 제출
-        document.getElementById("approvalForm").submit();
+        document.getElementById("approvalForm").submit(); */
     });
 </script>
 
@@ -494,25 +552,52 @@ document.addEventListener("DOMContentLoaded", function() {
 				        function submitContents(){
 				        	oEditors.getById["editor"].exec("UPDATE_CONTENTS_FIELD",[]);
 				        }
+				        
+				        function addApproval(){
+				        	const docCat = $('#docCatCd').val();
+				        	if(docCat == '01'){
+				        		submitForm();
+				        	}else{
+				        		submitContents();
+				        	}
+				        }
+				    
 				    </script>
 			  	</div>
 			</div>
 			
 			<div id="01" style="display: none; margin-top: 20px;">
+				
+			    <label>제목:</label>
+				<input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+
+			    <label>지출사유:</label>
+				<input type="text" name="aprvContents" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+
+			    <label>계정과목:</label>
+			        <select id="acntSubject" name="acntSubject">
+			            <option>교통비</option>
+			            <option>식비</option>
+			            <option>물품구입비</option>
+			        </select>
+
 			    <label for="expenseDate">지출 날짜:</label>
-			    <input type="date" id="expenseDate" name="expenseDate"><br>
+			    <input type="date" id="acntYmd" name="acntYmd"><br>
+			    
+			    <label for="expenseDescription">사용내역:</label>
+			    <textarea id="acntContents" name="acntContents" rows="4" cols="50"></textarea><br>
+
+			    <label for="expenseDate">사용처 :</label>
+			    <input type="text" id="acntNm" name="acntNm"><br>
 			    
 			    <label for="expenseAmount">지출 금액:</label>
-			    <input type="number" id="expenseAmount" name="expenseAmount"><br>
+			    <input type="number" id="acntAmount" name="acntAmount"><br>
 			    
-			    <label for="expenseDescription">지출 내용:</label>
-			    <textarea id="expenseDescription" name="expenseDescription" rows="4" cols="50"></textarea><br>
-			    
-			    <label>지출증빙</label>
-	        <select id="documentType" name="documentType">
-	            <option>현금영수증</option>
-	            <option>매출전표</option>
-	        </select>
+			    <label>구분:</label>
+			        <select id="acntCreditCd" name="acntCreditCd">
+			            <option value="01">법인</option>
+			            <option value="02">개인</option>
+			        </select>
 			</div>
     
         	<label for="files">첨부 파일:</label>
@@ -522,7 +607,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
             </div>
             
-            <button type="submit" class='btn btn-primary' onclick="submitContents()">문서등록</button>
+            <button type="button" class='btn btn-primary' onclick="addApproval()">문서등록</button>
         </form>
 
 

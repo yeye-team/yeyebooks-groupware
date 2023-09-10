@@ -22,6 +22,7 @@ import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
 import com.goodee.yeyebooks.vo.Board;
 import com.goodee.yeyebooks.vo.BoardFile;
+import com.goodee.yeyebooks.vo.Dayoff;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,9 +55,9 @@ public class ApprovalService {
 		this.approvalMapper = approvalMapper;
 	}
 	
-	public List<Approval> selectMyApproval(String loginId, int status){
+	public List<Approval> selectMyApproval(String userId, int status){
 		List<Approval> approvalList = null;
-		approvalList = approvalMapper.selectMyApproval(loginId, status);
+		approvalList = approvalMapper.selectMyApproval(userId, status);
 		log.debug("\u001B[35m"+"aprovalList : " + approvalList);
 		return approvalList;
 	};
@@ -67,15 +68,22 @@ public class ApprovalService {
 		Approval approval = approvalMapper.selectApprovalOne(aprvNo);
 		List<ApprovalFile> aprvFile = approvalMapper.selectApprovalFileOne(aprvNo);
 		List<ApprovalLine> aprvLine =  approvalMapper.selectApprovalLineOne(aprvNo);
-		String account = approvalMapper.selectAccountOne(aprvNo);
 		String nowApprovalUser = approvalMapper.selectNowApproveUSer(aprvNo);
 
 		approvalOne.put("approval", approval);
 	    approvalOne.put("aprvFile", aprvFile);
 	    approvalOne.put("aprvLine", aprvLine);
-	    approvalOne.put("account", account);
 	    approvalOne.put("approvalUser", nowApprovalUser);
-
+	    
+	    if(approval.getDocCatCd().equals("01")) {
+		    Account account = approvalMapper.selectAccountOne(aprvNo);
+		    approvalOne.put("account", account);
+	    }
+	    
+	    if(approval.getDocCatCd().equals("02")) {
+		    Dayoff dayoff = approvalMapper.selectDayoffOne(aprvNo);
+		    approvalOne.put("dayoff", dayoff);
+	    }
 
 		return approvalOne;
 	}
@@ -96,14 +104,21 @@ public class ApprovalService {
 	
 
 	// 문서 추가 메서드
-	public int addApproval(Approval approval, String[] approvalLine, String path) {
+	public int addApproval(Approval approval, String[] approvalLine, String path, Account account) {
 		log.debug("\u001B[35m"+ "approvalLien : " +  approvalLine + "\u001B[0m");
 		approval.setAprvYmd(todayYmd);
 		String aprvNo = approvalMapper.selectApprovalNo(approval);
 		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
 		approval.setAprvNo(aprvNo);
+
+		account.setAprvNo(aprvNo);
+		log.debug("\u001B[35m"+account.getAcntYmd());
 		
 		int row = approvalMapper.insertApproval(approval);
+		
+		if("01".equals(approval.getDocCatCd())) {
+			row = approvalMapper.insertAccount(account);
+		} 
 		
 		// 관리자 메인메뉴바 : 모든 부서 코드 조회
 		List<Map<String, Object>> selectAllCatCode = approvalMapper.selectAll();
@@ -159,6 +174,7 @@ public class ApprovalService {
 		}
 		return row;
 	}
+	
 	
 	public Map<String, Object> getApprovalWaitingCnt(String userId){
 		Map<String, Object> result = new HashMap<String, Object>();

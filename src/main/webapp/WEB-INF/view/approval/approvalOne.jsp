@@ -143,7 +143,38 @@
 			<tr>
 		</c:forEach>
 	</table>	
-		
+	<c:if test="${approval.docCatCd == '01'}">
+		<table>
+			<tr>
+				<th>지출일자</th>
+				<th>내용</th>
+				<th>거래처명</th>
+				<th>금액</th>
+				<th>구분</th>	
+			</tr>
+			<tr>
+				<td>${account.acntYmd}</td>
+				<td>${account.acntContents}</td>
+				<td>${account.acntNm}</td>
+				<td>${account.acntAmount}</td>
+				<td>${account.acntCreditCd}</td>
+			</tr>
+		</table>
+	</c:if>
+	
+	<c:if test="${approval.docCatCd == '02'}">
+		<table>
+			<tr>
+				<th>휴가대상일</th>
+				<th>휴가종류</th>
+			</tr>
+			<tr>
+				<td>${dayoff.dayoffYmd}</td>
+				<td>${dayoff.dayoffTypeCd }</td>
+			</tr>
+		</table>
+	</c:if>
+	
 	<c:if test="${sessionScope.userId == approvalUser && approval.aprvStatCd == '01'}">
         <button type="button" onclick="approve()">승인</button>
         <button type="button" onclick="openRejectionModal()">반려</button>

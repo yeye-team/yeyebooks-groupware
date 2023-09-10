@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.goodee.yeyebooks.service.ApprovalService;
 import com.goodee.yeyebooks.service.DeptService;
 import com.goodee.yeyebooks.service.UserService;
+import com.goodee.yeyebooks.vo.Account;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
@@ -56,9 +57,10 @@ public class ApprovalController {
 	
 	@GetMapping("/approval/approvalList")
 	public String myApproval(Model model, 
-							@RequestParam(name = "loginId", defaultValue = "admin") String loginId,
+							HttpSession session,
 							@RequestParam(name = "status", defaultValue = "0") int status) {
-		List<Approval> approvalList = approvalService.selectMyApproval(loginId, status);
+		String userId = (String)session.getAttribute("userId");
+		List<Approval> approvalList = approvalService.selectMyApproval(userId, status);
 		log.debug("\u001B[35m"+"approvalList{} : ",approvalList);
 		model.addAttribute("approvalList",approvalList);
 		model.addAttribute("status", status);
@@ -68,8 +70,9 @@ public class ApprovalController {
 	 
 	// 문서 상세보기
 	@GetMapping("/approval/approvalOne")
-	public String selectApprovalOne(Model model, 
-							@RequestParam(name = "aprvNo") String aprvNo) {
+	public String selectApprovalOne(Model model,
+								HttpSession session,	
+								@RequestParam(name = "aprvNo") String aprvNo) {
 		Map<String, Object> approvalOne = approvalService.selectApprovalOne(aprvNo);
 		List<Map<String,Object>> aprvLineInfo = new ArrayList<>();
 		List<ApprovalLine> aprvLine = (List<ApprovalLine>)approvalOne.get("aprvLine");
@@ -92,14 +95,22 @@ public class ApprovalController {
 		model.addAttribute("aprvLine", aprvLineInfo);
 		model.addAttribute("approval", approvalOne.get("approval"));
 		model.addAttribute("aprvFile", approvalOne.get("aprvFile"));
-		model.addAttribute("account", approvalOne.get("account"));
 		model.addAttribute("approvalUser", approvalOne.get("approvalUser"));
+		
+		if(approval.getDocCatCd().equals("01")){
+			model.addAttribute("account", approvalOne.get("account"));
+		}
+		
+		if(approval.getDocCatCd().equals("02")){
+			model.addAttribute("dayoff", approvalOne.get("dayoff"));
+		}
 		return "approval/approvalOne";
 	}
 	
 	@GetMapping("/approval/cancelApproval")
 	public String updateAprvStatCd(Model model,
-							@RequestParam String aprvNo) {
+								HttpSession session,
+								@RequestParam String aprvNo) {
 		approvalService.updateAprvStatCd(aprvNo);
 	    return "redirect:/approval/approvalList";
 	}
@@ -117,7 +128,7 @@ public class ApprovalController {
 	// 문서작성
 	@GetMapping("/approval/addApproval")
 	public String addApproval(Model model, HttpSession session, String docCatCd) {
-		String userId = "admin";
+		String userId = (String)session.getAttribute("userId");
 		
 		List<Map<String, Object>> mainMenu = approvalService.getUserCntByDeptAndAll();
 		//log.debug("\u001B[41m"+ "addBoard mainMenu : " + mainMenu + "\u001B[0m");
@@ -136,19 +147,31 @@ public class ApprovalController {
 	}
 	
 	@PostMapping("/approval/addApproval")	
-	public String addApproval(HttpServletRequest request, Approval approval,
-							@RequestParam(name="approvalLine") String[] approvalLine) {
+	public String addApproval(HttpServletRequest request, Approval approval, Account account,
+							@RequestParam(name="approvalLine") String[] approvalLine,
+							HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		approval.setUserId(userId);
 		System.out.println("ApprovalController approvalLine[0] : " + approvalLine[0]);
 		// RealPath를 붙혀야 경로를 안다.
 		String path = request.getServletContext().getRealPath("/approvalFile/");
 		log.debug("\u001B[35m" + "path" + path + "\u001B[0m");
-		approvalService.addApproval(approval, approvalLine, path);
+		approvalService.addApproval(approval, approvalLine, path, account);
 		log.debug("\u001B[35m"+ approval + "입력 board" + "\u001B[0m");	
 		//log.debug("\u001B[41m"+ row + "입력 row" + "\u001B[0m");	
 		return "redirect:/approval/approvalList?docCatCd="+approval.getDocCatCd();
 	}
+
+	/*
+	 * @PostMapping("approval/addApproval") public String Account() {
+	 * 
+	 * return ""; }
+	 */
+	
 	@PostMapping("approval/approveApproval")
-	public String approvaApproval(@RequestParam String aprvNo, @RequestParam String userId) {
+	public String approvaApproval(@RequestParam String aprvNo,
+								HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
 		String lastUser = approvalService.selectLastApprovalUser(aprvNo);
 		approvalService.updateApproveApprovalLine(aprvNo, userId);
 		if(userId.equals(lastUser)) {
@@ -156,5 +179,5 @@ public class ApprovalController {
 		}
 		return "approval/approvalList";
 	}
-
+	
 }

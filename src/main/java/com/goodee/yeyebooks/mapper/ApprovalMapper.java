@@ -5,22 +5,28 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.goodee.yeyebooks.vo.Account;
 import com.goodee.yeyebooks.vo.Approval;
 import com.goodee.yeyebooks.vo.ApprovalFile;
 import com.goodee.yeyebooks.vo.ApprovalLine;
+import com.goodee.yeyebooks.vo.Dayoff;
 
 @Mapper
 public interface ApprovalMapper {
+
+	List<Map<String, Object>> selectAll();
 	
 	public String selectApprovalNo(Approval approval);
 	
-	List<Map<String, Object>> selectAll();
 	// 결재문서 추가
 	public int insertApproval(Approval approval);
 	// 결재문서 파일추가
 	public int insertApprovalFile(ApprovalFile approvalFile);
 	// 결재문서 결재선 추가
 	public int insertApprovalLine(ApprovalLine approvalLine);
+	// 지출결의서 
+	public int insertAccount(Account account);
+	
 	// 내 문서함 조회
 	List<Approval> selectMyApproval(String loginId, int status);
 	// 각 상태별 문서함 조회
@@ -33,7 +39,9 @@ public interface ApprovalMapper {
 	
 	List<ApprovalLine> selectApprovalLineOne(String aprvNo);
 	
-	public String selectAccountOne(String aprvNo);
+	public Account selectAccountOne(String aprvNo);
+	
+	public Dayoff selectDayoffOne(String aprvNo);
 	
 	List<Map<String, Object>> selectUserListByDept();
 	

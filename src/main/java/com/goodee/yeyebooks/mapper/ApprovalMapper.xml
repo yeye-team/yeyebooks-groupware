@@ -72,6 +72,28 @@
 
     </insert>
     
+    <!-- 지출결의서 추가  -->
+   	<insert id="insertAccount" parameterType="com.goodee.yeyebooks.vo.Account">
+   		INSERT INTO account(
+   			aprv_no,
+   			acnt_subject,
+   			acnt_ymd,
+   			acnt_contents,
+   			acnt_nm,
+   			acnt_amount,
+   			acnt_credit_cd
+   		)
+   		VALUES(
+   			#{aprvNo},
+   			#{acntSubject},
+   			#{acntYmd},
+   			#{acntContents},
+   			#{acntNm},
+   			#{acntAmount},
+   			#{acntCreditCd}
+   		)
+   	</insert>
+    
     
     <select id="selectAll" resultType="java.util.Map">
 			SELECT 
@@ -135,12 +157,12 @@
 		JOIN user u ON a.user_id = u.user_id
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
-		WHERE ((a.user_id = 'y2022012001')  
-		OR (a.aprv_no in (select aprv_no from approval_line where user_id = 'y2022012001') AND a.aprv_stat_cd IN ('01', '02')) OR (a.reference LIKE '%y2022012001%' AND a.aprv_stat_cd = '02'))
+		WHERE ((a.user_id = #{userId})  
+		OR (a.aprv_no in (select aprv_no from approval_line where user_id = #{userId}) AND a.aprv_stat_cd IN ('01', '02')) OR (a.reference LIKE CONCAT('%', #{userId}, '%') AND a.aprv_stat_cd = '02'))
 		<choose>
 			<when test="status == 1"> AND c2.code =  '01' </when>
-			<when test="status == 2"> and a.user_id = 'y2022012001' AND c2.code =  '01' </when>
-			<when test="status == 3"> and a.aprv_no in (select aprv_no from approval_line where user_id = 'y2022012001' and aprv_stat_cd = '01') AND c2.code =  '01' </when>
+			<when test="status == 2"> and a.user_id = #{userId} AND c2.code =  '01' </when>
+			<when test="status == 3"> and a.aprv_no in (select aprv_no from approval_line where user_id = #{userId} and aprv_stat_cd = '01') AND c2.code =  '01' </when>
 			<when test="status == 4"> AND c2.code =  '02' </when>
 			<when test="status == 5"> AND c2.code =  '03' </when>
 			<when test="status == 6"> AND c2.code =  '04' </when>
@@ -211,16 +233,27 @@
 		SELECT 
 			acnt_no acntNo,
 			aprv_no aprvNo,
-			acnt_subject acntSubject,
 			acnt_ymd acntYmd,
 			acnt_contents acntContents,
 			acnt_nm acntNm,
 			acnt_amount acntAmount,
-			acnt_credit_cd acntCreditCd,
-			acnt_proof_cd acntProofCd
+			(SELECT code_nm
+			FROM common_code
+			WHERE group_code = 'A003' AND CODE = acnt_credit_cd) acntCreditCd
 		FROM account
 		WHERE aprv_no = #{aprvNo}
 	</select> 
+	
+	<select id="selectDayoffOne" parameterType="String">
+		SELECT 
+			aprv_no aprvNo,
+			dayoff_ymd dayOffYmd,
+			(SELECT code_nm
+			FROM common_code
+			WHERE group_code = 'A005' AND CODE = dayoff_type_cd) dayoffTypeCd
+		FROM dayoff
+		WHERE aprv_no = #{aprvNo}
+	</select>
 	
 	<!-- 반려 -->
 	<update id="updateRjctReason">
@@ -229,6 +262,7 @@
 			aprv_stat_cd = '03'
 		WHERE aprv_no = #{aprvNo};
 	</update>
+	
 	<update id="updateAprvlineRjct">
 		update approval_line
 		set aprv_stat_cd = '03'
