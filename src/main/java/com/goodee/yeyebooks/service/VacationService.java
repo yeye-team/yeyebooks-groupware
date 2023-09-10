@@ -212,7 +212,7 @@ public class VacationService {
                         int expectedRowCount = 1;
                         if (offRow != expectedRowCount) {
                         	 log.debug("\u001B[41m"+ "반차 입력실패" + "\u001B[0m");
-                        	 return 0;
+                        	 return row = 0;
                         }
                         
                         // 현재 연차
@@ -262,7 +262,7 @@ public class VacationService {
                 	    
                 	    if (actualRowCount != expectedRowCount) {
                 	    	//log.debug("\u001B[41m"+ "연차 입력실패" + "\u001B[0m");
-                       	 	return 0;
+                       	 	return row = 0;
                 	    }
                 	    
 	                	// 현재 연차
@@ -275,44 +275,48 @@ public class VacationService {
                     
     			}
     			
-    			String path = request.getServletContext().getRealPath("/approvalFile/");
-    			log.debug("\u001B[41m"+ "path" + path + "\u001B[0m");
-    			
-				ApprovalFile vF = new ApprovalFile();
-				
-				vF.setAprvNo(aprvNo);
-				vF.setOrginFilename(multipartFile.getOriginalFilename());
-				vF.setFiletype(multipartFile.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
-				vF.setPath(path);
-				
-				// 저장될 파일 이름
-				// 확장자
-				int lastIdx = multipartFile.getOriginalFilename().lastIndexOf(".");
-				String ext = multipartFile.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
-				
-				// 새로운 이름 + 확장자
-				vF.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
-				
-				// 테이블에 저장
-				vacationMapper.insertAprvFile(vF);
-				
-				// path 위치에 저장파일이름으로 빈파일을 생성
-				File f = new File(path+vF.getSaveFilename());
-				
-				// 폴더가 없으면 생성
-				if(!f.exists()) {
-					f.mkdir();
-				}
-				
-				// 빈파일에 첨부된 파일의 스트림을 주입한다.
-				try {
-					multipartFile.transferTo(f);
-				} catch(IllegalStateException | IOException e) {
-					// 트랜잭션 작동을 위해 예외 발생이 필요
-					e.printStackTrace();
-					// 트랜잭션 작동을 위해 예외(try catch 강요하지 않는 예외 ex) RuntimeException) 발생 필요
-					throw new RuntimeException();
-				}
+    			if (multipartFile != null && !multipartFile.isEmpty()) {
+	    			String path = request.getServletContext().getRealPath("/approvalFile/");
+	    			log.debug("\u001B[41m"+ "path" + path + "\u001B[0m");
+	    			
+					ApprovalFile vF = new ApprovalFile();
+					
+					vF.setAprvNo(aprvNo);
+					vF.setOrginFilename(multipartFile.getOriginalFilename());
+					vF.setFiletype(multipartFile.getContentType()); // 파일타입(MIME : Multipurpose Internet Mail Extensions = 파일변환타입)
+					vF.setPath(path);
+					
+					// 저장될 파일 이름
+					// 확장자
+					int lastIdx = multipartFile.getOriginalFilename().lastIndexOf(".");
+					String ext = multipartFile.getOriginalFilename().substring(lastIdx); // 마지막 .의 위치값 > 확장자 ex) A.jpg 에서 자른다
+					
+					// 새로운 이름 + 확장자
+					vF.setSaveFilename(UUID.randomUUID().toString().replace("-", "") + ext); 
+					
+					// 테이블에 저장
+					vacationMapper.insertAprvFile(vF);
+					
+					// path 위치에 저장파일이름으로 빈파일을 생성
+					File f = new File(path+vF.getSaveFilename());
+					
+					// 폴더가 없으면 생성
+					if(!f.exists()) {
+						f.mkdir();
+					}
+					
+					// 빈파일에 첨부된 파일의 스트림을 주입한다.
+					try {
+						multipartFile.transferTo(f);
+					} catch(IllegalStateException | IOException e) {
+						// 트랜잭션 작동을 위해 예외 발생이 필요
+						e.printStackTrace();
+						// 트랜잭션 작동을 위해 예외(try catch 강요하지 않는 예외 ex) RuntimeException) 발생 필요
+						throw new RuntimeException();
+					}
+    			} else {
+    				return row;
+    			}
     		}
         }
 		return row;

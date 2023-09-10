@@ -64,7 +64,7 @@ public class VacationController {
 							@RequestParam(name="lineUserId") String[] approvalLine, 
 							Dayoff dayOff, 
 							String[] dayoffYmd,
-							@RequestParam MultipartFile multipartFile) {
+							@RequestParam(required = false) MultipartFile multipartFile) {
 		//log.debug("\u001B[41m" + "controller approvalLine" + approvalLine + "\u001B[0m");
 		
 		int row = vacationService.addVacation(request, session, approval, approvalLine, dayOff, dayoffYmd, multipartFile);
