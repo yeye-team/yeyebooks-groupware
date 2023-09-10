@@ -94,7 +94,8 @@ public class HomeController {
 		}
 		
 		// navbar에 들어갈 팀+직급 세션에 저장
-		session.setAttribute("userRank", user.getDept() + " " + user.getRank());
+		String dept = user.getDept() == null ? "" : user.getDept();
+		session.setAttribute("userRank", dept + " " + user.getRank());
 		
 		// navbar에 들어갈 이미지 세션에 저장
 		if(photoFile != null) {

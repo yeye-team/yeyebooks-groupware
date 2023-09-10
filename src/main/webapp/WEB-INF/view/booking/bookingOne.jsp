@@ -28,6 +28,9 @@
     		width: 100%;
     		height: 235px;
     	}
+    	.bkTargetImg img{
+    		width: 100%;
+    	}
     </style>
   </head>
 
@@ -146,7 +149,7 @@
 		                        	<div class="col-md-10">${booking.trgtInfo}</div>
 		                     	</div>
 		                      	<div>
-		                        	<div class="col-md-10">
+		                        	<div class="col-md-10 bkTargetImg">
 		                        		<img src="/yeyebooks${booking.path}${booking.saveFilename}">
 		                        	</div>
 		                      	</div>
