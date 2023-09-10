@@ -184,7 +184,7 @@
 				              </thead>
 				              <tbody class="table-border-bottom-0" id="vacationList">
 								<c:forEach var="v" items="${selectVacationList}">
-									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/approvalOne?aprvNo=${v.aprvNo}'">
+									<tr style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/approval/approvalOne?aprvNo=${v.aprvNo}'">
 										<td>${v.aprvTitle}</td>
 										<td>${v.dayoffYmd}</td>
 										<td>${v.dayoffTypeNm}</td>
