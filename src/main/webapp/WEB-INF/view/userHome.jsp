@@ -250,11 +250,11 @@
                     			<div class="d-flex align-items-center justify-content-center">
 	                    			<div class="text-center time-check">
 	                    				<button type="button" class="btn btn-primary" ${companyOnly} ${workStarted} id="workStart">출근</button>
-	                    				<div>출근시간 : <span id="workStartTime">${workStartTime != null ? workStartTime : '-'}</span></div>
+	                    				<div>출근시간 : <span id="workStartTime">${workStartTime != null ? workStartTime : '--:--:--'}</span></div>
 	                    			</div>
 	                    			<div class="text-center time-check">
 	                    				<button type="button" class="btn btn-primary" ${companyOnly} ${workEnded} id="workEnd">퇴근</button>
-                    					<div>퇴근시간 : <span id="workEndTime">${workEndTime != null ? workEndTime : '-'}</span></div>
+                    					<div>퇴근시간 : <span id="workEndTime">${workEndTime != null ? workEndTime : '--:--:--'}</span></div>
 	                    			</div>
                     			</div>
 	                    	</div>

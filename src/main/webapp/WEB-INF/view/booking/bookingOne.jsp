@@ -83,7 +83,7 @@
 				            	</div>
 				            	
 				            	<div class="col-md-1 d-flex justify-content-center align-items-center">
-       								<c:if test="${sessionScope.userId == user.userId}">
+       								<c:if test="${sessionScope.userId == user.userId && booking.bkgStatus == '예약완료'}">
        									<div class="dropdown">
 											<button
 												class="btn p-0"
