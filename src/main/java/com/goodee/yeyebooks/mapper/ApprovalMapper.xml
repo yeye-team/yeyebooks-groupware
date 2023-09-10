@@ -304,7 +304,7 @@
 		SELECT user_id, aprv_sequence
 		from approval_line
 		WHERE aprv_no = #{aprvNo}
-		AND aprv_sequence = (SELECT min(aprv_sequence) FROM approval_line where aprv_no = 'D2023090801' and aprv_stat_cd = '01')
+		AND aprv_sequence = (SELECT min(aprv_sequence) FROM approval_line where aprv_no = #{aprvNo} and aprv_stat_cd = '01')
 	</select>
 	
 	<select id="selectLastApprovalUser">
