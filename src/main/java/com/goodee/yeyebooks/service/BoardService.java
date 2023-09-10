@@ -283,6 +283,12 @@ public class BoardService {
 					// 파일저장(저장위치필요 > path변수 필요)
 					// path 위치에 저장파일이름으로 빈파일을 생성
 					File f = new File(path+bf.getSaveFilename());
+					
+					// 폴더가 없으면 생성
+					if(!f.exists()) {
+						f.mkdir();
+					}
+					
 					// 빈파일에 첨부된 파일의 스트림을 주입한다.
 					log.debug("\u001B[41m" + "insertBoard boardFile f : " + f + "\u001B[0m");
 					log.debug("\u001B[41m" + "insertBoard boardFile f.getAbsolutePath() : " + f.getAbsolutePath() + "\u001B[0m");
