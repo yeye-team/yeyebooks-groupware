@@ -135,24 +135,12 @@
 		JOIN user u ON a.user_id = u.user_id
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
-		<choose>
-	         <when test="status == 2">
-	            WHERE a.user_id = 'admin'
-	         </when>
-	         <when test="status == 3">
-	            WHERE 'admin' in (select user_id from approval_line where aprv_no = a.aprv_no)
-	         </when>
-	         <when test="status == 5">
-	            WHERE a.user_id = 'admin'
-	         </when>
-			<otherwise>
-				WHERE (a.user_id = 'admin' OR u.user_id in (select user_id from approval_line where aprv_no = a.aprv_no) OR a.reference LIKE '%admin%')
-			</otherwise>
-		</choose>
+		WHERE ((a.user_id = 'y2022012001')  
+		OR (a.aprv_no in (select aprv_no from approval_line where user_id = 'y2022012001') AND a.aprv_stat_cd IN ('01', '02')) OR (a.reference LIKE '%y2022012001%' AND a.aprv_stat_cd = '02'))
 		<choose>
 			<when test="status == 1"> AND c2.code =  '01' </when>
-			<when test="status == 2"> AND c2.code =  '01' </when>
-			<when test="status == 3"> AND c2.code =  '01' </when>
+			<when test="status == 2"> and a.user_id = 'y2022012001' AND c2.code =  '01' </when>
+			<when test="status == 3"> and a.aprv_no in (select aprv_no from approval_line where user_id = 'y2022012001' and aprv_stat_cd = '01') AND c2.code =  '01' </when>
 			<when test="status == 4"> AND c2.code =  '02' </when>
 			<when test="status == 5"> AND c2.code =  '03' </when>
 			<when test="status == 6"> AND c2.code =  '04' </when>
