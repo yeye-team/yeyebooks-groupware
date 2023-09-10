@@ -96,9 +96,18 @@ public class VacationService {
 		Map<String, Object> aprvInfo = vacationMapper.getAprvInfo(userId);
 		//log.debug("\u001B[41m"+ "vacaService addVacation aprvInfo : " + aprvInfo + "\u001B[0m");
 		
+		// 기안자 직급번호
+		String rankCd = (String) aprvInfo.get("rankCd");
+		log.debug("\u001B[41m"+ "vacaService addVacation rankCd : " + rankCd + "\u001B[0m");
+		
 		// 결재자 정보
-		List<Map<String, Object>> aprvLine = vacationMapper.getAprvLine(userId);
-		//log.debug("\u001B[41m"+ "vacaService addVacation aprvLine : " + aprvLine + "\u001B[0m");
+		// 부장일 경우 본인과 대표만 나오게
+		List<Map<String, Object>> aprvLine = null;
+		if(rankCd.equals("04")) {
+			aprvLine = vacationMapper.getAprvLine2(userId);
+		} else {
+			aprvLine = vacationMapper.getAprvLine(userId);
+		}
 		
 		// 참조자 정보
 		List<Map<String, Object>> referList = vacationMapper.getReference(userId);

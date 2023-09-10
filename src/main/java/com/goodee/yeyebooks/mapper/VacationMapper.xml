@@ -59,6 +59,7 @@
 	<select id="getAprvInfo">
 		SELECT 
 			user_nm userNm,
+			rank_cd rankCd,
 			(SELECT code_nm FROM common_code WHERE group_code = 'R001' AND CODE = rank_cd) rankNm,
 			(SELECT code_nm FROM common_code WHERE group_code = 'D001' AND CODE = dept_cd) deptNm,
 			dayoff_cnt dayoffCnt
@@ -98,6 +99,41 @@
 		    	c.group_code = 'R001' 
 		    	AND u.dept_cd = (SELECT dept_cd FROM user WHERE user_id = #{userId})
 		    	AND (u.rank_cd = '04' OR u.rank_cd = '05')
+		) result
+		ORDER BY rankCd DESC
+	</select>
+	
+	<!-- 기안자가 부장이면 본인과 대표이사만 -->
+	<select id="getAprvLine2">
+		SELECT 
+			userId, userNm, codeNm
+		FROM (
+		    SELECT 
+		    	u.user_id userId,
+		    	u.user_nm userNm, 
+		    	c.code_nm codeNm, 
+		    	u.rank_cd rankCd
+		    FROM user u
+		    LEFT OUTER JOIN common_code c
+		    ON u.rank_cd = c.code
+		    WHERE 
+		    	c.group_code = 'R001' 
+	    		AND u.rank_cd = '01'
+		    
+		    UNION ALL
+		    
+		    SELECT 
+		    	u.user_id userId,
+		    	u.user_nm userNm, 
+		    	c.code_nm codeNm, 
+		    	u.rank_cd rankCd
+		    FROM user u
+		    LEFT OUTER JOIN common_code c
+		    ON u.rank_cd = c.code
+		    WHERE 
+		    	c.group_code = 'R001' 
+		    	AND u.dept_cd = (SELECT dept_cd FROM user WHERE user_id = #{userId})
+		    	AND u.rank_cd = '04'
 		) result
 		ORDER BY rankCd DESC
 	</select>

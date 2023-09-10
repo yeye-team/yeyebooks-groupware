@@ -25,6 +25,9 @@ public interface VacationMapper {
 	// 결재자 출력
 	List<Map<String, Object>> getAprvLine(String userId);
 	
+	// 부장일 경우 본인과 대표이사만
+	List<Map<String, Object>> getAprvLine2(String userId);
+	
 	// 참조자 조회
 	List<Map<String, Object>> getReference(String userId);
 	
