@@ -99,12 +99,6 @@ $(document).ready(function() {
     }
 
     
-/* 
-    // 폼 전송 버튼 클릭 시 데이터 전송
-    $('#submitBtn').on('click', function() {
-        submitForm();
-    });
- */
     // 최초 로딩 시 select의 값을 확인하여 초기 폼 설정
     $('#docCatCd').trigger('change');
 });
@@ -112,20 +106,6 @@ $(document).ready(function() {
 function submitForm() {
     var selectedValue = $('#docCatCd').val();
     var formData = new FormData($('#approvalForm')[0]); // 폼 데이터를 가져오는 방식 변경
-
-/*     // 폼 데이터 수집
-    if (selectedValue === "03") {
-        formData.append('aprvTitle', $("input[name='aprvTitle']").val());
-        formData.append('aprvContents', $("textarea[name='aprvContents']").val());
-        // 필요한 다른 폼 요소들도 추가 수집
-    } else if (selectedValue === "01") {
-        formData.append('acntSubject', $("select[name='acntSubject']").val());
-        formData.append('acntYmd', $("input[name='acntYmd']").val());
-        formData.append('acntContents', $("textarea[name='acntContents']").val());
-        formData.append('acntNm', $("input[name='acntNm']").val());
-        formData.append('acntAmount', $("input[name='acntAmount']").val());
-        formData.append('acntCreditCd', $("select[name='acntCreditCd']").val());
-    } */
 
     // 폼 데이터 전송 (AJAX 예제)
     $.ajax({
@@ -380,10 +360,45 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 폼 요소에 숨겨진 필드로 doc_cat_cd 설정
         document.getElementById("doc_cat_cd").value = docCatCd;
-/* 
-        // 폼 제출
-        document.getElementById("approvalForm").submit(); */
     });
+</script>
+
+<script>
+$(document).ready(function() {
+    let selectedRefUsers = []; // 선택된 참조 사용자 정보를 저장하는 배열
+
+    // 체크박스 클릭 이벤트
+    $('.selectedRefUsers').click(function() {
+        const userId = $(this).data('userid');
+        const userName = $(this).data('username');
+
+        if ($(this).hasClass('selected')) {
+            // 이미 선택된 경우, 배열에서 제거
+            const indexToRemove = selectedRefUsers.findIndex(user => user.userId === userId);
+            if (indexToRemove !== -1) {
+                selectedRefUsers.splice(indexToRemove, 1);
+            }
+            $(this).removeClass('selected');
+        } else {
+            // 선택되지 않은 경우, 배열에 추가
+            selectedRefUsers.push({ userId, userName });
+            $(this).addClass('selected');
+        }
+
+        // 선택된 참조 사용자 정보를 표시
+        displaySelectedRefUsers(selectedRefUsers);
+    });
+
+    // 선택된 참조 사용자 정보를 HTML 요소에 표시하는 함수
+    function displaySelectedRefUsers(users) {
+        const refList = $('#refList ul');
+        refList.empty();
+
+        users.forEach(user => {
+            refList.append(`<li>${user.userName}</li>`);
+        });
+    });
+});
 </script>
 
 </head>
@@ -392,6 +407,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <h1>문서작성</h1>
     
             <button class='btn btn-primary modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2">결재선</button>
+            <button class='btn btn-primary selectedRefUsers' data-bs-toggle="modal" data-bs-target="#modal2">참조</button>
 		<!-- Modal -->
 		<div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" role="document">
@@ -510,7 +526,10 @@ document.addEventListener("DOMContentLoaded", function() {
 		    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
 		    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
 		</div>
+		<div>
 			
+			
+		</div>	
             <label for="docCatCd">문서 종류 선택:</label>
 	        <select id="docCatCd" name="docCatCd">
 	            <option value="03">일반 문서</option>

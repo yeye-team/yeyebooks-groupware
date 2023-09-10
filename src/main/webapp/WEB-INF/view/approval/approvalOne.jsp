@@ -172,7 +172,7 @@
 				<td>${dayoff.dayoffYmd}</td>
 				<td>${dayoff.dayoffTypeCd }</td>
 			</tr>
-		</table>
+		</table> 
 	</c:if>
 	
 	<c:if test="${sessionScope.userId == approvalUser && approval.aprvStatCd == '01'}">
