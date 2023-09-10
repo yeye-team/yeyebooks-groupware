@@ -91,9 +91,9 @@ public class ApprovalController {
 			
 			aprvLineInfo.add(alInfo);
 		}
-		
+		Approval approval = (Approval)approvalOne.get("approval");
 		model.addAttribute("aprvLine", aprvLineInfo);
-		model.addAttribute("approval", approvalOne.get("approval"));
+		model.addAttribute("approval", approval);
 		model.addAttribute("aprvFile", approvalOne.get("aprvFile"));
 		model.addAttribute("approvalUser", approvalOne.get("approvalUser"));
 		

@@ -28,9 +28,9 @@ public interface ApprovalMapper {
 	public int insertAccount(Account account);
 	
 	// 내 문서함 조회
-	List<Approval> selectMyApproval(String loginId, int status);
+	List<Approval> selectMyApproval(String userId, int status);
 	// 각 상태별 문서함 조회
-	List<Approval> selectApprovalByStatus(String loginId, String status);
+	List<Approval> selectApprovalByStatus(String userId, String status);
 	
 	// 문서 상세보기
 	public Approval selectApprovalOne(String aprvNo);

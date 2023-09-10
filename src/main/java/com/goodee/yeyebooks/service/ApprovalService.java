@@ -55,9 +55,9 @@ public class ApprovalService {
 		this.approvalMapper = approvalMapper;
 	}
 	
-	public List<Approval> selectMyApproval(String userId, int status){
+	public List<Approval> selectMyApproval(String loginId, int status){
 		List<Approval> approvalList = null;
-		approvalList = approvalMapper.selectMyApproval(userId, status);
+		approvalList = approvalMapper.selectMyApproval(loginId, status);
 		log.debug("\u001B[35m"+"aprovalList : " + approvalList);
 		return approvalList;
 	};
