@@ -34,14 +34,14 @@
 	<select id="selectRecentJoinCnt" resultType="com.goodee.yeyebooks.vo.Report">
 		SELECT MONTH(join_ymd) month, COUNT(*) cnt 
 		FROM user
-		WHERE join_ymd >= DATE_SUB(NOW(), INTERVAL 7 MONTH)
+		WHERE join_ymd >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
 		AND MONTH(join_ymd) != MONTH(NOW())
 		GROUP BY MONTH
 	</select>
 	<select id="selectRecentLeaveCnt" resultType="com.goodee.yeyebooks.vo.Report">
 		SELECT MONTH(leave_ymd) month, COUNT(*) cnt
 		FROM user
-		WHERE leave_ymd >= DATE_SUB(NOW(), INTERVAL 7 MONTH)
+		WHERE leave_ymd >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
 		AND MONTH(leave_ymd) != MONTH(NOW())
 		GROUP BY MONTH
 	</select>
