@@ -74,6 +74,7 @@
 		trgt_info trgtInfo, save_filename saveFilename, path
 		FROM booking bk, booking_target bt
 		WHERE bk.trgt_no = bt.trgt_no 
+		AND bkg_stat_cd in (select code from common_code where group_code = 'B101' and code_nm != '예약취소')
 	</select>
 	<select id="selectOverlapCnt" resultType="int">
 		SELECT COUNT(*) 
