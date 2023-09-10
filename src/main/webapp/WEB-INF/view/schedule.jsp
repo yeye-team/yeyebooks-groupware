@@ -286,6 +286,13 @@
 			        dataType: 'json',
 			        success: function(response) {
 			            if (response.success) {
+			            	// 입력 필드 초기화
+			            	$('input[name="skdTitle"]').val('');
+			            	$('input[name="skdContents"]').val('');
+			            	$('input[name="skdStartYmd"]').val('');
+			            	$('input[name="skdStartTime"]').val('');
+			            	$('input[name="skdEndYmd"]').val('');
+			            	$('input[name="skdEndTime"]').val('');
 			                // 성공한 경우, 모달 닫기
 			                $('#insertScheduleModal').modal('hide');
 			                // 달력 갱신

@@ -206,7 +206,7 @@ public class BoardController {
 		Board board = new Board();
 		board.setBoardNo(boardNo);
 		board.setBoardCatCd(boardCatCd);
-		//log.debug("\u001B[41m"+ "BoardController deleteBoard board : " + board + "\u001B[0m");	
+		log.debug("\u001B[41m"+ "BoardController deleteBoard board : " + board + "\u001B[0m");	
 		
 		int row = boardService.deleteBoard(board, path);
 		// log.debug("\u001B[41m"+ "BoardController deleteBoard row : " + row + "\u001B[0m");	
