@@ -70,6 +70,9 @@
 		.time-check + .time-check{
 			margin-left: 10%;
 		}
+		.fc-license-message{
+			display: none;
+		}
   	</style>
   	<script>
 	  	 function moveToBoardOne(boardNo){
@@ -180,7 +183,7 @@
 						<!-- 대기중인 결재건수 -->
 	                	<div class="card mb-4">
 		                    <h5 class="card-header d-flex justify-content-between align-items-center">
-		                    	<a href="#">
+		                    	<a>
 		                    		대기중인 결재건
 		                    		<span class="badge bg-warning rounded-pill">${approvalCnt + approveCnt }</span>
 		                    	</a>
