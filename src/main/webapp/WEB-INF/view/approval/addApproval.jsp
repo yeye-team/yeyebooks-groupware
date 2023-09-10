@@ -574,13 +574,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			    <label>지출사유:</label>
 				<input type="text" name="aprvContents" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
 
-			    <label>계정과목:</label>
-			        <select id="acntSubject" name="acntSubject">
-			            <option>교통비</option>
-			            <option>식비</option>
-			            <option>물품구입비</option>
-			        </select>
-
 			    <label for="expenseDate">지출 날짜:</label>
 			    <input type="date" id="acntYmd" name="acntYmd"><br>
 			    
