@@ -20,7 +20,7 @@
 		    join_ymd AS joinYmd,
 		    leave_ymd AS leaveYmd,
 		    dayoff_cnt AS dayoffCnt
-		FROM USER
+		FROM user
 		WHERE user_id = #{userId};
 	</select>
 	<update id="updateUserInfoByUser">

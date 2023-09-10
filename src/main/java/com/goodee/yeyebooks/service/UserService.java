@@ -140,11 +140,12 @@ public class UserService {
 	public Map<String, Object> selectFMCnt(){
 		List<Report> fmResult = userMapper.selectFMCnt();
 		Map<String, Object> fmCnt = new HashMap<>();
-		fmCnt.put(fmResult.get(0).getGenderNm(), fmResult.get(0).getCnt());
-		if(fmResult.size() > 1) {
-			fmCnt.put(fmResult.get(1).getGenderNm(), fmResult.get(1).getCnt());
+		if(fmResult.size() != 0) {
+			fmCnt.put(fmResult.get(0).getGenderNm(), fmResult.get(0).getCnt());
+			if(fmResult.size() > 1) {
+				fmCnt.put(fmResult.get(1).getGenderNm(), fmResult.get(1).getCnt());
+			}
 		}
-		
 		return fmCnt;
 	}
 	public Map<String, Object> selectRecentTotalUserCnt(){
