@@ -10,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 추가 -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/smartEditor/js/HuskyEZCreator.js"></script>
 <script>
+	
     $(document).ready(function(){
         // 파일 개수 3개제한
         $('#addFile').click(function(){
@@ -82,6 +83,7 @@
 </script>
 
 <script>
+
 $(document).ready(function() {
     $('#docCatCd').on('change', function() {
         var selectedValue = $(this).val();
@@ -103,25 +105,8 @@ $(document).ready(function() {
     $('#docCatCd').trigger('change');
 });
 //폼 데이터 전송 함수
-function submitForm() {
-    var selectedValue = $('#docCatCd').val();
-    var formData = new FormData($('#approvalForm')[0]); // 폼 데이터를 가져오는 방식 변경
+	let refSelected = '';
 
-    // 폼 데이터 전송 (AJAX 예제)
-    $.ajax({
-        url: '/yeyebooks/approval/addApproval',
-        type: 'POST',
-        data: formData,
-        processData: false, // 중요: 폼 데이터를 jQuery가 자동으로 처리하지 않도록 설정
-        contentType: false, // 중요: 데이터 유형을 설정하지 않도록 설정
-        success: function(response) {
-            // 성공 시 처리
-        },
-        error: function(error) {
-            // 오류 시 처리
-        }
-    });
-}
 </script>
 
 <script>
@@ -282,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(thirdApproveId.val());
         }
     });
- // 모달 닫힘 이벤트를 감지하여 선택된 값 초기화
+  // 모달 닫힘 이벤트를 감지하여 선택된 값 초기화
     $('#modal2').on('hidden.bs.modal', function () {
         // 선택된 체크박스 초기화
         $('.userCheckbox').prop('checked', false);
@@ -303,7 +288,6 @@ document.addEventListener("DOMContentLoaded", function() {
         // 선택된 사용자 정보 배열 초기화
         selectedUsers = [];
     });
-
 </script>
 
 <script>
@@ -320,7 +304,7 @@ $.each(additionalData, function(key, value) {
     formData.append(key, value);
 });
 
-// Ajax 요청 보내기
+/* // Ajax 요청 보내기
 $.ajax({
     type: 'POST',
     url: 'addApproval',
@@ -333,7 +317,7 @@ $.ajax({
     error: function(error) {
         // 오류 처리
     }
-});
+}); */
 </script>
 
 <script>
@@ -364,50 +348,368 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <script>
-$(document).ready(function() {
-    let selectedRefUsers = []; // 선택된 참조 사용자 정보를 저장하는 배열
 
-    // 체크박스 클릭 이벤트
-    $('.selectedRefUsers').click(function() {
-        const userId = $(this).data('userid');
-        const userName = $(this).data('username');
 
-        if ($(this).hasClass('selected')) {
-            // 이미 선택된 경우, 배열에서 제거
-            const indexToRemove = selectedRefUsers.findIndex(user => user.userId === userId);
-            if (indexToRemove !== -1) {
-                selectedRefUsers.splice(indexToRemove, 1);
-            }
-            $(this).removeClass('selected');
-        } else {
-            // 선택되지 않은 경우, 배열에 추가
-            selectedRefUsers.push({ userId, userName });
-            $(this).addClass('selected');
-        }
+function addReference(){
+	// RefUsers 클래스를 가진 체크박스를 선택합니다.
+	const checkboxes = $('.refUsers');
+	let refSelectUserName = "";
+	// 체크된 체크박스만 선택합니다.
+	const checkedCheckboxes = checkboxes.filter(':checked');
 
-        // 선택된 참조 사용자 정보를 표시
-        displaySelectedRefUsers(selectedRefUsers);
-    });
-
-    // 선택된 참조 사용자 정보를 HTML 요소에 표시하는 함수
-    function displaySelectedRefUsers(users) {
-        const refList = $('#refList ul');
-        refList.empty();
-
-        users.forEach(user => {
-            refList.append(`<li>${user.userName}</li>`);
-        });
-    });
-});
+	// 체크된 체크박스를 사용하거나 처리할 수 있습니다.
+	checkedCheckboxes.each(function() {
+		refSelected += $(this).val() + ",";
+		refSelectUserName += $(this).data('username') + ",";
+	});
+	$('#refUserList').val(refSelectUserName);
+	$('#refModal').modal('hide');
+}
+function refReset(){
+	$('#refUserList').val("");
+	refSelected = '';
+	$('.refUsers').prop('checked', false);
+}
 </script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+<script>
+	$(document).ready(function(){
+		let today = dayjs().format('YYYY-MM-DD');
+		$('#today').text(today);
+	})
+	
+</script>
+    <style>
+    	.menu-link{
+    		background-color: white;
+	    	border: none;
+	    	width: 88%;
+    	}
+    	
+    	h2{
+    		text-align: center;
+    	}
+    	.infoTh th {
+    		font-weight: bolder;
+    		text-align: center;
+    		width: 20%;
+    	}
+    	.infoTh td {
+    		width: 50%;
+    	}
+    	.aprvTh th {
+    		font-weight: bolder;
+    		text-align: center;
+    	}
+    	.aprvTd {
+    		height: 40px;
+    		text-align: center;
+    	}
+    	input::placeholder {
+	        text-align: center;
+	    }
+	    .form-control[readonly]{
+	    	background-color: white;
+	    	height: 50px;
+	    }
+	</style>    	
 
 </head>
 <body>
 
-    <h1>문서작성</h1>
-    
-            <button class='btn btn-primary modalAddUserToDeptBtn' data-bs-toggle="modal" data-bs-target="#modal2">결재선</button>
-            <button class='btn btn-primary selectedRefUsers' data-bs-toggle="modal" data-bs-target="#modal2">참조</button>
+
+<!-- Layout wrapper -->
+	<div class="layout-wrapper layout-content-navbar">
+		<div class="layout-container">
+			<!-- Menu -->
+			<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+				<div class="app-brand demo">
+					<a href="${pageContext.request.contextPath}">
+						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+					</a>
+				</div>
+	
+				<div class="menu-inner-shadow"></div>
+				
+				<ul class="menu-inner py-1">
+					<li class="menu-item" onclick="location.href='${pageContext.request.contextPath}/approval/approvalList'">
+						<button class="menu-link">
+							<i class='menu-icon tf-icons bx bx-folder'></i>
+							내문서함
+						</button>
+					</li>
+					<li class="menu-item active" onclick="location.href='${pageContext.request.contextPath}/approval/addApproval'">
+						<button class="menu-link">
+							<i class='menu-icon tf-icons bx bxl-telegram'></i>
+							문서작성
+						</button>
+					</li>
+				</ul>
+	        </aside>
+	        <!-- / Menu -->
+			
+			<!-- 입력 레이아웃 -->
+			<div class="layout-page">
+	        	<jsp:include page="../inc/navbar.jsp"></jsp:include>
+				<!-- Content wrapper -->
+				<div class="content-wrapper">
+		            <!-- Content -->
+	            	<div class="container-xxl flex-grow-1 container-p-y">
+            			<div class="card">
+							<!-- Basic Layout -->
+							<div class="row">
+								<div class="col-xl">
+									<div class="card-header">
+										<h2 class="mb-0"><strong>문&nbsp;서&nbsp;작&nbsp;성</strong></h2>
+									</div>
+									<!-- 구분선 -->
+									<hr class="m-0">
+      						    	<div class="card-body">
+					                    <form id="approvalForm" method="post" enctype="multipart/form-data">
+					                    	 <!-- 선택된 결재자 정보를 저장할 hidden 필드 -->
+										    <input type="hidden" name="approvalLine" value="">
+											<input type="hidden" name="approvalLine" value="">
+											<input type="hidden" name="approvalLine" value="">
+					                    	
+					                    	<!-- 문서 상단 -->
+					                    	<div class="row" style="margin-bottom: 5px;">
+					                    		<!-- 기안자 정보 -->
+					                    		<div class="col-md-4">
+					                    			<table class="table table-sm table-bordered infoTh">
+			                    						<tbody>
+			                    							<tr>
+			                    								<th>기안자</th>
+			                    								<td>${sessionScope.userNm}</td>
+			                    							</tr>
+			                    							<tr>
+			                    								<th>기안일</th>
+			                    								<td>
+			                    									<a id="today"></a>
+			                    								</td>
+			                    							</tr>
+			                    							<tr>
+			                    								<th>문서번호</th>
+			                    								<td>&nbsp;</td>
+			                    							</tr>
+			                    							<tr>
+			                    								<th>문서종류</th>
+			                    								<td>
+															        <select id="docCatCd" name="docCatCd" class="form-select">
+															            <option value="03">일반 문서</option>
+															            <option value="01">지출 결의서</option>
+															        </select>
+			                    								</td>
+			                    							</tr>
+			                    						</tbody>
+			                    					</table>
+					                    		</div>
+					                    		
+					                    		<div class="col-md-3">&nbsp;</div>
+					                    		
+					                    		<!-- 결재선 -->
+					                    		<div class="col-md-5 table-bordered">
+					                    			<!-- 결재 -->
+					                    			<div class="row mb-1">
+					                    				<button class="col-sm-1 modalAddUserToDeptBtn" 
+					                    						data-bs-toggle="modal" data-bs-target="#modal2"
+					                    						style="font-weight: bolder; 
+					                    								display: flex;
+																        justify-content: center;
+																        align-items: center;
+																        border: 1px solid #d9dee3;">결재
+														</button>
+					                    				<div class="col-sm-11">
+					                    					<!-- 선택된 결재자 정보를 표시할 HTML 요소 -->
+															<div id="selectedApprovers">
+															    <p>첫 번째 결재자: <span id="firstApproverName"></span></p>
+															    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
+															    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
+															</div>
+								                        </div>
+					                    			</div>
+					                    			<!-- 참조 -->
+					                    			<div class="row">
+					                    				<button class="col-sm-1" 
+					                    						data-bs-toggle="modal" data-bs-target="#refModal"
+					                    						style="font-weight: bolder; 
+					                    								display: flex;
+																        justify-content: center;
+																        align-items: center;
+																        border: 1px solid #d9dee3;">참조
+												        </button>
+												        <div class="col-sm-11">
+												        	<div class="table table-bordered">
+													        	<input 
+													        		class="form-control" 
+													        		type="text" 
+													        		name="reference" 
+													        		id="refUserList"
+													        		placeholder="참조를 선택하세요" 
+													        		readonly="readonly" 
+													        		value="" 
+										        				 />
+												        		
+												        	</div>
+												        </div>
+					                    			</div>
+					                    		</div>
+					                    	</div>
+					                    	
+											<!-- 신청양식 -->
+											<div id="03" style="margin-top: 20px;">
+								    			<!-- 제목 입력 -->
+								                <div class="mb-3">
+									                <input type="hidden" name="userId" value="${userId}">
+									                <input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+								                </div>
+								                <!-- 내용 입력 -->
+												<div class="mb-1">
+													<!-- 네이버 에디터 -->
+													<textarea name="aprvContents"
+															  class="form-control"
+															  id="editor"
+															  placeholder="내용을 입력하세요"
+															  maxlength="2500" 
+															  style="
+															  	height: 380px;
+															  	width: 100%"
+								                         	  ></textarea>
+													<script type="text/javascript">
+												        var oEditors = [];
+												        nhn.husky.EZCreator.createInIFrame({
+												            oAppRef: oEditors,
+												            elPlaceHolder: "editor",
+												            sSkinURI: "${pageContext.request.contextPath}/smartEditor/SmartEditor2Skin.html",  // 스킨 경로
+												            fCreator: "createSEditor2",
+												            htParams: {
+												            	bUseToolbar : true,
+												            	bUseVerticalResizer: false,
+												            	bUseModeChanger: false
+												            }
+												        });
+												        
+												        function submitContents(){
+												        	oEditors.getById["editor"].exec("UPDATE_CONTENTS_FIELD",[]);
+												        }
+								
+												        function submitForm() {
+												            var selectedValue = $('#docCatCd').val();
+												            if(selectedValue == '03'){
+												            	submitContents();
+												            }
+												            var formData = new FormData($('#approvalForm')[0]); // 폼 데이터를 가져오는 방식 변경
+												        	formData.append("reference",refSelected)
+												            // 폼 데이터 전송 (AJAX 예제)
+												            $.ajax({
+												                url: '/yeyebooks/approval/addApproval',
+												                type: 'POST',
+												                data: formData,
+												                processData: false, // 중요: 폼 데이터를 jQuery가 자동으로 처리하지 않도록 설정
+												                contentType: false, // 중요: 데이터 유형을 설정하지 않도록 설정
+												                success: function(response) {
+												                    Swal.fire({
+												                    	icon: 'success',
+												                    	title: '성공',
+												                    	text: '결재가 기안되었습니다.'
+												                    }).then(function(){
+												                    	location.href="/yeyebooks/approval/approvalList";
+												                    })
+												                },
+												                error: function(error) {
+												                    // 오류 시 처리
+												                }
+												            });
+												        }
+												    </script>
+											  	</div>
+											</div>
+											<br>
+											
+											<!-- 지출결의서 -->
+											<div id="01" style="display: none; margin: 20px 0;">
+											<table class="table table-sm table-bordered">
+												<tbody style="text-align: center;">
+													<tr>
+														<th colspan="4">
+															<h2>지&nbsp;&nbsp;출&nbsp;&nbsp;내&nbsp;&nbsp;역</h2>
+														</th>
+													</tr>
+													<tr>
+														<th>제목</th>
+														<td colspan="3">
+								                        	<input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+														</td>
+													</tr>
+													<tr>
+														<th>지출내용</th>
+														<td colspan="3">
+								                        	<textarea name="aprvContents" class="form-control" id="basic-default-company" placeholder="내용을 입력하세요" required="required"></textarea>
+														</td>
+													</tr>
+													<tr>
+														<th>사용내역</th>
+														<td colspan="3">
+				   											<textarea id="acntContents" name="acntContents" class="form-control" id="basic-default-company" placeholder="내용을 입력하세요" required="required"></textarea><br>
+														</td>
+													</tr>
+													<tr>
+														<th>지출날짜</th>
+														<td>
+															<div style="display: flex; justify-content: center;">
+																<input type="date" id="acntYmd" name="acntYmd" class="form-control form-control-sm">
+															</div>
+														</td>
+													
+														<th>사용처</th>
+														<td><input type="text" id="acntNm" name="acntNm" class="form-control form-control-sm"></td>
+														
+														
+													</tr>
+													<tr>
+														<th>지출금액</th>
+														<td><input type="number" id="acntAmount" name="acntAmount" value=0 class="form-control form-control-sm"></td>
+														<th>구분</th>
+														<td colspan="3">
+															<select id="acntCreditCd" name="acntCreditCd" class="form-select">
+													            <option value="01">법인</option>
+													            <option value="02">개인</option>
+													        </select>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+											</div>
+											
+	               							  	<label for="files">첨부 파일:</label>
+									                <button type="button" id="addFile">추가</button>
+									                <button type="button" id="removeFile">삭제</button>
+									            <div id="files">
+									                <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
+									            </div>
+									            
+									            <button type="button" class='btn btn-primary' onclick="submitForm()">문서등록</button>
+										</form>
+										<!-- 문서 끝 -->
+										<br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+	           		<!-- card End -->
+				</div>
+				<!-- / Content -->
+			</div>
+			<!-- / Content Wrapper -->
+		</div>
+   	   <!-- / Layout page -->
+	</div>
+	<!-- / Layout wrapper -->
+
+
+
+<!--------------------------------------------------------------------------------->
+   
 		<!-- Modal -->
 		<div class="modal fade" id="modal2" tabindex="-1" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" role="document">
@@ -443,7 +745,7 @@ $(document).ready(function() {
 		                                <div class="col-md-3">
 		                                  <c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
 		                                  <c:if test="${u.userImg != null}">
-		                                    <c:set var="photoUrl" value="/yeyebooks/${u.userImg}"></c:set>
+		                                    <c:set var="photoUrl" value="/yeyebooks/${u.userPath}${u.userImg}"></c:set>
 		                                  </c:if>
 		                                  <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
 		                                </div>
@@ -461,6 +763,7 @@ $(document).ready(function() {
 		                </c:forEach>
 		              </ul>
 		            </div>
+		            
 		            <div class="col-lg-6">
 		              <!-- 오른쪽 컨텐츠 내용 -->
 		              <h3>선택된 결재자</h3>
@@ -514,113 +817,75 @@ $(document).ready(function() {
 		  </div>
 		</div>
 		
-        <form id="approvalForm" action="addApproval" method="post" enctype="multipart/form-data">
-
-	    <!-- 선택된 결재자 정보를 저장할 hidden 필드 -->
-	    <input type="hidden" name="approvalLine" value="">
-		<input type="hidden" name="approvalLine" value="">
-		<input type="hidden" name="approvalLine" value="">
-		<!-- 선택된 결재자 정보를 표시할 HTML 요소 -->
-		<div id="selectedApprovers">
-		    <p>첫 번째 결재자: <span id="firstApproverName"></span></p>
-		    <p>두 번째 결재자: <span id="secondApproverName"></span></p>
-		    <p>세 번째 결재자: <span id="thirdApproverName"></span></p>
+				            
+           <!-- 참조 모달 -->
+		<div class="modal fade" id="refModal" tabindex="-1" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="modalTitle2"></h5>
+		        <button
+		          type="button"
+		          class="btn-close"
+		          data-bs-dismiss="modal"
+		          aria-label="Close"
+		        ></button>
+		      </div>
+		        <div class="modal-body pb-0 card" style="box-shadow: none;">
+		          <div class="card-body vertical-scroll">
+		            <div class="col-lg" style="overflow-y: auto; height: 400px;">
+		              <!-- 왼쪽 컨텐츠 내용 -->
+		              <h3>부서 목록</h3>
+		              <ul>
+		                <!-- 부서와 사용자 목록을 나열 -->
+		                <c:forEach var="uc" items="${userCnt}">
+		                  <li>
+		                    <label class="deptNm2 toggle-users">${uc.deptNm == null ? 'YeYeBooks' : uc.deptNm} (${uc.cnt})</label>
+		                    <div class="user-list" style="display: none;">
+		                      <ul>
+		                        <!-- 해당 부서의 사용자 목록 -->
+		                        <c:forEach var="u" items="${userList}">
+		                          <c:if test="${uc.deptCd == u.deptCd}">
+		                            <li>
+		                              <input type="checkbox"  class="refUsers" id="user_${u.userId}" value="${u.userId}" data-username="${u.userNm}">
+		                              <label for="user_${u.userId}">
+		                                <div class="col-md-3">
+		                                  <c:set var="photoUrl" value="${pageContext.request.contextPath}/assets/img/avatars/default.png"></c:set>
+		                                  <c:if test="${u.userImg != null}">
+		                                    <c:set var="photoUrl" value="/yeyebooks/${u.userPath}${u.userImg}"></c:set>
+		                                  </c:if>
+		                                  <img src="${photoUrl}" alt="Avatar" class="rounded-circle" width="100%" />
+		                                </div>
+		                                <div class="col-md-9">
+		                                  <h5 class="mb-0">${u.userNm}</h5>
+		                                  <h6><small class="text-muted">${u.rankNm}</small></h6>
+		                                </div>
+		                              </label>
+		                            </li>
+		                          </c:if>
+		                        </c:forEach>
+		                      </ul> 
+		                    </div>
+		                  </li>
+		                </c:forEach>
+		              </ul>
+		            </div>
+		            
+		          </div>
+		        </div>
+		        <div class="modal-footer">
+		        
+		          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+		            취소
+		          </button>
+		          <button type="button" class="btn btn-secondary" onclick="refReset()">초기화</button>
+		          <button type="button" class="btn btn-secondary" onclick="addReference()">추가</button>
+		        </div>
+		    </div>
+		  </div>
 		</div>
-		<div>
-			
-			
-		</div>	
-            <label for="docCatCd">문서 종류 선택:</label>
-	        <select id="docCatCd" name="docCatCd">
-	            <option value="03">일반 문서</option>
-	            <option value="01">지출 결의서</option>
-	        </select>
-    
-    		<div id="03" style="margin-top: 20px;">
-    			<!-- 제목 입력 -->
-                <div class="mb-3">
-	                <input type="hidden" name="userId" value="${userId}">
-	                <input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
-                </div>
-                <!-- 내용 입력 -->
-				<div class="mb-1">
-					<!-- 네이버 에디터 -->
-					<textarea name="aprvContents"
-							  class="form-control"
-							  id="editor"
-							  placeholder="내용을 입력하세요"
-							  maxlength="2500" 
-							  style="
-							  	height: 380px;
-							  	width: 100%"
-                         	  ></textarea>
-					<script type="text/javascript">
-				        var oEditors = [];
-				        nhn.husky.EZCreator.createInIFrame({
-				            oAppRef: oEditors,
-				            elPlaceHolder: "editor",
-				            sSkinURI: "${pageContext.request.contextPath}/smartEditor/SmartEditor2Skin.html",  // 스킨 경로
-				            fCreator: "createSEditor2",
-				            htParams: {
-				            	bUseToolbar : true,
-				            	bUseVerticalResizer: false,
-				            	bUseModeChanger: false
-				            }
-				        });
-				        
-				        function submitContents(){
-				        	oEditors.getById["editor"].exec("UPDATE_CONTENTS_FIELD",[]);
-				        }
-				        
-				        function addApproval(){
-				        	const docCat = $('#docCatCd').val();
-				        	if(docCat == '01'){
-				        		submitForm();
-				        	}else{
-				        		submitContents();
-				        	}
-				        }
-				    
-				    </script>
-			  	</div>
-			</div>
-			
-			<div id="01" style="display: none; margin-top: 20px;">
-				
-			    <label>제목:</label>
-				<input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
 
-			    <label>지출사유:</label>
-				<input type="text" name="aprvContents" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
-
-			    <label for="expenseDate">지출 날짜:</label>
-			    <input type="date" id="acntYmd" name="acntYmd"><br>
-			    
-			    <label for="expenseDescription">사용내역:</label>
-			    <textarea id="acntContents" name="acntContents" rows="4" cols="50"></textarea><br>
-
-			    <label for="expenseDate">사용처 :</label>
-			    <input type="text" id="acntNm" name="acntNm"><br>
-			    
-			    <label for="expenseAmount">지출 금액:</label>
-			    <input type="number" id="acntAmount" name="acntAmount"><br>
-			    
-			    <label>구분:</label>
-			        <select id="acntCreditCd" name="acntCreditCd">
-			            <option value="01">법인</option>
-			            <option value="02">개인</option>
-			        </select>
-			</div>
-    
-        	<label for="files">첨부 파일:</label>
-                <button type="button" id="addFile">추가</button>
-                <button type="button" id="removeFile">삭제</button>
-            <div id="files">
-                <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
-            </div>
-            
-            <button type="button" class='btn btn-primary' onclick="addApproval()">문서등록</button>
-        </form>
+        
 
 
 	<!-- Core JS -->

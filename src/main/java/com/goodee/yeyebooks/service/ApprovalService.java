@@ -111,12 +111,14 @@ public class ApprovalService {
 		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
 		approval.setAprvNo(aprvNo);
 
-		account.setAprvNo(aprvNo);
-		log.debug("\u001B[35m"+account.getAcntYmd());
+		
+		
 		
 		int row = approvalMapper.insertApproval(approval);
 		
 		if("01".equals(approval.getDocCatCd())) {
+			account.setAprvNo(aprvNo);
+			log.debug("\u001B[35m"+account.getAcntYmd());
 			row = approvalMapper.insertAccount(account);
 		} 
 		

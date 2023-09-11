@@ -38,7 +38,8 @@
 			u.dept_cd deptCd, 
 			c1.code_nm rankNm, 
 			c2.code_nm deptNm, 
-			uf.save_filename userImg 
+			uf.save_filename userImg,
+			uf.path userPath 
 		FROM user u 
 		INNER JOIN common_code c1 ON (c1.group_code = 'R001' AND u.rank_cd = c1.code)
 		LEFT OUTER JOIN common_code c2 ON (c2.group_code = 'D001' AND u.dept_cd = c2.code)

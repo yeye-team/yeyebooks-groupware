@@ -76,7 +76,6 @@
    	<insert id="insertAccount" parameterType="com.goodee.yeyebooks.vo.Account">
    		INSERT INTO account(
    			aprv_no,
-   			acnt_subject,
    			acnt_ymd,
    			acnt_contents,
    			acnt_nm,
@@ -85,7 +84,6 @@
    		)
    		VALUES(
    			#{aprvNo},
-   			#{acntSubject},
    			#{acntYmd},
    			#{acntContents},
    			#{acntNm},
