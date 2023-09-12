@@ -368,7 +368,7 @@
 									   	</c:if>
 										<!-- 반려 모달 창 -->
 										
-										<c:if test="${sessionScope.userId == approval.userId && approval.aprvStatCd != '04'}">
+										<c:if test="${sessionScope.userId == approval.userId && approval.aprvStatCd == '01'}">
 										    <button class="btn btn-primary" type="button" onclick="location.href='cancelApproval?aprvNo=${approval.aprvNo}'">회수</button>
 										</c:if>
 										<div>
@@ -377,42 +377,7 @@
 											</c:if>
 										</div>
 										
-										<div class="mt-3">
-									        <!-- Modal -->
-									        <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
-									          <div class="modal-dialog modal-dialog-centered" role="document">
-									            <div class="modal-content">
-									              <div class="modal-header">
-									                <h5 class="modal-title" id="modalCenterTitle">반려</h5>
-									                <button
-									                  type="button"
-									                  class="btn-close"
-									                  data-bs-dismiss="modal"
-									                  aria-label="Close"
-									                ></button>
-									              </div>
-									              <div class="modal-body">
-									                <div class="row">
-									                  <div class="col mb-3">
-									                    <label for="rejectReason" class="form-label">반려사유</label>
-									                    <input
-									                      type="text"
-									                      id="rejectReason"
-									                      class="form-control"
-									                    />
-									                  </div>
-									                </div>
-									              </div>
-									              <div class="modal-footer">
-									                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-									                  닫기
-									                </button>
-									                <button type="button" class="btn btn-primary" onclick="rejectConfirm()">반려</button>
-									              </div>
-									            </div>
-									          </div>
-									        </div>
-									      </div>
+										
 										<!-- 문서 끝 -->
 										<br>
 									</div>
@@ -429,7 +394,42 @@
    	   <!-- / Layout page -->
 	</div>
 	<!-- / Layout wrapper -->
-
+	<div class="mt-3">
+     <!-- Modal -->
+     <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="modalCenterTitle">반려</h5>
+             <button
+               type="button"
+               class="btn-close"
+               data-bs-dismiss="modal"
+               aria-label="Close"
+             ></button>
+           </div>
+           <div class="modal-body">
+             <div class="row">
+               <div class="col mb-3">
+                 <label for="rejectReason" class="form-label">반려사유</label>
+                 <input
+                   type="text"
+                   id="rejectReason"
+                   class="form-control"
+                 />
+               </div>
+             </div>
+           </div>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+               닫기
+             </button>
+             <button type="button" class="btn btn-primary" onclick="rejectConfirm()">반려</button>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
 
 
 <!--------------------------------------------------------------------------------->

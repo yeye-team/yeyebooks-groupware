@@ -80,8 +80,10 @@
 		SELECT COUNT(*) 
 		FROM booking
 		WHERE trgt_no = #{targetNo}
+		AND bkg_stat_cd in (select code from common_code where group_code = 'B101' and code_nm != '예약취소')
 		AND ((str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')) 
-		OR (str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')))
+		OR (str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s'))
+		OR (str_to_date(#{bookingStart}, '%Y-%m-%d %H:%i:%s') &lt; str_to_Date(CONCAT(bkg_start_ymd, bkg_start_time), '%Y-%m-%d %H:%i:%s') AND str_to_date(#{bookingEnd}, '%Y-%m-%d %H:%i:%s') > str_to_Date(CONCAT(bkg_end_ymd, bkg_end_time), '%Y-%m-%d %H:%i:%s')))
 	</select>
 	<insert id="insertBooking" parameterType="com.goodee.yeyebooks.vo.Booking">
 		<selectKey keyProperty="bkgNo" resultType="int" order="AFTER">
