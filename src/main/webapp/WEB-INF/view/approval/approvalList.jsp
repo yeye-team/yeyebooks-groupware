@@ -10,6 +10,7 @@
   data-template="vertical-menu-template-free"
 >
   <head>
+  	<title>내문서함</title>
     <jsp:include page="../inc/head.jsp"></jsp:include>
     <style>
 	   tbody tr:hover {

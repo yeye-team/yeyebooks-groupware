@@ -137,13 +137,13 @@
 	              </a>
 	            </li>
 
-	            <!-- 사용자관리 -->
+	           <%--  <!-- 사용자관리 -->
 	            <li class="menu-item">
 					<a href="${pageContext.request.contextPath}/userList" class="menu-link">
 					  <i class="menu-icon tf-icons bx bx-user"></i>
 					  사용자관리
 					</a>
-            	</li>
+            	</li> --%>
           	</ul>
         </aside>
         <!-- / Menu -->

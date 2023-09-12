@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>approvalOne</title>
+<title>문서상세</title>
 <jsp:include page="../inc/head.jsp"></jsp:include>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -119,15 +119,22 @@
 				</div>
 	
 				<div class="menu-inner-shadow"></div>
-				
 				<ul class="menu-inner py-1">
-					<li class="menu-item active" onclick="location.href='${pageContext.request.contextPath}/addVacation'">
-						<button class="menu-link">
-							<i class='menu-icon tf-icons bx bxl-telegram'></i>
-							문서작성
-						</button>
-					</li>
-				</ul>
+					
+		            <!-- Dashboard -->
+		            <li class="menu-item active">
+		              <a href="/yeyebooks/approval/approvalList?status=0" data-title="내 문서함" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">내 문서함</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/addApproval" data-title="문서작성" class="menu-link">
+		                <i class='menu-icon tf-icons bx bxl-telegram'></i>
+		                <div data-i18n="Analytics">문서작성</div>
+		              </a>
+		            </li>
+		        </ul>
 	        </aside>
 	        <!-- / Menu -->
 			

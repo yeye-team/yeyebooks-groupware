@@ -119,13 +119,13 @@
 			<div class="menu-inner-shadow"></div>
 			
 			<ul class="menu-inner py-1">
-	            <!-- 조직관리 -->
+	           <%--  <!-- 조직관리 -->
 	            <li class="menu-item">
 	              <a href="${pageContext.request.contextPath}/deptList" class="menu-link">
 	                <i class="menu-icon tf-icons bx bx-group"></i>
 	                부서관리
 	              </a>
-	            </li>
+	            </li> --%>
 
 	            <!-- 사용자관리 -->
 	            <li class="menu-item active">
