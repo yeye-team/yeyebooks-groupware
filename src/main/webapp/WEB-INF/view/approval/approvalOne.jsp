@@ -88,20 +88,6 @@
 	}
 </script>
 <script>
-	$(document).ready(function(){
-		// docCatCd 값을 가져옵니다.
-	    var docCatCd = "${approval.docCatCd}";
-
-	    // 지정된 docCatCd 값에 따라 해당 div를 보이게 합니다.
-	    if (docCatCd == "01") {
-	        $('#01').show();
-	    } else if (docCatCd == "02") {
-	    	$('#02').show();
-	    } else if (docCatCd == "03") {
-	    	$('#03').show();
-	    }
-	})
-    
 </script>
 
 <body>
@@ -245,8 +231,8 @@
 					                    	</div>
 					                    	
 											<!-- 신청양식 -->
-											
-											<div id="03" style="display: none; margin-top: 20px;">
+											<c:if test="${approval.docCatCd == '03' }">
+											<div id="03" style=" margin-top: 20px;">
 								    			<table class="table table-sm table-bordered">
 												<tbody style="text-align: center;">
 													<tr>
@@ -269,10 +255,11 @@
 												</tbody>
 											</table>
 											</div>
+											</c:if>
 											<br>
-											
+											<c:if test="${approval.docCatCd == '01' }">
 											<!-- 지출결의서 -->
-											<div id="01" style="display: none; margin: 20px 0;">
+											<div id="01" style=" margin: 20px 0;">
 											<table class="table table-sm table-bordered">
 												<tbody style="text-align: center;">
 													<tr>
@@ -318,7 +305,10 @@
 												</tbody>
 											</table>
 											</div>
-											<div id="02" style="display: none; margin: 20px 0;">
+											</c:if>
+											
+											<c:if test="${approval.docCatCd == '02' }">
+											<div id="02" style=" margin: 20px 0;">
 											<br>
 											
 											<!-- 휴가 정보 -->
@@ -361,6 +351,7 @@
 												</tbody>
 											</table>
 											</div>
+											</c:if>
 											
 	               							  		<c:forEach var="af" items="${aprvFile}">
 														<a
