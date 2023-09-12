@@ -366,9 +366,9 @@ function addReference(){
 	$('#refModal').modal('hide');
 }
 function refReset(){
+	refSelectUserName = refSelectUserName.slice(0,-1);
 	$('#refUserList').val("");
-	refSelected = '';
-	$('.refUsers').prop('checked', false);
+  	$('.refUsers').prop('checked', false);
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
@@ -542,7 +542,7 @@ function refReset(){
 													        	<input 
 													        		class="form-control" 
 													        		type="text" 
-													        		name="reference" 
+													        		name="userName" 
 													        		id="refUserList"
 													        		placeholder="참조를 선택하세요" 
 													        		readonly="readonly" 

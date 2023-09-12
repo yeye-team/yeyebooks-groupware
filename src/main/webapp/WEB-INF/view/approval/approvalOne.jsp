@@ -87,6 +87,23 @@
 		  });
 	}
 </script>
+<script>
+	$(document).ready(function(){
+		// docCatCd 값을 가져옵니다.
+	    var docCatCd = "${approval.docCatCd}";
+
+	    // 지정된 docCatCd 값에 따라 해당 div를 보이게 합니다.
+	    if (docCatCd == "01") {
+	        $('#01').show();
+	    } else if (docCatCd == "02") {
+	    	$('#02').show();
+	    } else if (docCatCd == "03") {
+	    	$('#03').show();
+	    }
+	})
+    
+</script>
+
 <body>
 
 
@@ -126,7 +143,7 @@
 							<div class="row">
 								<div class="col-xl">
 									<div class="card-header">
-										<h2 class="mb-0"><strong>문&nbsp;서&nbsp;작&nbsp;성</strong></h2>
+										<h2 class="mb-0"><strong>문&nbsp;서&nbsp;상&nbsp;세</strong></h2>
 									</div>
 									<!-- 구분선 -->
 									<hr class="m-0">
@@ -221,23 +238,29 @@
 					                    	</div>
 					                    	
 											<!-- 신청양식 -->
-											<div id="03" style="margin-top: 20px;">
-								    			<!-- 제목 입력 -->
-								                <div class="mb-3">
-									                <input maxlength="50" class="form-control" id="basic-default-company" readonly="readonly" value="${approval.aprvTitle}"/>
-								                </div>
-								                <!-- 내용 입력 -->
-												<div class="mb-1">
-													<!-- 네이버 에디터 -->
-													<textarea 
-															  class="form-control"
-															  style="
-															  	height: 380px;
-															  	width: 100%"
-															  	readonly="readonly"
-								                         	  >${approval.aprvContents}</textarea>
-													
-											  	</div>
+											
+											<div id="03" style="display: none; margin-top: 20px;">
+								    			<table class="table table-sm table-bordered">
+												<tbody style="text-align: center;">
+													<tr>
+														<th colspan="4">
+															<h2>일&nbsp;&nbsp;반&nbsp;&nbsp;문&nbsp;&nbsp;서</h2>
+														</th>
+													</tr>
+													<tr>
+														<th>제목</th>
+														<td colspan="3">
+								                        	${approval.aprvTitle}
+														</td>
+													</tr>
+													<tr>
+														<th>내용</th>
+														<td colspan="3">
+								                        	${approval.aprvContents}
+														</td>
+													</tr>
+												</tbody>
+											</table>
 											</div>
 											<br>
 											
@@ -253,43 +276,79 @@
 													<tr>
 														<th>제목</th>
 														<td colspan="3">
-								                        	<input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+								                        	${approval.aprvTitle}
 														</td>
 													</tr>
 													<tr>
 														<th>지출내용</th>
 														<td colspan="3">
-								                        	<textarea name="aprvContents" class="form-control" id="basic-default-company" placeholder="내용을 입력하세요" required="required"></textarea>
+								                        	${approval.aprvContents}
 														</td>
 													</tr>
 													<tr>
 														<th>사용내역</th>
 														<td colspan="3">
-				   											<textarea id="acntContents" name="acntContents" class="form-control" id="basic-default-company" placeholder="내용을 입력하세요" required="required"></textarea><br>
+				   											${account.acntContents}<br>
 														</td>
 													</tr>
 													<tr>
 														<th>지출날짜</th>
 														<td>
-															<div style="display: flex; justify-content: center;">
-																<input type="date" id="acntYmd" name="acntYmd" class="form-control form-control-sm">
-															</div>
+															${account.acntYmd}
 														</td>
 													
 														<th>사용처</th>
-														<td><input type="text" id="acntNm" name="acntNm" class="form-control form-control-sm"></td>
+														<td>${account.acntNm}</td>
 														
 														
 													</tr>
 													<tr>
 														<th>지출금액</th>
-														<td><input type="number" id="acntAmount" name="acntAmount" value=0 class="form-control form-control-sm"></td>
+														<td>${account.acntAmount}</td>
 														<th>구분</th>
+														<td>${account.acntCreditCd}</td>
+													</tr>
+												</tbody>
+											</table>
+											</div>
+											<div id="02" style="display: none; margin: 20px 0;">
+											<br>
+											
+											<!-- 휴가 정보 -->
+											<table class="table table-sm table-bordered">
+												<tbody style="text-align: center;">
+												<tr>
+														<th colspan="4">
+															<h2>휴&nbsp;&nbsp;가&nbsp;&nbsp;신&nbsp;&nbsp;청</h2>
+														</th>
+													</tr>
+						                        	<!-- 휴가 종류 선택 -->
+													<tr>
+														<th class="vacationInfo">휴가 종류</th>
 														<td colspan="3">
-															<select id="acntCreditCd" name="acntCreditCd" class="form-select">
-													            <option value="01">법인</option>
-													            <option value="02">개인</option>
-													        </select>
+								                        	${dayoff.dayoffTypeCd}
+														</td>
+													</tr>
+													<!-- 휴가 종류에 따른 기간 선택 폼 선택 -->
+													<tr>
+														<th class="vacationInfo">휴가 기간</th>
+														<td id="dayoffDate">
+															<div style="display: flex; justify-content: center;">
+																${dayoff.dayoffYmd}
+															</div>
+														</td>
+														<td id="dayoffDate2" style="display: none;">
+															<div class="row" style="display: flex; justify-content: center;">
+																<input class="form-control form-control-sm" type="date" id="dayoffInput2" name="dayoffYmd" style="width: 40%;" disabled required="required">
+																&nbsp;-&nbsp;
+																<input class="form-control form-control-sm" type="date" id="dayoffInput3" name="dayoffYmd" style="width: 40%;" disabled required="required">
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<th class="vacationInfo">휴가 사유</th>
+														<td colspan="3">
+															${approval.aprvContents}
 														</td>
 													</tr>
 												</tbody>
@@ -304,6 +363,58 @@
 														</a>
 												</c:forEach>
 										</form>
+										
+										<c:if test="${sessionScope.userId == approvalUser && approval.aprvStatCd == '01'}">
+									        <button class="btn btn-primary" type="button" onclick="approve()">승인</button>
+									        <button class="btn btn-primary" type="button" onclick="openRejectionModal()">반려</button>
+									   	</c:if>
+										<!-- 반려 모달 창 -->
+										
+										<c:if test="${sessionScope.userId == approval.userId && approval.aprvStatCd != '04'}">
+										    <button class="btn btn-primary" type="button" onclick="location.href='cancelApproval?aprvNo=${approval.aprvNo}'">회수</button>
+										</c:if>
+										<div>
+											<c:if test="${approval.aprvStatCd == '03' }">
+												반려사유 : ${approval.rjctReason}
+											</c:if>
+										</div>
+										
+										<div class="mt-3">
+									        <!-- Modal -->
+									        <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+									          <div class="modal-dialog modal-dialog-centered" role="document">
+									            <div class="modal-content">
+									              <div class="modal-header">
+									                <h5 class="modal-title" id="modalCenterTitle">반려</h5>
+									                <button
+									                  type="button"
+									                  class="btn-close"
+									                  data-bs-dismiss="modal"
+									                  aria-label="Close"
+									                ></button>
+									              </div>
+									              <div class="modal-body">
+									                <div class="row">
+									                  <div class="col mb-3">
+									                    <label for="rejectReason" class="form-label">반려사유</label>
+									                    <input
+									                      type="text"
+									                      id="rejectReason"
+									                      class="form-control"
+									                    />
+									                  </div>
+									                </div>
+									              </div>
+									              <div class="modal-footer">
+									                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+									                  닫기
+									                </button>
+									                <button type="button" class="btn btn-primary" onclick="rejectConfirm()">반려</button>
+									              </div>
+									            </div>
+									          </div>
+									        </div>
+									      </div>
 										<!-- 문서 끝 -->
 										<br>
 									</div>

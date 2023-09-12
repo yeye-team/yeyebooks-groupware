@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,15 @@ public class ApprovalService {
 		List<ApprovalFile> aprvFile = approvalMapper.selectApprovalFileOne(aprvNo);
 		List<ApprovalLine> aprvLine =  approvalMapper.selectApprovalLineOne(aprvNo);
 		String nowApprovalUser = approvalMapper.selectNowApproveUSer(aprvNo);
+		
+		List<String> refUsers = approvalMapper.selectRefOne(aprvNo);
+		 String reference = refUsers.stream()
+                 .collect(Collectors.joining(", "));
+		 
+		 approval.setReference(reference);
 
+		approvalOne.put("approval", approval);
+		approvalOne.put("reference", reference);
 		approvalOne.put("approval", approval);
 	    approvalOne.put("aprvFile", aprvFile);
 	    approvalOne.put("aprvLine", aprvLine);
@@ -111,13 +120,13 @@ public class ApprovalService {
 		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
 		approval.setAprvNo(aprvNo);
 
+		account.setAprvNo(aprvNo);
 		
 		
 		
 		int row = approvalMapper.insertApproval(approval);
 		
 		if("01".equals(approval.getDocCatCd())) {
-			account.setAprvNo(aprvNo);
 			log.debug("\u001B[35m"+account.getAcntYmd());
 			row = approvalMapper.insertAccount(account);
 		} 

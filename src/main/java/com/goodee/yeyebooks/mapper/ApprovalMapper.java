@@ -39,6 +39,8 @@ public interface ApprovalMapper {
 	
 	List<ApprovalLine> selectApprovalLineOne(String aprvNo);
 	
+	List<String> selectRefOne(String aprvNo);
+	
 	public Account selectAccountOne(String aprvNo);
 	
 	public Dayoff selectDayoffOne(String aprvNo);

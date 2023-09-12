@@ -149,14 +149,15 @@
 			a.doc_cat_cd docCatCd, c1.code_nm codeName, a.aprv_title aprvTitle,
 			a.aprv_contents aprvContents, a.aprv_ymd aprvYmd,
 			a.rjct_reason rjctReason, a.aprv_stat_cd aprvStatCd, c2.code_nm statName,
-			a.reference, a.c_date cDate,
+			a.reference, 
+			a.c_date cDate,
 			(select user_nm from user where user_id = a.user_id) userName
 		FROM approval a
 		JOIN user u ON a.user_id = u.user_id
 		LEFT JOIN common_code c1 ON a.doc_cat_cd = c1.code AND c1.group_code = 'A002'
 		LEFT JOIN common_code c2 ON a.aprv_stat_cd = c2.code AND c2.group_code = 'A001'
 		WHERE ((a.user_id = #{userId})  
-		OR (a.aprv_no in (select aprv_no from approval_line where user_id = #{userId}) AND a.aprv_stat_cd IN ('01', '02')) OR (a.reference LIKE CONCAT('%', #{userId}, '%') AND a.aprv_stat_cd = '02'))
+		OR (a.aprv_no in (select aprv_no from approval_line where user_id = #{userId}) AND a.aprv_stat_cd IN ('01', '02')) OR (a.reference LIKE concat('%', #{userId}, '%') AND a.aprv_stat_cd = '02'))
 		<choose>
 			<when test="status == 1"> AND c2.code =  '01' </when>
 			<when test="status == 2"> and a.user_id = #{userId} AND c2.code =  '01' </when>
@@ -251,6 +252,15 @@
 			WHERE group_code = 'A005' AND CODE = dayoff_type_cd) dayoffTypeCd
 		FROM dayoff
 		WHERE aprv_no = #{aprvNo}
+	</select>
+	
+	<!-- 참조자 상세보기 -->
+	<select id="selectRefOne" parameterType="String">
+		SELECT 
+			user_nm userName
+		FROM user, approval 
+		WHERE reference 
+		LIKE CONCAT('%', user.user_id, '%') AND aprv_no = #{aprvNo}
 	</select>
 	
 	<!-- 반려 -->
