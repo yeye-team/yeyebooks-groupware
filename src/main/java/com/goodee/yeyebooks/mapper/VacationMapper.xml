@@ -141,6 +141,7 @@
 	<!-- 부장 차장 제외 참조자 정보 조회 -->
 	<select id="getReference">
 		SELECT u.user_nm userNm,
+			u.uer_id userId,
 			c.code_nm codeNm
 		FROM user u
 		LEFT OUTER JOIN common_code c

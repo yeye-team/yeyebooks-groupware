@@ -214,10 +214,12 @@
 												        </label>
 												        <div class="col-sm-11">
 												        	<div class="table table-bordered">
+												        		<input type="hidden" name="reference"
+												        		value="<c:forEach items="${referList}" var="item">${item.userId}</c:forEach>"
+												        		>
 													        	<input 
 													        		class="form-control" 
-													        		type="text" 
-													        		name="reference" 
+													        		type="text"  
 													        		placeholder="참조를 선택하세요" 
 													        		readonly="readonly" 
 													        		value="<c:forEach items="${referList}" var="item">${item.userNm} ${item.codeNm} </c:forEach>" 
