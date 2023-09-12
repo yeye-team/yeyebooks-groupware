@@ -98,7 +98,7 @@ public class VacationService {
 		
 		// 기안자 직급번호
 		String rankCd = (String) aprvInfo.get("rankCd");
-		log.debug("\u001B[41m"+ "vacaService addVacation rankCd : " + rankCd + "\u001B[0m");
+		//log.debug("\u001B[41m"+ "vacaService addVacation rankCd : " + rankCd + "\u001B[0m");
 		
 		// 결재자 정보
 		// 부장일 경우 본인과 대표만 나오게
@@ -284,6 +284,7 @@ public class VacationService {
                     
     			}
     			
+    			// 첨부파일이 있으면 첨부파일 업로드 실행 / 없으면 제외
     			if (multipartFile != null && !multipartFile.isEmpty()) {
 	    			String path = request.getServletContext().getRealPath("/approvalFile/");
 	    			log.debug("\u001B[41m"+ "path" + path + "\u001B[0m");
