@@ -150,6 +150,9 @@ public class ApprovalController {
 	public String addApproval(HttpServletRequest request, Approval approval, Account account,
 							@RequestParam(name="approvalLine") String[] approvalLine,
 							HttpSession session) {
+		
+		log.debug("\u001B[41m"+ "aprvController" + approval + "\u001B[0m");	
+		
 		String userId = (String)session.getAttribute("userId");
 		approval.setUserId(userId);
 		System.out.println("ApprovalController approvalLine[0] : " + approvalLine[0]);

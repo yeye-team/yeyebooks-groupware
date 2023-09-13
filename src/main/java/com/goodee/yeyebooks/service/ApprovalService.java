@@ -114,10 +114,11 @@ public class ApprovalService {
 
 	// 문서 추가 메서드
 	public int addApproval(Approval approval, String[] approvalLine, String path, Account account) {
-		log.debug("\u001B[35m"+ "approvalLien : " +  approvalLine + "\u001B[0m");
+		log.debug("\u001B[35m"+ "approval : " +  approval + "\u001B[0m");
+		//log.debug("\u001B[35m"+ "approvalLien : " +  approvalLine + "\u001B[0m");
 		approval.setAprvYmd(todayYmd);
 		String aprvNo = approvalMapper.selectApprovalNo(approval);
-		log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
+		//log.debug("\u001B[35m"+"aprvNo : " + aprvNo);
 		approval.setAprvNo(aprvNo);
 
 		account.setAprvNo(aprvNo);

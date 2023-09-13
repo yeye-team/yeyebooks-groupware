@@ -560,7 +560,7 @@ function refReset(){
 								    			<!-- 제목 입력 -->
 								                <div class="mb-3">
 									                <input type="hidden" name="userId" value="${userId}">
-									                <input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+									                <input type="text" name="aprvTitle" maxlength="50" class="form-control" placeholder="제목을 입력하세요" required="required"/>
 								                </div>
 								                <!-- 내용 입력 -->
 												<div class="mb-1">
@@ -637,19 +637,19 @@ function refReset(){
 													<tr>
 														<th>제목</th>
 														<td colspan="3">
-								                        	<input type="text" name="aprvTitle" maxlength="50" class="form-control" id="basic-default-company" placeholder="제목을 입력하세요" required="required"/>
+								                        	<input type="text" name="aprvTitle" maxlength="50" class="form-control" placeholder="제목을 입력하세요" required="required"/>
 														</td>
 													</tr>
 													<tr>
 														<th>지출내용</th>
 														<td colspan="3">
-								                        	<textarea name="aprvContents" class="form-control" id="basic-default-company" placeholder="내용을 입력하세요" required="required"></textarea>
+								                        	<textarea name="aprvContents" class="form-control" placeholder="내용을 입력하세요" required="required"></textarea>
 														</td>
 													</tr>
 													<tr>
 														<th>사용내역</th>
 														<td colspan="3">
-				   											<textarea id="acntContents" name="acntContents" class="form-control" id="basic-default-company" placeholder="내용을 입력하세요" required="required"></textarea><br>
+				   											<textarea id="acntContents" name="acntContents" class="form-control" placeholder="내용을 입력하세요" required="required"></textarea><br>
 														</td>
 													</tr>
 													<tr>
