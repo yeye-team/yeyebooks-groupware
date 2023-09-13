@@ -681,9 +681,9 @@ function refReset(){
 											</div>
 											
 	               							  	<label for="files">첨부 파일:</label>
-									                <button type="button" id="addFile">추가</button>
-									                <button type="button" id="removeFile">삭제</button>
-									            <div id="files">
+									                <button type="button" id="addFile" class="btn btn-primary btn-sm">추가</button>
+									                <button type="button" id="removeFile" class="btn btn-primary btn-sm">삭제</button>
+									            <div id="files" class="my-2">
 									                <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
 									            </div>
 									            

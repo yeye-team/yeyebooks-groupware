@@ -181,10 +181,10 @@
 			                	style="height: 30px;
 			                		   display: flex;
         							   justify-content: space-between;">
-								<div class="row">
+								   <div class="row">
 				                    <div class="col">
 										<div class="demo-inline-spacing">
-					                        <nav aria-label="Page navigation">
+					                        <%-- <nav aria-label="Page navigation">
 												<ul class="pagination">
 						                          	<!-- 페이징 -->
 													<c:if test="${currentPage!=1}">
@@ -236,10 +236,11 @@
 														</li>
 													</c:if>
 												</ul>
-					                        </nav>
+					                        </nav> --%>
 										</div>
 				                    </div>
 								</div>
+
 				             		<!-- 작성버튼 구분 -->
 									<div class="addBtn">
 										<button type="button" class="btn btn-primary" onclick="location.href='${pageContext.request.contextPath}/approval/addApproval'">문서 작성</button>
