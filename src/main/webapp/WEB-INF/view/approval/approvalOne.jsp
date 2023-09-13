@@ -363,13 +363,13 @@
 										</form>
 										
 										<c:if test="${sessionScope.userId == approvalUser && approval.aprvStatCd == '01'}">
-									        <button class="btn btn-primary" type="button" onclick="approve()">승인</button>
-									        <button class="btn btn-primary" type="button" onclick="openRejectionModal()">반려</button>
+									        <button class="btn btn-primary" style="float: right;" type="button" onclick="approve()">승인</button>
+									        <button class="btn btn-primary" style="float: right;" type="button" onclick="openRejectionModal()">반려</button>
 									   	</c:if>
 										<!-- 반려 모달 창 -->
 										
 										<c:if test="${sessionScope.userId == approval.userId && approval.aprvStatCd == '01'}">
-										    <button class="btn btn-primary" type="button" onclick="location.href='cancelApproval?aprvNo=${approval.aprvNo}'">회수</button>
+										    <button class="btn btn-primary" type="button" style="float: right;" onclick="location.href='cancelApproval?aprvNo=${approval.aprvNo}'">회수</button>
 										</c:if>
 										<div>
 											<c:if test="${approval.aprvStatCd == '03' }">

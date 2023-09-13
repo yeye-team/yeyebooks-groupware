@@ -687,7 +687,7 @@ function refReset(){
 									                <input class="form-control approvalFiles" type="file" name="multipartFile" multiple><br>
 									            </div>
 									            
-									            <button type="button" class='btn btn-primary' onclick="submitForm()">문서등록</button>
+									            <button type="button" class='btn btn-primary' onclick="submitForm()"  style="float: right;">문서등록</button>
 										</form>
 										<!-- 문서 끝 -->
 										<br>
