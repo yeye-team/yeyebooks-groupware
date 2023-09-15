@@ -100,29 +100,67 @@
 			<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 				<div class="app-brand demo">
 					<a href="${pageContext.request.contextPath}">
-						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png" style="width:100%">
+						<img src="${pageContext.request.contextPath}/assets/img/logo/yeyebooks_logo.png"
+						     style="width:100%">
 					</a>
 				</div>
-	
+		
 				<div class="menu-inner-shadow"></div>
-				<ul class="menu-inner py-1">
+				
+				<!-- 메뉴바 게시판 클릭 구현부 -->
+					<ul class="menu-inner py-1">
 					
 		            <!-- Dashboard -->
-		            <li class="menu-item active">
+		            <li class="menu-item">
 		              <a href="/yeyebooks/approval/approvalList?status=0" data-title="내 문서함" class="menu-link">
 		                <i class="menu-icon tf-icons bx bx-layout"></i>
 		                <div data-i18n="Analytics">내 문서함</div>
 		              </a>
 		            </li>
+		
 		            <li class="menu-item">
-		              <a href="/yeyebooks/approval/addApproval" data-title="문서작성" class="menu-link">
-		                <i class='menu-icon tf-icons bx bxl-telegram'></i>
-		                <div data-i18n="Analytics">문서작성</div>
+		              <a href="/yeyebooks/approval/approvalList?status=1" data-title="진행중인 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">진행중인 문서</div>
 		              </a>
 		            </li>
-		        </ul>
-	        </aside>
-	        <!-- / Menu -->
+		
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=2" data-title="승인대기 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">승인대기 문서</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=3" data-title="결재대기 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">결재대기 문서</div>
+		              </a>
+		            </li>
+		
+		
+		            </li>
+					<li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=4" data-title="처리 완료된 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">처리 완료된 문서</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=5" data-title="반려된 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">반려된 문서</div>
+		              </a>
+		            </li>
+		            <li class="menu-item">
+		              <a href="/yeyebooks/approval/approvalList?status=6" data-title="회수된 문서" class="menu-link">
+		                <i class="menu-icon tf-icons bx bx-layout"></i>
+		                <div data-i18n="Analytics">회수된 문서</div>
+		              </a>
+		            </li>
+				<!-- /메뉴바 게시판 클릭 구현부 -->
+			</aside>
+			<!-- / Menu -->
 			
 			<!-- 입력 레이아웃 -->
 			<div class="layout-page">
