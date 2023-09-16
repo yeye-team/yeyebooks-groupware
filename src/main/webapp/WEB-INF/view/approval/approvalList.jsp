@@ -20,6 +20,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script>
 		const pageTitles = ["내 문서함", "진행중인 문서", "승인대기 문서", "결재대기 문서", "처리 완료된 문서", "반려된 문서", "회수된 문서"];
+		history.replaceState({}, null, location.pathname);
 	     $(document).ready(function() {
 	    	 $("#pageTitle").text(pageTitles[${status}]);
 	        

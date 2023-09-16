@@ -36,6 +36,7 @@
     <jsp:include page="../inc/head.jsp"></jsp:include>
     
     <script>
+		history.replaceState({}, null, location.pathname);
 		$(document).ready(function() {
 			// 드롭다운 내용 변경
 			document.querySelectorAll(".dropdown-item").forEach(function(item) {
