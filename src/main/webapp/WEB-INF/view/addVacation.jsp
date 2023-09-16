@@ -44,6 +44,30 @@
 			    document.getElementById("dayoffInput3").value = selectedDate;
 			});
 		});
+		$(function(){
+			$("#submitForm").submit(function(){
+		        var startDate = $('#dayoffInput2').val();
+		        var endDate = $('#dayoffInput3').val();
+
+		        //-을 구분자로 연,월,일로 잘라내어 배열로 반환
+		        var startArray = startDate.split('-');
+		        var endArray = endDate.split('-');   
+
+		        //배열에 담겨있는 연,월,일을 사용해서 Date 객체 생성
+		        var start_date = new Date(startArray[0], startArray[1], startArray[2]);
+		        var end_date = new Date(endArray[0], endArray[1], endArray[2]);
+
+                //날짜를 숫자형태의 날짜 정보로 변환하여 비교한다.
+		        if(start_date.getTime() > end_date.getTime()) {
+		        	Swal.fire({
+		                title: '경고',
+		                text: '종료 날짜는 시작 날짜 이후로 설정해주세요',
+		                icon: 'warning'
+		            });
+		            return false;
+		        }
+		     });
+		});
     </script>
     
     
@@ -137,7 +161,7 @@
 									<!-- 구분선 -->
 									<hr class="m-0">
       						    	<div class="card-body">
-					                    <form action="${pageContext.request.contextPath}/addVacation" method="post" enctype="multipart/form-data">
+					                    <form id="submitForm" action="${pageContext.request.contextPath}/addVacation" method="post" enctype="multipart/form-data">
 					                    	<!-- 문서 상단 -->
 					                    	<div class="row" style="margin-bottom: 5px;">
 					                    		<!-- 기안자 정보 -->
