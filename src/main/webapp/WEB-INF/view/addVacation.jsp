@@ -16,6 +16,14 @@
 	
     <jsp:include page="inc/head.jsp"></jsp:include>
     <script>
+    	// 신청 이후 뒤로가기시 폼 초기화
+	    window.addEventListener('pageshow', function(event) {
+	        var form = event.target.querySelector('form');
+	        if (form) {
+	            form.reset();
+	        }
+	    });
+	    
 		$(document).ready(function() {
 			$('.dayoffCd01').click(function(){
 				$('#dayoffDate').show();
