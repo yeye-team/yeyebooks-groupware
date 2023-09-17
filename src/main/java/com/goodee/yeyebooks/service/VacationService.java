@@ -154,6 +154,7 @@ public class VacationService {
 							MultipartFile multipartFile) {
 		//log.debug("\u001B[41m"+ "vacaService addVacation approvalLine : " + approvalLine + "\u001B[0m");
 		//log.debug("\u001B[41m"+ "vacaService addVacation dayoffYmd : " + dayoffYmd + "\u001B[0m");
+		//log.debug("\u001B[41m"+ "vacaService addVacation multipartFile : " + multipartFile + "\u001B[0m");
 		int row = 0;
 		
 		/* 문서제목 */
@@ -309,11 +310,6 @@ public class VacationService {
 					
 					// path 위치에 저장파일이름으로 빈파일을 생성
 					File f = new File(path+vF.getSaveFilename());
-					
-					// 폴더가 없으면 생성
-					if(!f.exists()) {
-						f.mkdir();
-					}
 					
 					// 빈파일에 첨부된 파일의 스트림을 주입한다.
 					try {
