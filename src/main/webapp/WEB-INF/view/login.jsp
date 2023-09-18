@@ -111,6 +111,28 @@
   				})
   			})
   		});
+  		
+  		function setBoo() {
+			var idInput = document.getElementsByName("userId")[0];
+	        var pwInput = document.getElementsByName("userPw")[0];
+
+	        idInput.value = "y2023040501";
+	        pwInput.value = "a1234";
+		}
+  		function setSa() {
+			var idInput = document.getElementsByName("userId")[0];
+	        var pwInput = document.getElementsByName("userPw")[0];
+
+	        idInput.value = "y2023091301";
+	        pwInput.value = "1234";
+		}
+  		function setAdmin() {
+			var idInput = document.getElementsByName("userId")[0];
+	        var pwInput = document.getElementsByName("userPw")[0];
+
+	        idInput.value = "admin";
+	        pwInput.value = "1234";
+		}
   	</script>
   </head>
 
@@ -131,16 +153,32 @@
               <form id="formAuthentication" class="mb-3">
                 <div class="mb-3">
                   <label for="email" class="form-label">아이디</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="email"
-                    name="userId"
-                    placeholder="아이디(사원번호)를 입력하세요."
-                    autofocus
-                    required
-                    value="${rememberId}"
-                  />
+                  <c:choose>
+	                  <c:when test="${isRemember == true}">
+		                  <input
+		                    type="text"
+		                    class="form-control"
+		                    id="email"
+		                    name="userId"
+		                    placeholder="아이디(사원번호)를 입력하세요."
+		                    autofocus
+		                    required
+		                    value="${rememberId}"
+		                  />
+	                  </c:when>
+	                  <c:otherwise>
+		                  <input
+		                    type="text"
+		                    class="form-control"
+		                    id="email"
+		                    name="userId"
+		                    placeholder="아이디(사원번호)를 입력하세요."
+		                    autofocus
+		                    required
+		                    value="y2022040501"
+		                  />
+	                  </c:otherwise>
+                  </c:choose>
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
@@ -154,6 +192,7 @@
                       name="userPw"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
+                      value="a1234"
                       required
                     />
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
@@ -172,6 +211,10 @@
                 </div>
                 <div class="mb-3">
                   <button class="btn btn-primary d-grid w-100" type="submit">로그인</button>
+                  <br>
+                  <button class="btn btn-primary d-grid w-100" type="button" onclick="setBoo();">사용자 로그인(부장)</button>
+                  <button class="btn btn-primary d-grid w-100" type="button" onclick="setSa();">사용자 로그인(사원)</button>
+                  <button class="btn btn-primary d-grid w-100" type="button" onclick="setAdmin();">관리자 로그인</button>
                 </div>
               </form>
             </div>
